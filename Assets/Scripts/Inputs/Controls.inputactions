@@ -1,0 +1,84 @@
+{
+    "name": "Controls",
+    "maps": [
+        {
+            "name": "Actions",
+            "id": "fe84cab8-d7bc-4493-b17e-17cd5f2830ff",
+            "actions": [
+                {
+                    "name": "Click",
+                    "type": "Button",
+                    "id": "f9549aca-219e-4ee2-b385-c8cda30d6a47",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "71f5e945-fa82-4fab-b995-34cfaf934039",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "Click",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "77975b82-d1a0-412e-a67c-8bdc9e3d44da",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KeyBoard/Mouse",
+                    "action": "Click",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Player",
+            "id": "784a0750-ccc6-4f47-ab9a-918aa74a5bd5",
+            "actions": [
+                {
+                    "name": "North",
+                    "type": "Button",
+                    "id": "ec433085-0fd5-4157-ab93-dde2f3c59fac",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "5e275f39-b1d2-4ab2-aaf2-4958029993bb",
+                    "path": "<Gamepad>/buttonNorth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "North",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": [
+        {
+            "name": "Gamepad",
+            "bindingGroup": "Gamepad",
+            "devices": []
+        },
+        {
+            "name": "KeyBoard/Mouse",
+            "bindingGroup": "KeyBoard/Mouse",
+            "devices": []
+        }
+    ]
+}
