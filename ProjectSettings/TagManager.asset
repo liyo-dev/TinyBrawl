@@ -10,6 +10,7 @@ TagManager:
   - Cast
   - StartSceneEvent
   - WaitForOthersTxt
+  - Energy
   layers:
   - Default
   - TransparentFX
