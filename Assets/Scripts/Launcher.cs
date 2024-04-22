@@ -16,7 +16,6 @@ public class Launcher : MonoBehaviourPunCallbacks
 
     public override void OnConnectedToMaster()
     {
-        Debug.Log("Conexión realizada");
         PhotonNetwork.JoinRandomOrCreateRoom();
     }
 

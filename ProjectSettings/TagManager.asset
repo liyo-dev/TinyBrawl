@@ -11,6 +11,7 @@ TagManager:
   - StartSceneEvent
   - WaitForOthersTxt
   - Energy
+  - PowerUp
   layers:
   - Default
   - TransparentFX
