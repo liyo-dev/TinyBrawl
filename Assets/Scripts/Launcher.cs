@@ -5,6 +5,7 @@ public class Launcher : MonoBehaviourPunCallbacks
 {
     public PhotonView Player1Prefab;
     public PhotonView Player2Prefab;
+    public PhotonView TimerPrefab;
     public Transform SpawnPoint_Player1;
     public Transform SpawnPoint_Player2;
     private const int MAX_PLAYERS_PER_ROOM = 3;
@@ -30,6 +31,7 @@ public class Launcher : MonoBehaviourPunCallbacks
         {
             //CheckPlayersInRoom();
             PhotonNetwork.Instantiate(Player2Prefab.name, SpawnPoint_Player2.transform.position, Quaternion.identity);
+            PhotonNetwork.Instantiate(TimerPrefab.name, transform.position, Quaternion.identity);
         }
         else if (PhotonNetwork.CurrentRoom.PlayerCount == MAX_PLAYERS_PER_ROOM)
         {

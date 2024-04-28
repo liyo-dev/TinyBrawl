@@ -24,6 +24,8 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
 
     private bool isTouchingCast;
     private bool isTouchingPlayer;
+    
+    private bool gameStarted = false;
 
     private void Start()
     {
@@ -50,9 +52,12 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
     {
         if (photonView.IsMine)
         {
-            HandleMovement();
-            HandleScoreInput();
-            HandlePowerUpInput();
+            if (gameStarted) 
+            {
+                HandleMovement();
+                HandleScoreInput();
+                HandlePowerUpInput();
+            }
         }
     }
 
@@ -72,8 +77,16 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
             veloc++;
         }
 
+        // Gradually decrease velocity over time
+        float decreaseRate = 0.5f; // Adjust this value as needed
+        veloc -= decreaseRate * Time.deltaTime;
+
+        // Ensure velocity doesn't go below zero
+        veloc = Mathf.Max(0, veloc);
+
         energy.fillAmount = veloc / 10.0f;
     }
+
 
     private void HandleScoreInput()
     {
@@ -165,6 +178,17 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
         {
             scoreText.text = "Player" + photonView.Owner.ActorNumber + ": " + score;
         }
+    }
+    
+    // Método para iniciar el juego
+    public void StartGame()
+    {
+        gameStarted = true;
+    }
+    
+    public void EndGame()
+    {
+        gameStarted = false;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
