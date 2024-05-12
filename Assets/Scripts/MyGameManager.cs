@@ -1,13 +1,131 @@
+using System;
+using Photon.Pun;
+using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 
-public class MyGameManager : MonoBehaviour
+public enum MinigameType
 {
-    [SerializeField] private MoveSprite _moveSprite;
-    [SerializeField] private GameObject _cast;
+    Impostor,
+    FollowMe
+}
+
+public class MyGameManager : MonoBehaviourPunCallbacks
+{
+    public MinigameType SelectedMinigameType;
+    private TextMeshProUGUI winnerText;
+    private TextMeshProUGUI scoreTextLocal;
+    private TextMeshProUGUI scoreTextRemote;
+    private int score = 0;
     
-    public void MiniGame1()
+    public void DoStart()
     {
-        _cast.SetActive(true);
-        _moveSprite.DoStart();
-    } 
+        switch (SelectedMinigameType)
+        {
+            case MinigameType.Impostor:
+                StartImpostor();
+                break;
+            case MinigameType.FollowMe:
+                StartFollowMe();
+                break;
+        }
+    }
+
+    public void DoStop()
+    {
+        CalculateWinnerAndDisplay();
+    }
+
+    private void StartFollowMe()
+    {
+        // Implementa la lógica de inicio del minijuego FollowMe si es necesario
+    }
+
+    private void StartImpostor()
+    {
+        FindObjectOfType<GameImpostor>().DoStart();
+        scoreTextLocal = GameObject.FindWithTag("ScoreLocal").GetComponent<TextMeshProUGUI>();
+        winnerText = GameObject.FindWithTag("WinnerText").GetComponent<TextMeshProUGUI>();
+    }
+
+    public void IncreaseLocalScore(int _score)
+    {
+        score += _score;
+
+        if (scoreTextLocal != null)
+        {
+            scoreTextLocal.text = "Player " + PhotonNetwork.LocalPlayer.ActorNumber + ": " + score.ToString();
+        }
+        else
+        {
+            Debug.LogError("scoreTextLocal no ha sido inicializado correctamente.");
+        }
+
+        photonView.RPC("SyncScore", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber, score);
+    }
+    
+    public void DecreaseLocalScore(int _score)
+    {
+        if (score == 0) return;
+        
+        score -= _score;
+
+        if (scoreTextLocal != null)
+        {
+            scoreTextLocal.text = "Player " + PhotonNetwork.LocalPlayer.ActorNumber + ": " + score.ToString();
+        }
+        else
+        {
+            Debug.LogError("scoreTextLocal no ha sido inicializado correctamente.");
+        }
+
+        photonView.RPC("SyncScore", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber, score);
+    }
+
+    void CalculateWinnerAndDisplay()
+    {
+        FindObjectOfType<GameImpostor>().DoStop();
+        
+        // Obtener la puntuación del jugador local
+        var myScore = score;
+
+        // Enviar la puntuación del jugador local al otro cliente
+        photonView.RPC("ReceiveOpponentScore", RpcTarget.Others, myScore);
+    }
+
+    [PunRPC]
+    private void SyncScore(int playerNumber, int newScore)
+    {
+        if (scoreTextRemote == null)
+        {
+            scoreTextRemote = GameObject.FindWithTag("ScoreRemote").GetComponent<TextMeshProUGUI>();
+            if (scoreTextRemote == null)
+            {
+                Debug.LogError("No se encontró un objeto con la etiqueta 'ScoreRemote' o el componente TextMeshProUGUI en el objeto.");
+                return;
+            }
+        }
+
+        scoreTextRemote.text = "Player" + playerNumber + ": " + newScore;
+    }
+
+    [PunRPC]
+    void ReceiveOpponentScore(int opponentScore)
+    {
+        // Obtener la puntuación del jugador local
+        var myScore = score;
+
+        if (myScore > opponentScore)
+        {
+            winnerText.text = "¡Has ganado!";
+        }
+        else if (myScore < opponentScore)
+        {
+            winnerText.text = "¡Has perdido!";
+        }
+        else
+        {
+            winnerText.text = "¡Empate!";
+        }
+    }
 }

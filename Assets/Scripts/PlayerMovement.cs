@@ -18,11 +18,12 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
     public float veloc = 1f;
     public int score = 0;
 
-    private GameObject scorePrefab;
-    private TextMeshProUGUI scoreText;
+    //private GameObject scorePrefab;
+    private TextMeshProUGUI scoreTextLocal;
+    private TextMeshProUGUI scoreTextRemote;
     private Image energy;
 
-    private bool isTouchingCast;
+    private bool isTouchingFollowMe;
     private bool isTouchingPlayer;
     
     private bool gameStarted = false;
@@ -31,19 +32,8 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
     {
         if (photonView.IsMine)
         {
-            scorePrefab = GameObject.FindWithTag("Score");
+            scoreTextLocal = GameObject.FindWithTag("ScoreLocal").GetComponent<TextMeshProUGUI>();
             energy = GameObject.FindWithTag("Energy").GetComponent<Image>();
-
-            if (scorePrefab != null)
-            {
-                var scoreList = scorePrefab.GetComponentsInChildren<TextMeshProUGUI>();
-                scoreText = scoreList[photonView.Owner.ActorNumber - 1];
-            }
-            else
-            {
-                Debug.LogError("No se encontró el componente Canvas en el prefab ScoreObject.");
-            }
-
             lastComboTime = Time.time;
         }
     }
@@ -63,36 +53,46 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
 
     private void HandleMovement()
     {
-        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        mousePos.z = 0;
-
-        if (Vector3.Distance(transform.position, mousePos) > 0.1f)
+        if (Input.touchSupported && Input.touchCount > 0)
         {
-            Vector2 direction = (mousePos - transform.position).normalized;
-            transform.position += (Vector3)direction * veloc * Time.deltaTime;
-        }
+            // Si se detecta entrada táctil, mueve al personaje hacia la posición del toque
+            Vector3 touchPos = Camera.main.ScreenToWorldPoint(Input.GetTouch(0).position);
+            touchPos.z = 0;
 
-        if (!isTouchingPlayer && !isTouchingCast && Input.GetMouseButtonDown(1) && veloc < 10)
+            if (Vector3.Distance(transform.position, touchPos) > 0.1f)
+            {
+                Vector2 direction = (touchPos - transform.position).normalized;
+                transform.position += (Vector3)direction * veloc * Time.deltaTime;
+            }
+        }
+        else
         {
-            veloc++;
-        }
+            // Si no se detecta entrada táctil, sigue al ratón
+            Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            mousePos.z = 0;
 
-        // Gradually decrease velocity over time
-        float decreaseRate = 0.5f; // Adjust this value as needed
+            if (Vector3.Distance(transform.position, mousePos) > 0.1f)
+            {
+                Vector2 direction = (mousePos - transform.position).normalized;
+                transform.position += (Vector3)direction * veloc * Time.deltaTime;
+            }
+        }
+    
+        float decreaseRate = 0.5f; 
         veloc -= decreaseRate * Time.deltaTime;
-
-        // Ensure velocity doesn't go below zero
-        veloc = Mathf.Max(0, veloc);
+    
+        veloc = Mathf.Max(1, veloc);
 
         energy.fillAmount = veloc / 10.0f;
     }
+
 
 
     private void HandleScoreInput()
     {
         if (Input.GetMouseButtonDown(0))
         {
-            if (isTouchingCast)
+            if (isTouchingFollowMe)
             {
                 IncreaseScore(1);
                 photonView.RPC("SyncScore", RpcTarget.Others, photonView.Owner.ActorNumber, score);
@@ -128,14 +128,12 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
     [PunRPC]
     private void SyncScore(int playerActorNumber, int newScore)
     {
-        GameObject scorePrefabRemote = GameObject.FindWithTag("Score");
-
-        if (scorePrefabRemote != null)
+        if (scoreTextRemote == null)
         {
-            var scoreList = scorePrefabRemote.GetComponentsInChildren<TextMeshProUGUI>();
-            var scoreText = scoreList[playerActorNumber - 1];
-            scoreText.text = "Player" + photonView.Owner.ActorNumber + ": " + newScore;
+            scoreTextRemote = GameObject.FindWithTag("ScoreRemote").GetComponent<TextMeshProUGUI>();
         }
+        
+        scoreTextRemote.text = "Player" + photonView.Owner.ActorNumber + ": " + newScore;
     }
     
     [PunRPC]
@@ -143,6 +141,12 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
     {
         score = newScore;
         photonView.RPC("SyncScore", RpcTarget.All, photonView.Owner.ActorNumber, score);
+    }
+    
+    [PunRPC]
+    private void DestroyVelocityPowerUp(GameObject _gameObject)
+    {
+        Destroy(_gameObject);
     }
 
     private void IncreaseScore(int amount)
@@ -164,9 +168,9 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
         lastComboTime = Time.time;
         score += amount;
 
-        if (scoreText != null)
+        if (scoreTextLocal != null)
         {
-            scoreText.text = "Player" + photonView.Owner.ActorNumber + ": " + score;
+            scoreTextLocal.text = "Player" + photonView.Owner.ActorNumber + ": " + score;
         }
     }
     
@@ -174,9 +178,9 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
     {
         score -= amount;
 
-        if (scoreText != null)
+        if (scoreTextLocal != null)
         {
-            scoreText.text = "Player" + photonView.Owner.ActorNumber + ": " + score;
+            scoreTextLocal.text = "Player" + photonView.Owner.ActorNumber + ": " + score;
         }
     }
     
@@ -193,21 +197,30 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Cast"))
+        if (other.CompareTag("FollowMe"))
         {
-            isTouchingCast = true;
+            isTouchingFollowMe = true;
         }
         else if (other.CompareTag("PowerUp"))
         {
-            photonView.RPC("UpdateScore", RpcTarget.Others, 0);
+            photonView.RPC("UpdateScore", RpcTarget.All, 0);
+        }
+        else if (other.CompareTag("VelocityPower"))
+        {
+            if (!isTouchingPlayer && !isTouchingFollowMe && veloc < 10)
+            {
+                veloc += 2;
+                //Destroy(other.gameObject);
+                //photonView.RPC("DestroyVelocityPowerUp", RpcTarget.Others, other.gameObject);
+            }
         }
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.CompareTag("Cast"))
+        if (other.CompareTag("FollowMe"))
         {
-            isTouchingCast = false;
+            isTouchingFollowMe = false;
         }
     }
 }

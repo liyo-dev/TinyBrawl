@@ -4,14 +4,16 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Bullet
   - Score
-  - ScorePrefab
-  - Cast
-  - StartSceneEvent
   - WaitForOthersTxt
   - Energy
   - PowerUp
+  - ScoreLocal
+  - ScoreRemote
+  - FollowMe
+  - StartSceneEvent
+  - VelocityPower
+  - WinnerText
   layers:
   - Default
   - TransparentFX

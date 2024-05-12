@@ -1,22 +1,27 @@
 using Photon.Pun;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CountdownTimer : MonoBehaviourPunCallbacks
 {
     public TextMeshProUGUI countdownText;
-    public TextMeshProUGUI startText; // Nuevo texto para la cuenta regresiva inicio;
+    public GameObject TresGameObject;
+    public GameObject DosGameObject;
+    public GameObject UnoGameObject;
+    public Image TimeBarImage;
     private float totalTime = 60f;
     private float timeLeft;
-    private bool countdownStarted = false; // Variable para controlar si la cuenta regresiva ha comenzado
-    private PlayerMovement playerMovement;
+    private bool countdownStarted = false; 
+    private MyGameManager _myGameManager;
 
     void Start()
     {
         photonView.RPC("QuitWaitForOthers", RpcTarget.All);
         timeLeft = totalTime;
-        startText.text = "3";
-        Invoke("CountdownTwo", 1f); // Llamará al método CountdownTwo después de 1 segundo
+        // Iniciar el conteo regresivo mostrando el número 3
+        TresGameObject.SetActive(true);
+        Invoke("CountdownTwo", 1f);
     }
 
     void Update()
@@ -40,26 +45,35 @@ public class CountdownTimer : MonoBehaviourPunCallbacks
         int seconds = Mathf.FloorToInt(timeLeft % 60f);
 
         countdownText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
+        
+        // Actualizar el tamaño de la barra de tiempo
+        float fillAmount = timeLeft / totalTime;
+        TimeBarImage.fillAmount = fillAmount;
     }
 
     void CountdownTwo()
     {
-        startText.text = "2";
-        Invoke("CountdownOne", 1f); // Llamará al método CountdownOne después de 1 segundo
+        // Desactivar el número 3 y mostrar el número 2
+        TresGameObject.SetActive(false);
+        DosGameObject.SetActive(true);
+        Invoke("CountdownOne", 1f);
     }
 
     void CountdownOne()
     {
-        startText.text = "1";
-        Invoke("StartCountdown", 1f); // Llamará al método StartCountdown después de 1 segundo
+        // Desactivar el número 2 y mostrar el número 1
+        DosGameObject.SetActive(false);
+        UnoGameObject.SetActive(true);
+        Invoke("StartCountdown", 1f);
     }
 
     void StartCountdown()
     {
-        startText.gameObject.SetActive(false); // Ocultar el texto de la cuenta regresiva inicial
-        countdownStarted = true; // Iniciar el cronómetro principal
+        // Ocultar el número 1 y comenzar el conteo regresivo real
+        UnoGameObject.SetActive(false); 
+        countdownStarted = true;
         photonView.RPC("StartGame", RpcTarget.Others);
-        Invoke("CalculateWinnerAndDisplay", totalTime);
+        Invoke("TimeOut", totalTime);
     }
 
     [PunRPC]
@@ -72,60 +86,21 @@ public class CountdownTimer : MonoBehaviourPunCallbacks
     [PunRPC]
     void StartGame()
     {
-        // Obtener el jugador local
-        GameObject localPlayer = GameObject.FindWithTag("Player");
+        _myGameManager = FindObjectOfType<MyGameManager>();
 
-        if (localPlayer != null)
+        if (_myGameManager != null)
         {
-            // Obtener el componente PlayerMovement del jugador local
-            playerMovement = localPlayer.GetComponent<PlayerMovement>();
-
-            if (playerMovement != null)
-            {
-                playerMovement.StartGame(); // Llamará al método StartGame del PlayerMovement
-            }
-            else
-            {
-                Debug.LogError("PlayerMovement no encontrado en el jugador local.");
-            }
+            _myGameManager.DoStart(); 
         }
         else
         {
-            Debug.LogError("Jugador local no encontrado.");
+            Debug.LogError("MyGameManager no encontrado en el jugador local.");
         }
     }
-    
-    void CalculateWinnerAndDisplay()
+
+    [PunRPC]
+    void TimeOut()
     {
-        playerMovement.EndGame();
-        
-        // Obtener todos los jugadores en la sala
-        PlayerMovement[] allPlayers = FindObjectsOfType<PlayerMovement>();
-
-        // Inicializar variables para rastrear al jugador con más puntos
-        int maxScore = int.MinValue;
-        PlayerMovement winningPlayer = null;
-
-        // Iterar sobre todos los jugadores para encontrar al que tiene más puntos
-        foreach (PlayerMovement player in allPlayers)
-        {
-            if (player.score > maxScore)
-            {
-                maxScore = player.score;
-                winningPlayer = player;
-            }
-        }
-
-        // Mostrar el texto con el número del jugador que ganó
-        if (winningPlayer != null)
-        {
-            countdownText.text = "Player " + winningPlayer.photonView.Owner.ActorNumber.ToString() + " gana";
-            startText.gameObject.SetActive(false);
-        }
-        else
-        {
-            countdownText.text = "No winner";
-        }
+        _myGameManager.DoStop();
     }
-
 }

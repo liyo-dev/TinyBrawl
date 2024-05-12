@@ -52,6 +52,17 @@ MonoBehaviour:
   - SyncStart
   - QuitWaitForOthers
   - StartGame
+  - DestroyVelocityPowerUp
+  - ReceiveOpponentScore
+  - TimeOut
+  - SyncTurn
+  - GameOver
+  - DestroyImages
+  - SyncImages
+  - SyncIndexes
+  - SyncPositionIndexes
+  - SyncImagesAndPosition
+  - SyncRemotePlayerCanPlay
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1
