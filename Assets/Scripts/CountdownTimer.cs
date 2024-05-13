@@ -1,6 +1,7 @@
 using Photon.Pun;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class CountdownTimer : MonoBehaviourPunCallbacks
@@ -10,6 +11,7 @@ public class CountdownTimer : MonoBehaviourPunCallbacks
     public GameObject DosGameObject;
     public GameObject UnoGameObject;
     public Image TimeBarImage;
+    public GameObject ExitMenuBtn;
     private float totalTime = 60f;
     private float timeLeft;
     private bool countdownStarted = false; 
@@ -17,7 +19,9 @@ public class CountdownTimer : MonoBehaviourPunCallbacks
 
     void Start()
     {
-        photonView.RPC("QuitWaitForOthers", RpcTarget.All);
+        if (LocalOnlineOption.instance.IsOnline())
+            photonView.RPC("QuitWaitForOthers", RpcTarget.All);
+        
         timeLeft = totalTime;
         // Iniciar el conteo regresivo mostrando el número 3
         TresGameObject.SetActive(true);
@@ -72,8 +76,25 @@ public class CountdownTimer : MonoBehaviourPunCallbacks
         // Ocultar el número 1 y comenzar el conteo regresivo real
         UnoGameObject.SetActive(false); 
         countdownStarted = true;
-        photonView.RPC("StartGame", RpcTarget.Others);
+        if (LocalOnlineOption.instance.IsOnline())
+            photonView.RPC("StartGame", RpcTarget.Others);
+        else
+        {
+            _myGameManager = FindObjectOfType<MyGameManager>();
+
+            if (_myGameManager != null)
+            {
+                _myGameManager.DoStart(); 
+            }
+        }
+        
         Invoke("TimeOut", totalTime);
+    }
+    
+    public void LoadScene()
+    {
+        PhotonNetwork.Disconnect();
+        SceneManager.LoadScene("Menu");
     }
 
     [PunRPC]
@@ -102,5 +123,15 @@ public class CountdownTimer : MonoBehaviourPunCallbacks
     void TimeOut()
     {
         _myGameManager.DoStop();
+        ExitMenuBtn.SetActive(true);
+
+        if (LocalOnlineOption.instance.IsOnline())
+        {
+            // Obtener el componente Button del botón hijo de ExitMenuBtn
+            Button exitButton = ExitMenuBtn.GetComponentInChildren<Button>();
+            
+            // Agregar un listener para detectar el clic en el botón
+            exitButton.onClick.AddListener(LoadScene);
+        }
     }
 }

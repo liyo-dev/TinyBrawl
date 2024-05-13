@@ -31,4 +31,11 @@ public class LocalOnlineOption : MonoBehaviour
     {
         SelectedTypePlayer = TypePlayer.Online;
     }
+    
+    public void SetLocalGame()
+    {
+        SelectedTypePlayer = TypePlayer.Local;
+    }
+
+    public bool IsOnline() => SelectedTypePlayer == TypePlayer.Online;
 }

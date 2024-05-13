@@ -43,7 +43,11 @@ public class MyGameManager : MonoBehaviourPunCallbacks
 
     private void StartImpostor()
     {
-        FindObjectOfType<GameImpostor>().DoStart();
+        if (LocalOnlineOption.instance.IsOnline())
+            FindObjectOfType<GameImpostor>().DoStart();
+        else
+            FindObjectOfType<GameImpostorLocal>().DoStart();
+        
         scoreTextLocal = GameObject.FindWithTag("ScoreLocal").GetComponent<TextMeshProUGUI>();
         winnerText = GameObject.FindWithTag("WinnerText").GetComponent<TextMeshProUGUI>();
     }
@@ -61,7 +65,8 @@ public class MyGameManager : MonoBehaviourPunCallbacks
             Debug.LogError("scoreTextLocal no ha sido inicializado correctamente.");
         }
 
-        photonView.RPC("SyncScore", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber, score);
+        if (LocalOnlineOption.instance.IsOnline())
+            photonView.RPC("SyncScore", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber, score);
     }
     
     public void DecreaseLocalScore(int _score)
@@ -79,18 +84,26 @@ public class MyGameManager : MonoBehaviourPunCallbacks
             Debug.LogError("scoreTextLocal no ha sido inicializado correctamente.");
         }
 
-        photonView.RPC("SyncScore", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber, score);
+        if (LocalOnlineOption.instance.IsOnline())
+            photonView.RPC("SyncScore", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber, score);
     }
 
     void CalculateWinnerAndDisplay()
     {
-        FindObjectOfType<GameImpostor>().DoStop();
+        if (LocalOnlineOption.instance.IsOnline())
+            FindObjectOfType<GameImpostor>().DoStop();
+        else
+        {
+            FindObjectOfType<GameImpostorLocal>().DoStop();
+            winnerText.text = "Tu puntuación: " + score;
+        }
         
         // Obtener la puntuación del jugador local
         var myScore = score;
 
-        // Enviar la puntuación del jugador local al otro cliente
-        photonView.RPC("ReceiveOpponentScore", RpcTarget.Others, myScore);
+        if (LocalOnlineOption.instance.IsOnline())
+            // Enviar la puntuación del jugador local al otro cliente
+            photonView.RPC("ReceiveOpponentScore", RpcTarget.Others, myScore);
     }
 
     [PunRPC]

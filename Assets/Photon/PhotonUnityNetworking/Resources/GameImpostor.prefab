@@ -408,13 +408,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   images:
-  - {fileID: 1252300943239936, guid: 45688dc2b95f92e429aa178432ea103b, type: 3}
-  - {fileID: 1252300943239936, guid: d2690c8899a6ae243a8544e1f1375df1, type: 3}
-  - {fileID: 1252300943239936, guid: 50585e4cfeef73d4882a4e8fe6e646fb, type: 3}
-  - {fileID: 1252300943239936, guid: 3e6a460bbed153043a445c2ae07066f6, type: 3}
-  - {fileID: 1252300943239936, guid: f099771334fd1374aac84e800a49016d, type: 3}
-  - {fileID: 1252300943239936, guid: 6e6be874236849d46b1820300c738420, type: 3}
-  telonDuration: 0
+  - {fileID: 5446264191979063926, guid: f9de48f823b22ca47a8ec1771cd1824a, type: 3}
+  - {fileID: 6702301121538144882, guid: 0cfe2c193a5021f4dbba110fdf9e0220, type: 3}
+  - {fileID: 7678045196252102596, guid: d475d39514d0d6e46ac271f181aa13d3, type: 3}
+  - {fileID: 6485771262699131558, guid: 74eb6612042c0c041b16dc6f1f4a28d7, type: 3}
+  - {fileID: 4850808435069362811, guid: 5c1fd0c6db5dd8f4485dee15cc449d9b, type: 3}
+  - {fileID: 3761723492008526982, guid: aca0cbab123fa0e44abc59895a1d85c9, type: 3}
+  - {fileID: 834975073194280880, guid: 3a5d0db8d7e03ed4b93346b83f3b1ec6, type: 3}
+  - {fileID: 7635944947291996780, guid: d6c6bb727a1e60846a86f285a318b46d, type: 3}
+  - {fileID: 5380268122684429573, guid: 5e795ecb162fb8e4db3fc84f67bc5a37, type: 3}
   spawnPositions:
   - {fileID: 6303450232219335313}
   - {fileID: 84693702082733484}

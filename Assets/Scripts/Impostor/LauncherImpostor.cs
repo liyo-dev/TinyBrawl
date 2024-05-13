@@ -5,8 +5,8 @@ using UnityEngine;
 public class LauncherImpostor : MonoBehaviourPunCallbacks
 {
     public PhotonView TimerPrefab;
-    public PhotonView GameImpostor;
     public PhotonView MyGameManager;
+    public PhotonView GameImpostor;
 
     void Start()
     {
@@ -24,8 +24,8 @@ public class LauncherImpostor : MonoBehaviourPunCallbacks
         {
             // Si hay dos jugadores en la sala, instanciar el GameManager y el Timer
             PhotonNetwork.Instantiate(GameImpostor.name, transform.position, Quaternion.identity);
-            PhotonNetwork.Instantiate(TimerPrefab.name, transform.position, Quaternion.identity);
             PhotonNetwork.Instantiate(MyGameManager.name, transform.position, Quaternion.identity);
+            PhotonNetwork.Instantiate(TimerPrefab.name, transform.position, Quaternion.identity);
         }
         else if (PhotonNetwork.CurrentRoom.PlayerCount > 2)
         {

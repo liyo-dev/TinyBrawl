@@ -1,18 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
-using Photon.Pun;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
-public class GameImpostor : MonoBehaviourPunCallbacks
+public class GameImpostorLocal : MonoBehaviour
 {
     public List<GameObject> images; // Lista de imágenes para el minijuego
     public Transform[] spawnPositions; // Posiciones donde instanciar las imágenes
     public DotUpDown Telon;
     public GameObject GoodFeedback;
     public GameObject WrongFeedback;
-    
-    
+
     private int correctIndexImage;
     private int wrongIndexImage;
     private int positionOk;
@@ -22,46 +19,65 @@ public class GameImpostor : MonoBehaviourPunCallbacks
     private GameObject Image2;
     private GameObject Image3;
     private MyGameManager _myGameManager;
-    private float turnDuration = 4f; // Duración de cada turno
+    private float turnTimer; // Temporizador para el turno actual
+    private float timeBetweenTurns = 6f;
     private bool localPlayerCanPlay;
-    private bool remotePlayerCanPlay;
     private bool imagesCalculated = false;
-    private bool stopGame;
+    private bool stopGame = true;
     private bool canClick = false;
+    private int telonLowerCount = 0; 
     
+    private void Update()
+    {
+        if (!stopGame)
+        {
+            // Reducir el temporizador del turno actual
+            turnTimer -= Time.deltaTime;
+
+            // Si el temporizador del turno actual llega a cero, iniciar un nuevo turno
+            if (turnTimer <= 0)
+            {
+                // Iniciar un nuevo temporizador para el próximo turno
+                turnTimer = timeBetweenTurns;
+
+                // Cambiar de turno
+                SyncTurn();
+            }
+        }
+    }
+
+
     public void DoStart()
     {
-        photonView.RPC("SyncTurn", RpcTarget.All);
+        SyncTurn();
+        stopGame = false;
     }
 
     public void DoStop()
     {
-        photonView.RPC("GameOver", RpcTarget.Others);
+        GameOver();
     }
-    
+
     private IEnumerator NextTurn()
     {
         canClick = false;
-        
+
         Telon.Down();
-    
+
         yield return new WaitForSeconds(Telon.animationDuration + 0.1f);
-    
-        photonView.RPC("DestroyImages", RpcTarget.All);
+
+        DestroyImages();
 
         // Esperar a que las imágenes sean destruidas antes de calcular e instanciar nuevas imágenes
         yield return new WaitUntil(() => Image1 == null && Image2 == null && Image3 == null);
 
-        if (PhotonNetwork.CurrentRoom.Players.ContainsKey(1) && PhotonNetwork.LocalPlayer.ActorNumber == 1)
-        {
-            CalculateImagesIfNeeded();
-        }
+        CalculateImagesIfNeeded();
 
         Telon.Up();
-        
+
         canClick = true;
     }
-    
+
     void CalculateImagesIfNeeded()
     {
         if (!imagesCalculated)
@@ -70,18 +86,18 @@ public class GameImpostor : MonoBehaviourPunCallbacks
             imagesCalculated = true;
         }
     }
-    
+
     void CalculateImages()
     {
         // Imágenes
-        int correctIndexImage = Random.Range(0, images.Count);
-        int wrongIndexImage = Random.Range(0, images.Count);
+        correctIndexImage = Random.Range(0, images.Count);
+        wrongIndexImage = Random.Range(0, images.Count);
 
         while (correctIndexImage == wrongIndexImage)
         {
             wrongIndexImage = Random.Range(0, images.Count);
         }
-        
+
         // Posiciones
         positionOk = Random.Range(0, spawnPositions.Length);
 
@@ -89,54 +105,54 @@ public class GameImpostor : MonoBehaviourPunCallbacks
         {
             positionKO1 = 1;
             positionKO2 = 2;
-        } 
+        }
         else if (positionOk == 1)
         {
             positionKO1 = 0;
             positionKO2 = 2;
-        } 
+        }
         else if (positionOk == 2)
         {
             positionKO1 = 0;
             positionKO2 = 1;
         }
-        
+
         Debug.Log("Indice correcto imagen: " + correctIndexImage);
         Debug.Log("Indice erroneo imagen: " + wrongIndexImage);
         Debug.Log("Posicion OK: " + positionOk);
         Debug.Log("Posicion KO1: " + positionKO1);
         Debug.Log("Posicion KO2: " + positionKO2);
-        
-        photonView.RPC("SyncImagesAndPosition", RpcTarget.Others, correctIndexImage, wrongIndexImage, positionOk, positionKO1, positionKO2);
+
+        SyncImages(correctIndexImage, wrongIndexImage, positionOk, positionKO1, positionKO2);
     }
-    
+
     public void OnClickPosition(int position)
     {
         if (!canClick) return;
         if (stopGame) return;
-        if (!localPlayerCanPlay) return; 
-        
+        if (!localPlayerCanPlay) return;
+
         Vector2 position_Instantiate = new Vector2(spawnPositions[position].position.x,
             spawnPositions[position].position.y - 1);
-        
+
         if (position == positionOk)
         {
             var goodFB = Instantiate(GoodFeedback, position_Instantiate, Quaternion.identity);
             Destroy(goodFB, .5f);
             ShowCorrectFeedback();
-            localPlayerCanPlay = false; 
-            photonView.RPC("SyncTurn", RpcTarget.All);
+            localPlayerCanPlay = false;
+            turnTimer = timeBetweenTurns;
+            SyncTurn();
         }
         else
         {
             localPlayerCanPlay = false;
-            photonView.RPC("SyncRemotePlayerCanPlay", RpcTarget.Others);
             var worngFB = Instantiate(WrongFeedback, position_Instantiate, Quaternion.identity);
             Destroy(worngFB, .5f);
 
             ShowWrongFeedback();
-            
-            if (!localPlayerCanPlay && !remotePlayerCanPlay) DoStart();
+            turnTimer = timeBetweenTurns;
+            if (!localPlayerCanPlay)  SyncTurn();
         }
     }
 
@@ -146,7 +162,7 @@ public class GameImpostor : MonoBehaviourPunCallbacks
         {
             _myGameManager = FindObjectOfType<MyGameManager>();
         }
-        
+
         _myGameManager.IncreaseLocalScore(1);
     }
 
@@ -156,78 +172,59 @@ public class GameImpostor : MonoBehaviourPunCallbacks
         {
             _myGameManager = FindObjectOfType<MyGameManager>();
         }
-        
+
         _myGameManager.DecreaseLocalScore(1);
     }
-    
-    private IEnumerator DestroyImagesAndWait()
+
+    private void DestroyImages()
     {
         if (Image1 != null)
         {
-            PhotonNetwork.Destroy(Image1);
-            yield return new WaitUntil(() => Image1 == null);
+            Destroy(Image1);
         }
         if (Image2 != null)
         {
-            PhotonNetwork.Destroy(Image2);
-            yield return new WaitUntil(() => Image2 == null);
+            Destroy(Image2);
         }
         if (Image3 != null)
         {
-            PhotonNetwork.Destroy(Image3);
-            yield return new WaitUntil(() => Image3 == null);
+            Destroy(Image3);
         }
     }
 
-    
-    [PunRPC]
-    private void SyncImagesAndPosition(int correctIndexImage, int wrongIndexImage, int positionOk, int positionKO1, int positionKO2)
-    {
-        this.positionOk = positionOk;
-        this.positionKO1 = positionKO1;
-        this.positionKO2 = positionKO2;
-        photonView.RPC("SyncImages", RpcTarget.Others, correctIndexImage, wrongIndexImage, positionOk, positionKO1, positionKO2);
-    }
-    
-    
-    [PunRPC]
     private void SyncImages(int correctIndexImage, int wrongIndexImage, int positionOk, int positionKO1, int positionKO2)
     {
-        Image1 = PhotonNetwork.Instantiate(images[correctIndexImage].name, spawnPositions[positionOk].position, Quaternion.identity);
-        Image2 = PhotonNetwork.Instantiate(images[wrongIndexImage].name, spawnPositions[positionKO1].position, Quaternion.identity);
-        Image3 = PhotonNetwork.Instantiate(images[wrongIndexImage].name, spawnPositions[positionKO2].position, Quaternion.identity);
+        Image1 = Instantiate(images[correctIndexImage], spawnPositions[positionOk].position, Quaternion.identity);
+        Image2 = Instantiate(images[wrongIndexImage], spawnPositions[positionKO1].position, Quaternion.identity);
+        Image3 = Instantiate(images[wrongIndexImage], spawnPositions[positionKO2].position, Quaternion.identity);
     }
 
-    
-    [PunRPC]
-    private void DestroyImages()
-    {
-        StartCoroutine(DestroyImagesAndWait());
-    }
-
-    [PunRPC]
     private void SyncTurn()
     {
         if (stopGame) return;
-        
+
         localPlayerCanPlay = true;
-        remotePlayerCanPlay = true;
         imagesCalculated = false;
+
+        // Incrementar el contador de bajadas de telón
+        telonLowerCount++;
+
+        // Cada dos bajadas de telón, reducir el tiempo entre turnos
+        if (telonLowerCount % 2 == 0)
+        {
+          //  timeBetweenTurns = Mathf.Max(1f, timeBetweenTurns - 0.5f);
+        }
+
+        timeBetweenTurns = Mathf.Max(2f, timeBetweenTurns - 0.5f);
+        
         StopAllCoroutines();
         StartCoroutine(NextTurn());
     }
-    
-    [PunRPC]
+
     private void GameOver()
     {
         StopAllCoroutines();
         stopGame = true;
         Telon.Down();
-    }
-    
-    [PunRPC]
-    private void SyncRemotePlayerCanPlay()
-    {
-        remotePlayerCanPlay = false;
     }
 }
