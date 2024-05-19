@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 
 public enum TypePlayer
 {
@@ -9,9 +6,17 @@ public enum TypePlayer
     Online
 }
 
+public enum Minigame
+{
+    Impostor,
+    Burguer,
+    FollowMe
+}
+
 public class LocalOnlineOption : MonoBehaviour
 {
-    public static TypePlayer SelectedTypePlayer;
+    public static TypePlayer SelectedTypePlayer = TypePlayer.Local;
+    public Minigame SelectedMiniGame;
 
     public static LocalOnlineOption instance;
 
@@ -24,6 +29,7 @@ public class LocalOnlineOption : MonoBehaviour
         }
 
         instance = this;
+        
         DontDestroyOnLoad(gameObject); 
     }
 
@@ -36,6 +42,16 @@ public class LocalOnlineOption : MonoBehaviour
     {
         SelectedTypePlayer = TypePlayer.Local;
     }
-
+    
+    public void SetImpostorGame()
+    {
+        SelectedMiniGame = Minigame.Impostor;
+    }
+    
+    public void SetBurguerGame()
+    {
+        SelectedMiniGame = Minigame.Burguer;
+    }
+    
     public bool IsOnline() => SelectedTypePlayer == TypePlayer.Online;
 }

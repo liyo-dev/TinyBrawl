@@ -63,6 +63,12 @@ MonoBehaviour:
   - SyncPositionIndexes
   - SyncImagesAndPosition
   - SyncRemotePlayerCanPlay
+  - SetDemoDownBread
+  - SetDemoUpBread
+  - SyncBurguerElement
+  - setDemoPreviousElement
+  - setDemoPreviousElementBurguerDown
+  - SetDemoPreviousElement
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1
