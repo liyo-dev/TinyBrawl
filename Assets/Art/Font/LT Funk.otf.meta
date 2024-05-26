@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: a801b3a8507a05841a9755003fa8c8d3
+guid: aa6472cf58956124a9d8196b5012e875
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -9,7 +9,7 @@ TrueTypeFontImporter:
   characterPadding: 1
   includeFontData: 1
   fontNames:
-  - Brawl
+  - LT Funk
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0

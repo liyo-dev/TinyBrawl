@@ -101,12 +101,6 @@ public class GameImpostor : MonoBehaviourPunCallbacks
             positionKO2 = 1;
         }
         
-        Debug.Log("Indice correcto imagen: " + correctIndexImage);
-        Debug.Log("Indice erroneo imagen: " + wrongIndexImage);
-        Debug.Log("Posicion OK: " + positionOk);
-        Debug.Log("Posicion KO1: " + positionKO1);
-        Debug.Log("Posicion KO2: " + positionKO2);
-        
         photonView.RPC("SyncImagesAndPosition", RpcTarget.Others, correctIndexImage, wrongIndexImage, positionOk, positionKO1, positionKO2);
     }
     

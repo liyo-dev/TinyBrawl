@@ -1,8 +1,9 @@
 using System.Collections;
 using Photon.Pun;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
-public class Launcher : MonoBehaviourPunCallbacks
+public class MyLauncher : MonoBehaviourPunCallbacks
 {
     public PhotonView GameImpostor;
     public PhotonView GameBurguer;
@@ -62,5 +63,10 @@ public class Launcher : MonoBehaviourPunCallbacks
         Debug.LogWarning("Error al crear la sala: " + message);
         // Volver a intentar unirnos a una sala
         PhotonNetwork.JoinRandomOrCreateRoom();
+    }
+    
+    public override void OnLeftRoom()
+    {
+        SceneManager.LoadScene("Menu");
     }
 }

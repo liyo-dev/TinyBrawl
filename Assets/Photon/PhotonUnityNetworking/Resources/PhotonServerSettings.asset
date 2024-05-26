@@ -69,6 +69,11 @@ MonoBehaviour:
   - setDemoPreviousElement
   - setDemoPreviousElementBurguerDown
   - SetDemoPreviousElement
+  - SetPlayerDownBread
+  - SyncPlayerTurn
+  - SyncRemotePlayerTurn
+  - SyncReset
+  - SyncTurnFail
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

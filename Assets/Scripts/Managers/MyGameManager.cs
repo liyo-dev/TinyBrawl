@@ -91,7 +91,12 @@ public class MyGameManager : MonoBehaviourPunCallbacks
     void CalculateWinnerAndDisplay()
     {
         if (LocalOnlineOption.instance.IsOnline())
-            FindObjectOfType<GameImpostor>().DoStop();
+        {
+            if (LocalOnlineOption.instance.SelectedMiniGame == Minigame.Impostor)
+                FindObjectOfType<GameImpostor>().DoStop();
+            else if (LocalOnlineOption.instance.SelectedMiniGame == Minigame.Burguer)   
+                FindObjectOfType<GameBurguer>().DoStop();
+        }
         else
         {
             FindObjectOfType<GameImpostorLocal>().DoStop();

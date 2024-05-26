@@ -6,7 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 0
-    path: Assets/Scenes/MiniGames/Multiplayer Liyo.unity
+    path: Assets/Scenes/Test/Multiplayer Liyo.unity
     guid: eef68108378933649bda5169c2562a77
   - enabled: 1
     path: Assets/Scenes/Title.unity
@@ -15,9 +15,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Menu.unity
     guid: 96eba8ed471457f4fae0c6b07241a523
   - enabled: 1
-    path: Assets/Scenes/MiniGames/Impostor.unity
+    path: Assets/Scenes/Game.unity
     guid: 888164b57e298e94a91e719199c50ac2
-  - enabled: 1
-    path: Assets/Scenes/MiniGames/Burguer.unity
+  - enabled: 0
+    path: Assets/Scenes/Test/Burguer.unity
     guid: e7f031cfa0397f242aac3dae8e89c0ce
   m_configObjects: {}
