@@ -33,6 +33,10 @@ public class MyGameManager : MonoBehaviourPunCallbacks
         {
             FindObjectOfType<GameBurguer>().DoStart();
         }
+        else
+        {
+            FindObjectOfType<GameBurguerLocal>().DoStart();
+        }
         scoreTextLocal = GameObject.FindWithTag("ScoreLocal").GetComponent<TextMeshProUGUI>();
         winnerText = GameObject.FindWithTag("WinnerText").GetComponent<TextMeshProUGUI>();
     }
@@ -99,7 +103,10 @@ public class MyGameManager : MonoBehaviourPunCallbacks
         }
         else
         {
-            FindObjectOfType<GameImpostorLocal>().DoStop();
+            if (LocalOnlineOption.instance.SelectedMiniGame == Minigame.Impostor)
+                FindObjectOfType<GameImpostorLocal>().DoStop();
+            else if (LocalOnlineOption.instance.SelectedMiniGame == Minigame.Burguer)  
+                FindObjectOfType<GameBurguerLocal>().DoStop();
             winnerText.text = "Tu puntuación: " + score;
         }
         

@@ -12,6 +12,8 @@ public class DOTFadeInImage : MonoBehaviour
 
     private void Start()
     {
+        imageToFade.color = new Color(imageToFade.color.r, imageToFade.color.g, imageToFade.color.b, 0f);
+        
         switch (delay)
         {
             case 0f:

@@ -174,7 +174,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: Salir
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8cb9f30effc02764991fd972c3d70180, type: 2}
+  m_fontAsset: {fileID: 0}
   m_sharedMaterial: {fileID: -1503956325768186325, guid: 8cb9f30effc02764991fd972c3d70180, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}

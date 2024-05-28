@@ -359,9 +359,9 @@ public class GameBurguer : MonoBehaviourPunCallbacks
     
     [PunRPC]
     private void GameOver()
-    {
-        StopAllCoroutines();
-        options.SetActive(false);
-        canLocalPlayerPlay = false;
+    {        StopAllCoroutines();
+             options.SetActive(false);
+             canLocalPlayerPlay = false;
+
     }
 }
