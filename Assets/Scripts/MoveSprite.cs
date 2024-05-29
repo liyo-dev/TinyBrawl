@@ -5,7 +5,6 @@ using Photon.Pun;
 
 public class MoveSprite : MonoBehaviourPunCallbacks
 {
-    public GameObject WaitForOthers;
     public float moveDuration = 5f;
     public bool canMove;
     public float minX = -5f; // Límites mínimos en X
@@ -15,10 +14,9 @@ public class MoveSprite : MonoBehaviourPunCallbacks
     
     public void DoStart()
     {
-        if (photonView.IsMine)
+        if (photonView.IsMine || !PhotonNetwork.IsConnected)
         {
             canMove = true;
-            WaitForOthers.SetActive(false);
             StartCoroutine(MoveRoutine());
         }
     }

@@ -1,59 +1,103 @@
+using DG.Tweening;
 using Photon.Pun;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerMovement : MonoBehaviourPunCallbacks
 {
-    public float veloc = 5f;
-    public int score = 0; // Puntuación del jugador
+    public GameObject PowerUpVisual;
+    public Transform PowerUpPosition;
+    public float comboTimeThreshold = 1f;
+    private int comboCount = 0;
+    private float lastComboTime;
+    public bool isPowerUpActive = false;
+    private float lastPowerUpTime;
+    public float powerUpCooldown = 5f;
 
-    private GameObject scorePrefab;
+    public float veloc = 1f;
+    public int score = 0;
 
-    private TextMeshProUGUI scoreText; // Referencia al texto en la UI para mostrar la puntuación del player local
+    //private GameObject scorePrefab;
+    private TextMeshProUGUI scoreTextLocal;
+    private TextMeshProUGUI scoreTextRemote;
+    private Image energy;
 
-    private bool isTouchingCast;
+    private bool isTouchingFollowMe;
+    private bool isTouchingPlayer;
     
-    void Start()
+    private bool gameStarted = false;
+
+    private void Start()
     {
-        // Si este jugador es el local, configurar la referencia al texto de la puntuación
         if (photonView.IsMine)
         {
-            scorePrefab = GameObject.FindWithTag("Score");
-            
-            if (scorePrefab != null)
+            scoreTextLocal = GameObject.FindWithTag("ScoreLocal").GetComponent<TextMeshProUGUI>();
+            energy = GameObject.FindWithTag("Energy").GetComponent<Image>();
+            lastComboTime = Time.time;
+        }
+    }
+
+    private void Update()
+    {
+        if (photonView.IsMine)
+        {
+            if (gameStarted) 
             {
-                var scoreList = scorePrefab.GetComponentsInChildren<TextMeshProUGUI>();
-                scoreText = scoreList[photonView.Owner.ActorNumber - 1];
-            }
-            else
-            {
-                Debug.LogError("No se encontró el componente Canvas en el prefab ScoreObject.");
+                HandleMovement();
+                HandleScoreInput();
+                HandlePowerUpInput();
             }
         }
     }
 
-    void Update()
+    private void HandleMovement()
     {
-        // Si este jugador es el local, controlar su movimiento y puntuación
-        if (photonView.IsMine)
+        if (Input.touchSupported && Input.touchCount > 0)
         {
-            // Obtener la posición del ratón en el mundo
+            // Si se detecta entrada táctil, mueve al personaje hacia la posición del toque
+            Vector3 touchPos = Camera.main.ScreenToWorldPoint(Input.GetTouch(0).position);
+            touchPos.z = 0;
+
+            if (Vector3.Distance(transform.position, touchPos) > 0.1f)
+            {
+                Vector2 direction = (touchPos - transform.position).normalized;
+                transform.position += (Vector3)direction * veloc * Time.deltaTime;
+            }
+        }
+        else
+        {
+            // Si no se detecta entrada táctil, sigue al ratón
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            mousePos.z = 0; // Asegurarse de que la coordenada Z sea cero en un juego 2D
+            mousePos.z = 0;
 
-            // Calcular la dirección del movimiento
-            Vector2 direction = (mousePos - transform.position).normalized;
+            if (Vector3.Distance(transform.position, mousePos) > 0.1f)
+            {
+                Vector2 direction = (mousePos - transform.position).normalized;
+                transform.position += (Vector3)direction * veloc * Time.deltaTime;
+            }
+        }
+    
+        float decreaseRate = 0.5f; 
+        veloc -= decreaseRate * Time.deltaTime;
+    
+        veloc = Mathf.Max(1, veloc);
 
-            // Mover el jugador en la dirección calculada
-            transform.position += (Vector3)direction * veloc * Time.deltaTime;
+        energy.fillAmount = veloc / 10.0f;
+    }
 
-            // Si se hace clic izquierdo, aumenta la puntuación y sincronízala con los demás jugadores
-            if (Input.GetMouseButtonDown(0) && isTouchingCast)
+
+
+    private void HandleScoreInput()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            if (isTouchingFollowMe)
             {
                 IncreaseScore(1);
                 photonView.RPC("SyncScore", RpcTarget.Others, photonView.Owner.ActorNumber, score);
             }
-            else if (Input.GetMouseButtonDown(0) && !isTouchingCast)
+            else
             {
                 DecreaseScore(1);
                 photonView.RPC("SyncScore", RpcTarget.Others, photonView.Owner.ActorNumber, score);
@@ -61,62 +105,122 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
         }
     }
 
-    // Método RPC para sincronizar la puntuación con todos los jugadores
-    [PunRPC]
-    void SyncScore(int playerActorNumber, int newScore)
+    private void HandlePowerUpInput()
     {
-        GameObject scorePrefabRemote = GameObject.FindWithTag("Score");
-            
-        if (scorePrefabRemote != null)
+        if (Input.GetMouseButtonDown(1) && isPowerUpActive && Time.time - lastPowerUpTime >= powerUpCooldown)
         {
-            var scoreList = scorePrefabRemote.GetComponentsInChildren<TextMeshProUGUI>();
-            var scoreText = scoreList[playerActorNumber - 1];
-            scoreText.text = "Player" + photonView.Owner.ActorNumber + ": " + newScore;
+            LaunchPowerUp();
         }
     }
 
-
-    // Método para aumentar la puntuación del jugador local
-    void IncreaseScore(int amount)
+    private void LaunchPowerUp()
     {
-        // Aumentar la puntuación
+        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        GameObject powerUpInstance = PhotonNetwork.Instantiate(PowerUpVisual.name, PowerUpPosition.transform.position, Quaternion.identity);
+        powerUpInstance.transform.DOMove(mousePos, 1f).SetEase(Ease.OutQuad).OnComplete(() =>
+        {
+            PhotonNetwork.Destroy(powerUpInstance);
+            isPowerUpActive = false;
+            lastPowerUpTime = Time.time;
+        });
+    }
+
+    [PunRPC]
+    private void SyncScore(int playerActorNumber, int newScore)
+    {
+        if (scoreTextRemote == null)
+        {
+            scoreTextRemote = GameObject.FindWithTag("ScoreRemote").GetComponent<TextMeshProUGUI>();
+        }
+        
+        scoreTextRemote.text = "Player" + photonView.Owner.ActorNumber + ": " + newScore;
+    }
+    
+    [PunRPC]
+    private void UpdateScore(int newScore)
+    {
+        score = newScore;
+        photonView.RPC("SyncScore", RpcTarget.All, photonView.Owner.ActorNumber, score);
+    }
+    
+    [PunRPC]
+    private void DestroyVelocityPowerUp(GameObject _gameObject)
+    {
+        Destroy(_gameObject);
+    }
+
+    private void IncreaseScore(int amount)
+    {
+        if (Time.time - lastComboTime <= comboTimeThreshold)
+        {
+            comboCount++;
+            if (comboCount >= 10)
+            {
+                isPowerUpActive = true;
+                comboCount = 0;
+            }
+        }
+        else
+        {
+            comboCount = 1;
+        }
+
+        lastComboTime = Time.time;
         score += amount;
 
-        // Mostrar la puntuación actualizada del jugador local en su ScoreObject
-        if (scoreText != null)
+        if (scoreTextLocal != null)
         {
-            scoreText.text = "Player" + photonView.Owner.ActorNumber + ": " + score;
-            Debug.Log("Aumento puntuacion local: " + score);
+            scoreTextLocal.text = "Player" + photonView.Owner.ActorNumber + ": " + score;
         }
     }
     
-    void DecreaseScore(int amount)
+    private void DecreaseScore(int amount)
     {
-        // Aumentar la puntuación
         score -= amount;
 
-        // Mostrar la puntuación actualizada del jugador local en su ScoreObject
-        if (scoreText != null)
+        if (scoreTextLocal != null)
         {
-            scoreText.text = "Player" + photonView.Owner.ActorNumber + ": " + score;
-            Debug.Log("Disminuyo puntuacion local: " + score);
+            scoreTextLocal.text = "Player" + photonView.Owner.ActorNumber + ": " + score;
         }
     }
     
-    // Triggers
+    // Método para iniciar el juego
+    public void StartGame()
+    {
+        gameStarted = true;
+    }
+    
+    public void EndGame()
+    {
+        gameStarted = false;
+    }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Cast"))
+        if (other.CompareTag("FollowMe"))
         {
-            isTouchingCast = true;
+            isTouchingFollowMe = true;
+        }
+        else if (other.CompareTag("PowerUp"))
+        {
+            photonView.RPC("UpdateScore", RpcTarget.All, 0);
+        }
+        else if (other.CompareTag("VelocityPower"))
+        {
+            if (!isTouchingPlayer && !isTouchingFollowMe && veloc < 10)
+            {
+                veloc += 2;
+                //Destroy(other.gameObject);
+                //photonView.RPC("DestroyVelocityPowerUp", RpcTarget.Others, other.gameObject);
+            }
         }
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.CompareTag("Cast"))
+        if (other.CompareTag("FollowMe"))
         {
-            isTouchingCast = false;
+            isTouchingFollowMe = false;
         }
     }
 }
