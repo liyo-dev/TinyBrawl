@@ -3,16 +3,21 @@ using UnityEngine.SceneManagement;
 
 public class LoadScene : MonoBehaviour
 {
-    [SerializeField] private string nextSceneName;
+    [SerializeField] private SceneNames nextSceneName = SceneNames.None;
 
-    public void LoadNextScene()
+    public void LoadInstant()
     {
-        if (string.IsNullOrEmpty(nextSceneName))
+        if (nextSceneName == SceneNames.None)
         {
-            Debug.LogWarning("No se proporcionó el nombre de la siguiente escena.");
+            Debug.LogWarning("No se proporcionó un nombre de escena válido.");
             return;
         }
-        
-        SceneManager.LoadScene(nextSceneName);
+
+        SceneManager.LoadScene(nextSceneName.ToString());
+    }
+
+    public void LoadAsync()
+    {
+
     }
 }

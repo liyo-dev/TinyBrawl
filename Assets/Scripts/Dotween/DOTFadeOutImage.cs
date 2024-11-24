@@ -1,16 +1,20 @@
 using System.Collections;
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class DOTFadeOutImage : MonoBehaviour
 {
-    [SerializeField] private Image imageToFade;
+    public UnityEvent OnFadeOutComplete;
+    private Image imageToFade;
     [SerializeField] private float fadeDuration = 1.0f;
     [SerializeField] private float delay = 0f;
 
     private void Start()
     {
+        imageToFade = GetComponent<Image>();
+
         switch (delay)
         {
             case 0f:
@@ -25,7 +29,7 @@ public class DOTFadeOutImage : MonoBehaviour
     private IEnumerator FadeOutDelay()
     {
         yield return new WaitForSeconds(delay);
-        
+
         FadeOut();
     }
 
@@ -35,6 +39,7 @@ public class DOTFadeOutImage : MonoBehaviour
         {
             imageToFade.DOFade(0.0f, fadeDuration).OnComplete(() =>
             {
+                OnFadeOutComplete?.Invoke();
             }).Play();
         }
         else

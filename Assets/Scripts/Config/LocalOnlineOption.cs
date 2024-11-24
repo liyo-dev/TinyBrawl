@@ -1,18 +1,5 @@
 using UnityEngine;
 
-public enum TypePlayer
-{
-    Local,
-    Online
-}
-
-public enum Minigame
-{
-    Impostor,
-    Burguer,
-    FollowMe
-}
-
 public class LocalOnlineOption : MonoBehaviour
 {
     public static TypePlayer SelectedTypePlayer = TypePlayer.Local;
