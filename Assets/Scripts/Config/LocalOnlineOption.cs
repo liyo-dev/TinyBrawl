@@ -3,11 +3,10 @@ using UnityEngine;
 public class LocalOnlineOption : MonoBehaviour
 {
     public TypePlayer SelectedTypePlayer = TypePlayer.Local;
-    public Minigame SelectedMiniGame;
+
+    private Minigame SelectedMiniGame;
 
     public static LocalOnlineOption instance;
-
-    public bool IsMasterClient = false;
 
     private void Awake()
     {
@@ -43,4 +42,6 @@ public class LocalOnlineOption : MonoBehaviour
     }
     
     public bool IsOnline() => SelectedTypePlayer == TypePlayer.Online;
+    public bool IsBurguer() => SelectedMiniGame == Minigame.Burguer;
+    public bool IsImpostor() => SelectedMiniGame == Minigame.Impostor;
 }

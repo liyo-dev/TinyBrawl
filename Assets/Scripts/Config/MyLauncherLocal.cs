@@ -1,3 +1,4 @@
+using Service;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -7,9 +8,13 @@ public class MyLauncherLocal : MonoBehaviour
     public UnityEvent OnBurguerGameSelected;
     void Start()
     {
-        if (LocalOnlineOption.instance.SelectedMiniGame == Minigame.Impostor)
+        if (ServiceLocator.GetService<LocalOnlineOption>().IsImpostor())
+        {
             OnImpostorGameSelected?.Invoke();
-        else if (LocalOnlineOption.instance.SelectedMiniGame == Minigame.Burguer)
+        }
+        else if (ServiceLocator.GetService<LocalOnlineOption>().IsBurguer())
+        {
             OnBurguerGameSelected?.Invoke();
+        }
     }   
 }

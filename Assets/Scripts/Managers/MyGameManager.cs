@@ -1,4 +1,5 @@
 using Photon.Pun;
+using Service;
 using TMPro;
 using UnityEngine;
 
@@ -8,17 +9,21 @@ public class MyGameManager : MonoBehaviourPunCallbacks
     private TextMeshProUGUI scoreTextLocal;
     private TextMeshProUGUI scoreTextRemote;
     private int score = 0;
-    
+    private LocalOnlineOption onlineOption;
+
+    private void Start()
+    {
+        onlineOption = ServiceLocator.GetService<LocalOnlineOption>();
+    }
+
     public void DoStart()
     {
-        switch (LocalOnlineOption.instance.SelectedMiniGame)
+        if (onlineOption.IsImpostor())
         {
-            case Minigame.Impostor:
-                StartImpostor();
-                break;
-            case Minigame.Burguer:
-                StartBurguer();
-                break;
+            StartImpostor();
+        } else if (onlineOption.IsBurguer())
+        {
+            StartBurguer();
         }
     }
 
@@ -29,7 +34,7 @@ public class MyGameManager : MonoBehaviourPunCallbacks
 
     private void StartBurguer()
     {
-        if (LocalOnlineOption.instance.IsOnline())
+        if (ServiceLocator.GetService<LocalOnlineOption>().IsOnline())
         {
             FindObjectOfType<GameBurguer>().DoStart();
         }
@@ -43,7 +48,7 @@ public class MyGameManager : MonoBehaviourPunCallbacks
 
     private void StartImpostor()
     {
-        if (LocalOnlineOption.instance.IsOnline())
+        if (onlineOption.IsOnline())
         {
             FindObjectOfType<GameImpostor>().DoStart();
         }
@@ -69,8 +74,10 @@ public class MyGameManager : MonoBehaviourPunCallbacks
             Debug.LogError("scoreTextLocal no ha sido inicializado correctamente.");
         }
 
-        if (LocalOnlineOption.instance.IsOnline())
+        if (onlineOption.IsOnline())
+        {
             photonView.RPC("SyncScore", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber, score);
+        }
     }
     
     public void DecreaseLocalScore(int _score)
@@ -88,34 +95,47 @@ public class MyGameManager : MonoBehaviourPunCallbacks
             Debug.LogError("scoreTextLocal no ha sido inicializado correctamente.");
         }
 
-        if (LocalOnlineOption.instance.IsOnline())
+        if (onlineOption.IsOnline())
+        {
             photonView.RPC("SyncScore", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber, score);
+        }
     }
 
     void CalculateWinnerAndDisplay()
     {
-        if (LocalOnlineOption.instance.IsOnline())
+        if (ServiceLocator.GetService<LocalOnlineOption>().IsOnline())
         {
-            if (LocalOnlineOption.instance.SelectedMiniGame == Minigame.Impostor)
+            if (onlineOption.IsImpostor())
+            {
                 FindObjectOfType<GameImpostor>().DoStop();
-            else if (LocalOnlineOption.instance.SelectedMiniGame == Minigame.Burguer)   
+            }
+            else if (onlineOption.IsBurguer())
+            {
                 FindObjectOfType<GameBurguer>().DoStop();
+            } 
         }
         else
         {
-            if (LocalOnlineOption.instance.SelectedMiniGame == Minigame.Impostor)
+            if (onlineOption.IsImpostor())
+            {
                 FindObjectOfType<GameImpostorLocal>().DoStop();
-            else if (LocalOnlineOption.instance.SelectedMiniGame == Minigame.Burguer)  
+            }
+            else if (onlineOption.IsBurguer())
+            {
                 FindObjectOfType<GameBurguerLocal>().DoStop();
+            }
+
             winnerText.text = "Tu puntuación: " + score;
         }
         
         // Obtener la puntuación del jugador local
         var myScore = score;
 
-        if (LocalOnlineOption.instance.IsOnline())
+        if (onlineOption.IsOnline())
+        {
             // Enviar la puntuación del jugador local al otro cliente
             photonView.RPC("ReceiveOpponentScore", RpcTarget.Others, myScore);
+        }
     }
 
     [PunRPC]

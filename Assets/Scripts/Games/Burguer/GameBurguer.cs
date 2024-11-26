@@ -16,6 +16,7 @@ public class GameBurguer : MonoBehaviourPunCallbacks
     public List<Transform> DemoPositionList;
     public List<Transform> PlayerPositionList;
     public List<Transform> RemotePlayerPositionList;
+    public List<Transform> OptionsPositionList;
     public float dropDuration = 1.0f; // Duración de la caída de la hamburguesa
     public float dropHeight = 2.0f; // Altura desde la cual cae la hamburguesa
     public float ingredientDelay = .2f; // Retraso entre la instanciación de cada ingrediente
@@ -24,7 +25,7 @@ public class GameBurguer : MonoBehaviourPunCallbacks
     private List<GameObject> DemoIngredientsList = new List<GameObject>();
     private List<GameObject> PlayerIngredientsList = new List<GameObject>();
     private List<GameObject> RemoteIngredientsList = new List<GameObject>();
-    
+
     private GameObject DemoDownBread;
     private GameObject PlayerDownBread;
     private GameObject DemoUpBread;
@@ -53,7 +54,7 @@ public class GameBurguer : MonoBehaviourPunCallbacks
     public void DoStart()
     {
         options.SetActive(true);
-        
+
         // Instancia el pan de abajo en la posición DemoDown
         DemoDownBread = Instantiate(DownBread, DemoPositionList[demoTurnCount].position, Quaternion.identity);
         DemoDownBread.GetComponent<SpriteRenderer>().sortingOrder = 1; // Pan de abajo order 1
@@ -76,20 +77,20 @@ public class GameBurguer : MonoBehaviourPunCallbacks
         PlayerUpBread = Instantiate(UpBread, PlayerPositionList[^1].position + Vector3.up * dropHeight,
             Quaternion.identity);
         PlayerUpBread.GetComponent<SpriteRenderer>().sortingOrder =
-            BurguerOptions.Count + 3; 
+            BurguerOptions.Count + 3;
         PlayerUpBread.SetActive(false);
-        
+
         // Pan de abajo del player remote
         RemoteDownBread = Instantiate(DownBread, RemotePlayerPositionList[remotePlayerTurnCount].position, Quaternion.identity);
         RemoteDownBread.GetComponent<SpriteRenderer>().sortingOrder = 1;
         RemoteDownBread.SetActive(false);
-        
+
         // Pan de arriba del player remote
         RemoteUpBread = Instantiate(UpBread, RemotePlayerPositionList[^1].position, Quaternion.identity);
         RemoteUpBread.GetComponent<SpriteRenderer>().sortingOrder =
-            BurguerOptions.Count + 3; 
+            BurguerOptions.Count + 3;
         RemoteUpBread.SetActive(false);
-        
+
         //Comienza la demo
         if (PhotonNetwork.CurrentRoom.Players.ContainsKey(1) && PhotonNetwork.LocalPlayer.ActorNumber == 1)
         {
@@ -101,11 +102,11 @@ public class GameBurguer : MonoBehaviourPunCallbacks
     {
         photonView.RPC("GameOver", RpcTarget.Others);
     }
-    
+
     private void DemoTurn()
     {
         photonView.RPC(nameof(SetDemoDownBread), RpcTarget.All, true);
-        
+
         int option = Random.Range(0, BurguerOptions.Count);
 
         photonView.RPC(nameof(SyncBurguerElement), RpcTarget.All, option, demoSortingOrder, demoTurnCount);
@@ -123,9 +124,9 @@ public class GameBurguer : MonoBehaviourPunCallbacks
     private void PlayerTurn()
     {
         photonView.RPC(nameof(SetPlayerDownBread), RpcTarget.All, true);
-        
-       photonView.RPC(nameof(SyncRemotePlayerTurn), RpcTarget.Others, remotePlayerTurnCount, 0);
-        
+
+        photonView.RPC(nameof(SyncRemotePlayerTurn), RpcTarget.Others, remotePlayerTurnCount, 0);
+
         canLocalPlayerPlay = true;
     }
 
@@ -137,12 +138,12 @@ public class GameBurguer : MonoBehaviourPunCallbacks
         remotePlayerTurnCount++;
 
         GameObject ingredient = Instantiate(BurguerOptions[element], PlayerPositionList[playerTurnCount].position, Quaternion.identity);
-        ingredient.GetComponent<SpriteRenderer>().sortingOrder = playerSortingOrder; 
+        ingredient.GetComponent<SpriteRenderer>().sortingOrder = playerSortingOrder;
         PlayerIngredientsList.Add(ingredient);
-        
+
         //Sincronizo el turno en el equipo remoto
         photonView.RPC(nameof(SyncRemotePlayerTurn), RpcTarget.Others, remotePlayerTurnCount, element);
-        
+
         playerSortingOrder++;
 
         if (playerTurnCount == PlayerPositionList.Count - 2)
@@ -155,14 +156,14 @@ public class GameBurguer : MonoBehaviourPunCallbacks
     private IEnumerator SetPlayerUpBread()
     {
         canLocalPlayerPlay = false;
-        
+
         PlayerUpBread.SetActive(true);
-        
+
         PlayerUpBread.transform.DOMove(PlayerPositionList[^1].position, dropDuration)
             .SetEase(Ease.OutBounce).Play();
 
         yield return new WaitForSeconds(0.5f);
-        
+
         if (CompareBurgers())
         {
             var goodFB = Instantiate(GoodFeedback, PlayerPositionList[0].position, Quaternion.identity);
@@ -180,7 +181,7 @@ public class GameBurguer : MonoBehaviourPunCallbacks
             CheckPlayerFail();
         }
     }
-    
+
     private bool CompareBurgers()
     {
         if (DemoIngredientsList.Count != PlayerIngredientsList.Count)
@@ -209,14 +210,14 @@ public class GameBurguer : MonoBehaviourPunCallbacks
             photonView.RPC(nameof(SyncReset), RpcTarget.All);
         }
     }
-    
+
     void ShowCorrectFeedback()
     {
         if (_myGameManager == null)
         {
             _myGameManager = FindObjectOfType<MyGameManager>();
         }
-        
+
         _myGameManager.IncreaseLocalScore(1);
     }
 
@@ -226,21 +227,21 @@ public class GameBurguer : MonoBehaviourPunCallbacks
         {
             _myGameManager = FindObjectOfType<MyGameManager>();
         }
-        
+
         _myGameManager.DecreaseLocalScore(1);
     }
 
     void ResetTurn()
     {
         canLocalPlayerPlay = false;
-        
+
         // Destruir las instancias de ingredientes de la demo
         foreach (var ingredient in DemoIngredientsList)
         {
             Destroy(ingredient);
         }
         DemoIngredientsList.Clear();
-        DemoDownBread.SetActive(false); 
+        DemoDownBread.SetActive(false);
         DemoUpBread.SetActive(false);
         demoSortingOrder = 2;
         demoTurnCount = 0;
@@ -267,22 +268,22 @@ public class GameBurguer : MonoBehaviourPunCallbacks
         remotePlayerSortingOrder = 2;
         remotePlayerTurnCount = 0;
 
-        playerTurnFail = false; 
+        playerTurnFail = false;
         remotePlayerTurnFail = false;
-    
+
         if (PhotonNetwork.CurrentRoom.Players.ContainsKey(1) && PhotonNetwork.LocalPlayer.ActorNumber == 1)
         {
             DemoTurn();
         }
     }
-    
+
     [PunRPC]
     void SyncReset()
     {
-       ResetTurn();
+        ResetTurn();
     }
 
-    
+
     [PunRPC]
     void SyncTurnFail()
     {
@@ -297,19 +298,19 @@ public class GameBurguer : MonoBehaviourPunCallbacks
             .SetEase(Ease.OutBounce).Play();
         PlayerTurn();
     }
-    
+
     [PunRPC]
     void SetPlayerDownBread(bool active)
     {
         PlayerDownBread.SetActive(active);
     }
-    
+
     [PunRPC]
     void SetDemoDownBread(bool active)
     {
         DemoDownBread.SetActive(active);
     }
-    
+
     [PunRPC]
     private void SyncBurguerElement(int element, int sortingPlayerOrder, int demoTurnCount)
     {
@@ -318,7 +319,7 @@ public class GameBurguer : MonoBehaviourPunCallbacks
             Quaternion.identity);
 
         ingredient.GetComponent<SpriteRenderer>().sortingOrder = sortingPlayerOrder;
-        
+
         DemoIngredientsList.Add(ingredient);
 
         ingredient.transform.DOMove(DemoPositionList[demoTurnCount].position, dropDuration)
@@ -333,7 +334,7 @@ public class GameBurguer : MonoBehaviourPunCallbacks
                 }
             });
     }
-    
+
     [PunRPC]
     private void SyncRemotePlayerTurn(int remotePlayerTurnCount, int elementIndex)
     {
@@ -344,24 +345,24 @@ public class GameBurguer : MonoBehaviourPunCallbacks
         else if (remotePlayerTurnCount == RemotePlayerPositionList.Count - 2)
         {
             GameObject ingredient = Instantiate(BurguerOptions[elementIndex], RemotePlayerPositionList[remotePlayerTurnCount].position, Quaternion.identity);
-            ingredient.GetComponent<SpriteRenderer>().sortingOrder = remotePlayerSortingOrder; 
+            ingredient.GetComponent<SpriteRenderer>().sortingOrder = remotePlayerSortingOrder;
             RemoteIngredientsList.Add(ingredient);
             RemoteUpBread.SetActive(true);
         }
         else
         {
             GameObject ingredient = Instantiate(BurguerOptions[elementIndex], RemotePlayerPositionList[remotePlayerTurnCount].position, Quaternion.identity);
-            ingredient.GetComponent<SpriteRenderer>().sortingOrder = remotePlayerSortingOrder; 
+            ingredient.GetComponent<SpriteRenderer>().sortingOrder = remotePlayerSortingOrder;
             RemoteIngredientsList.Add(ingredient);
             remotePlayerSortingOrder++;
         }
     }
-    
+
     [PunRPC]
     private void GameOver()
-    {        StopAllCoroutines();
-             options.SetActive(false);
-             canLocalPlayerPlay = false;
-
+    {
+        StopAllCoroutines();
+        options.SetActive(false);
+        canLocalPlayerPlay = false;
     }
 }

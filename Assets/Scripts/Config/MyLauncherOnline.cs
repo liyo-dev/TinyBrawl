@@ -133,7 +133,7 @@ public class MyLauncherOnline : MonoBehaviourPunCallbacks
         if (PhotonNetwork.CurrentRoom.PlayerCount == 1)
         {
             isMasterPlayer = true;
-            ServiceLocator.GetService<LocalOnlineOption>().IsMasterClient = true;
+
             timer.StartTimer(); // Iniciar el temporizador cuando el primer jugador se une
         }
         else

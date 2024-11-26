@@ -1,33 +1,54 @@
-using UnityEngine;
 using Photon.Pun;
 using Service;
 using UnityEngine.SceneManagement;
 
 public class GameOptionsService : MonoBehaviourPunCallbacks
 {
+    private LocalOnlineOption localOnlineOption;
+    private void Start()
+    {
+        localOnlineOption = ServiceLocator.GetService<LocalOnlineOption>();
+    }
     public void OnlineMode()
     {
-        ServiceLocator.GetService<LocalOnlineOption>().SetOnlineGame();
+        localOnlineOption.SetOnlineGame();
     }
 
     public void LocalMode()
     {
-        ServiceLocator.GetService<LocalOnlineOption>().SetLocalGame();
+        localOnlineOption.SetLocalGame();
     }
 
     public void Impostor()
     {
-        ServiceLocator.GetService<LocalOnlineOption>().SetImpostorGame();
+        localOnlineOption.SetImpostorGame();
+
+        photonView.RPC(nameof(SyncImpostor), RpcTarget.Others);
+
     }
 
     public void Burguer()
     {
-        ServiceLocator.GetService<LocalOnlineOption>().SetBurguerGame();
+        localOnlineOption.SetBurguerGame();
+
+        photonView.RPC(nameof(SyncBurguer), RpcTarget.Others);
     }
 
     public void LoadGame()
     {
         photonView.RPC(nameof(SyncLoadGame), RpcTarget.All);
+    }
+
+    [PunRPC]
+    public void SyncImpostor()
+    {
+        localOnlineOption.SetImpostorGame();
+    }
+
+    [PunRPC]
+    public void SyncBurguer()
+    {
+        localOnlineOption.SetBurguerGame();
     }
 
     [PunRPC]
