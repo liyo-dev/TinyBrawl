@@ -1,7 +1,7 @@
 using UnityEngine;
 using Photon.Pun;
-using UnityEngine.SceneManagement;
 using Service;
+using UnityEngine.SceneManagement;
 
 public class GameOptionsService : MonoBehaviourPunCallbacks
 {
@@ -24,5 +24,17 @@ public class GameOptionsService : MonoBehaviourPunCallbacks
     {
         ServiceLocator.GetService<LocalOnlineOption>().SetBurguerGame();
     }
+
+    public void LoadGame()
+    {
+        photonView.RPC(nameof(SyncLoadGame), RpcTarget.All);
+    }
+
+    [PunRPC]
+    public void SyncLoadGame()
+    {
+        SceneManager.LoadScene(SceneNames.Game.ToString());
+    }
+
 
 }

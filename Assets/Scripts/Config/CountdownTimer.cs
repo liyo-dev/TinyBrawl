@@ -18,10 +18,7 @@ public class CountdownTimer : MonoBehaviourPunCallbacks
     private MyGameManager _myGameManager;
 
     void Start()
-    {
-        if (LocalOnlineOption.instance.IsOnline())
-            photonView.RPC("QuitWaitForOthers", RpcTarget.All);
-        
+    {        
         timeLeft = totalTime;
         // Iniciar el conteo regresivo mostrando el número 3
         TresGameObject.SetActive(true);
@@ -95,7 +92,7 @@ public class CountdownTimer : MonoBehaviourPunCallbacks
     void LoadScene()
     {
         PhotonNetwork.Disconnect();
-        SceneManager.LoadScene("Menu");
+        SceneManager.LoadScene(SceneNames.Title.ToString());
     }
     
     void TimeOut()
@@ -112,12 +109,6 @@ public class CountdownTimer : MonoBehaviourPunCallbacks
         }
     }
 
-    [PunRPC]
-    void QuitWaitForOthers()
-    {
-        GameObject waitForOthers = GameObject.FindWithTag("WaitForOthersTxt");
-        waitForOthers.SetActive(false);
-    }
 
     [PunRPC]
     void StartGame()

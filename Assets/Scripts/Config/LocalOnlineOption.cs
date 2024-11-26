@@ -2,10 +2,12 @@ using UnityEngine;
 
 public class LocalOnlineOption : MonoBehaviour
 {
-    public static TypePlayer SelectedTypePlayer = TypePlayer.Local;
+    public TypePlayer SelectedTypePlayer = TypePlayer.Local;
     public Minigame SelectedMiniGame;
 
     public static LocalOnlineOption instance;
+
+    public bool IsMasterClient = false;
 
     private void Awake()
     {

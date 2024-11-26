@@ -6,5 +6,5 @@ public enum SceneNames
     SingleOrMultiPlayer,
     Multiplayer,
     ChooseGame,
-    Impostor
+    Game
 }

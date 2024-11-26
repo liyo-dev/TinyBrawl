@@ -1,6 +1,7 @@
 using System;
 using Photon.Pun;
 using Photon.Realtime;
+using Service;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -132,6 +133,7 @@ public class MyLauncherOnline : MonoBehaviourPunCallbacks
         if (PhotonNetwork.CurrentRoom.PlayerCount == 1)
         {
             isMasterPlayer = true;
+            ServiceLocator.GetService<LocalOnlineOption>().IsMasterClient = true;
             timer.StartTimer(); // Iniciar el temporizador cuando el primer jugador se une
         }
         else
