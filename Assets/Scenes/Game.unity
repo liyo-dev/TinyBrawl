@@ -4920,7 +4920,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 309347118}
         m_TargetAssemblyTypeName: LoadScene, Assembly-CSharp
-        m_MethodName: LoadNextScene
+        m_MethodName: LoadInstant
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5353,7 +5353,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 309347118}
         m_TargetAssemblyTypeName: LoadScene, Assembly-CSharp
-        m_MethodName: LoadNextScene
+        m_MethodName: LoadInstant
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5775,7 +5775,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 309347118}
         m_TargetAssemblyTypeName: LoadScene, Assembly-CSharp
-        m_MethodName: LoadNextScene
+        m_MethodName: LoadInstant
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

@@ -12,7 +12,7 @@ public class CountdownTimer : MonoBehaviourPunCallbacks
     public GameObject UnoGameObject;
     public Image TimeBarImage;
     public GameObject ExitMenuBtn;
-    private float totalTime = 60f;
+    private float totalTime = GameConfig.TOTAL_TIME;
     private float timeLeft;
     private bool countdownStarted = false; 
     private MyGameManager _myGameManager;
@@ -99,6 +99,8 @@ public class CountdownTimer : MonoBehaviourPunCallbacks
     {
         _myGameManager.DoStop();
         
+
+        //Cambiar este boton por el de ver el ranking?
         ExitMenuBtn.SetActive(true);
 
         if (LocalOnlineOption.instance.IsOnline())
