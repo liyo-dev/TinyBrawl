@@ -79,6 +79,9 @@ MonoBehaviour:
   - SyncLoadGame
   - SyncBurguer
   - SyncImpostor
+  - ActivateOption
+  - AwardPoint
+  - SyncFishing
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

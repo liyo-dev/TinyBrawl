@@ -157,7 +157,7 @@ public class MyLauncherOnline : MonoBehaviourPunCallbacks
     {
         if (isMasterPlayer)
         {
-            Debug.Log("Tiempo restante: " + timeRemaining * timer.duration + " segundos");
+            //Debug.Log("Tiempo restante: " + timeRemaining * timer.duration + " segundos");
             // Actualizar UI del temporizador solo para el jugador maestro
             // Aquí puedes actualizar una UI específica del temporizador si tienes una.
         }

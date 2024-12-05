@@ -28,7 +28,15 @@ public class GameImpostor : MonoBehaviourPunCallbacks
     private bool imagesCalculated = false;
     private bool stopGame;
     private bool canClick = false;
-    
+
+    private void Start()
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            Invoke(nameof(DoStart), 4f); // Start the game after 2 seconds
+        }
+    }
+
     public void DoStart()
     {
         photonView.RPC("SyncTurn", RpcTarget.All);

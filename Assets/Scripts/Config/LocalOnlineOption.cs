@@ -40,8 +40,13 @@ public class LocalOnlineOption : MonoBehaviour
     {
         SelectedMiniGame = Minigame.Burguer;
     }
-    
+    public void SetFishingGame()
+    {
+        SelectedMiniGame = Minigame.Fishing;
+    }
+
     public bool IsOnline() => SelectedTypePlayer == TypePlayer.Online;
     public bool IsBurguer() => SelectedMiniGame == Minigame.Burguer;
     public bool IsImpostor() => SelectedMiniGame == Minigame.Impostor;
+    public bool IsFishing() => SelectedMiniGame == Minigame.Fishing;
 }

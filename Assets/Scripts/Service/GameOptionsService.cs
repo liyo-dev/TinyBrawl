@@ -1,5 +1,6 @@
 using Photon.Pun;
 using Service;
+using System;
 using UnityEngine.SceneManagement;
 
 public class GameOptionsService : MonoBehaviourPunCallbacks
@@ -34,6 +35,13 @@ public class GameOptionsService : MonoBehaviourPunCallbacks
         photonView.RPC(nameof(SyncBurguer), RpcTarget.Others);
     }
 
+    public void Fishing()
+    {
+        localOnlineOption.SetFishingGame();
+
+        photonView.RPC(nameof(SyncFishing), RpcTarget.Others);
+    }
+
     public void LoadGame()
     {
         photonView.RPC(nameof(SyncLoadGame), RpcTarget.All);
@@ -49,6 +57,12 @@ public class GameOptionsService : MonoBehaviourPunCallbacks
     public void SyncBurguer()
     {
         localOnlineOption.SetBurguerGame();
+    }
+
+    [PunRPC]
+    private void SyncFishing()
+    {
+        localOnlineOption.SetFishingGame();
     }
 
     [PunRPC]

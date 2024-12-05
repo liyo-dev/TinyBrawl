@@ -1,5 +1,4 @@
 using Photon.Pun;
-using Service;
 using TMPro;
 using UnityEngine;
 
@@ -9,56 +8,27 @@ public class MyGameManager : MonoBehaviourPunCallbacks
     private TextMeshProUGUI scoreTextLocal;
     private TextMeshProUGUI scoreTextRemote;
     private int score = 0;
-    private LocalOnlineOption onlineOption;
+    private CountdownTimer timer;
 
-    private void Start()
+    public void Start()
     {
-        onlineOption = ServiceLocator.GetService<LocalOnlineOption>();
+        Invoke(nameof(DoStart), 2f);
     }
 
     public void DoStart()
     {
-        if (onlineOption.IsImpostor())
+        scoreTextLocal = GameObject.FindWithTag("ScoreLocal").GetComponent<TextMeshProUGUI>();
+        winnerText = GameObject.FindWithTag("WinnerText").GetComponent<TextMeshProUGUI>();
+        CountdownTimer timer = FindObjectOfType<CountdownTimer>();
+        if (timer != null)
         {
-            StartImpostor();
-        } else if (onlineOption.IsBurguer())
-        {
-            StartBurguer();
+            timer.OnTimeOut += DoStop;
         }
     }
 
     public void DoStop()
     {
         CalculateWinnerAndDisplay();
-    }
-
-    private void StartBurguer()
-    {
-        if (ServiceLocator.GetService<LocalOnlineOption>().IsOnline())
-        {
-            FindObjectOfType<GameBurguer>().DoStart();
-        }
-        else
-        {
-            FindObjectOfType<GameBurguerLocal>().DoStart();
-        }
-        scoreTextLocal = GameObject.FindWithTag("ScoreLocal").GetComponent<TextMeshProUGUI>();
-        winnerText = GameObject.FindWithTag("WinnerText").GetComponent<TextMeshProUGUI>();
-    }
-
-    private void StartImpostor()
-    {
-        if (onlineOption.IsOnline())
-        {
-            FindObjectOfType<GameImpostor>().DoStart();
-        }
-        else
-        {
-            FindObjectOfType<GameImpostorLocal>().DoStart();
-        }
-        
-        scoreTextLocal = GameObject.FindWithTag("ScoreLocal").GetComponent<TextMeshProUGUI>();
-        winnerText = GameObject.FindWithTag("WinnerText").GetComponent<TextMeshProUGUI>();
     }
 
     public void IncreaseLocalScore(int _score)
@@ -74,16 +44,13 @@ public class MyGameManager : MonoBehaviourPunCallbacks
             Debug.LogError("scoreTextLocal no ha sido inicializado correctamente.");
         }
 
-        if (onlineOption.IsOnline())
-        {
-            photonView.RPC("SyncScore", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber, score);
-        }
+        photonView.RPC("SyncScore", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber, score);
     }
-    
+
     public void DecreaseLocalScore(int _score)
     {
         if (score == 0) return;
-        
+
         score -= _score;
 
         if (scoreTextLocal != null)
@@ -95,47 +62,39 @@ public class MyGameManager : MonoBehaviourPunCallbacks
             Debug.LogError("scoreTextLocal no ha sido inicializado correctamente.");
         }
 
-        if (onlineOption.IsOnline())
-        {
-            photonView.RPC("SyncScore", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber, score);
-        }
+        photonView.RPC("SyncScore", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber, score);
     }
 
     void CalculateWinnerAndDisplay()
     {
-        if (ServiceLocator.GetService<LocalOnlineOption>().IsOnline())
-        {
-            if (onlineOption.IsImpostor())
-            {
-                FindObjectOfType<GameImpostor>().DoStop();
-            }
-            else if (onlineOption.IsBurguer())
-            {
-                FindObjectOfType<GameBurguer>().DoStop();
-            } 
-        }
-        else
-        {
-            if (onlineOption.IsImpostor())
-            {
-                FindObjectOfType<GameImpostorLocal>().DoStop();
-            }
-            else if (onlineOption.IsBurguer())
-            {
-                FindObjectOfType<GameBurguerLocal>().DoStop();
-            }
+        // Lista de posibles nombres de scripts
+        string[] scriptNames = { "GameImpostor", "GameBurguer", "GameFishing" };
 
-            winnerText.text = "Tu puntuación: " + score;
+        foreach (string scriptName in scriptNames)
+        {
+            // Intenta encontrar el script en la escena
+            var script = FindObjectOfType(System.Type.GetType(scriptName));
+            if (script != null)
+            {
+                // Usa reflexión para llamar al método "DoStop" si existe
+                var method = script.GetType().GetMethod("DoStop");
+                if (method != null)
+                {
+                    method.Invoke(script, null); // Llama al método sin parámetros
+                    Debug.Log($"Llamado a DoStop en {scriptName}");
+                }
+            }
         }
-        
+
+        // Mostrar la puntuación
+        winnerText.text = "Tu puntuación: " + score;
+
+
         // Obtener la puntuación del jugador local
         var myScore = score;
 
-        if (onlineOption.IsOnline())
-        {
-            // Enviar la puntuación del jugador local al otro cliente
-            photonView.RPC("ReceiveOpponentScore", RpcTarget.Others, myScore);
-        }
+        // Enviar la puntuación del jugador local al otro cliente
+        photonView.RPC("ReceiveOpponentScore", RpcTarget.Others, myScore);
     }
 
     [PunRPC]
@@ -171,6 +130,16 @@ public class MyGameManager : MonoBehaviourPunCallbacks
         else
         {
             winnerText.text = "¡Empate!";
+        }
+    }
+
+    private void OnDestroy()
+    {
+        CountdownTimer timer = FindObjectOfType<CountdownTimer>();
+
+        if (timer != null)
+        {
+            timer.OnTimeOut -= DoStop;
         }
     }
 }

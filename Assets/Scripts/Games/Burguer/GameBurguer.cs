@@ -49,6 +49,11 @@ public class GameBurguer : MonoBehaviourPunCallbacks
     {
         options = GameObject.FindWithTag("BurguerOptions");
         options.SetActive(false);
+
+        if (PhotonNetwork.IsMasterClient)
+        {
+            Invoke(nameof(DoStart), 4f); // Start the game after 2 seconds
+        }
     }
 
     public void DoStart()

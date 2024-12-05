@@ -1,10 +1,10 @@
-using Photon.Pun;
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class CountdownTimer : MonoBehaviourPunCallbacks
+public class CountdownTimer : MonoBehaviour
 {
     public TextMeshProUGUI countdownText;
     public GameObject TresGameObject;
@@ -12,10 +12,10 @@ public class CountdownTimer : MonoBehaviourPunCallbacks
     public GameObject UnoGameObject;
     public Image TimeBarImage;
     public GameObject ExitMenuBtn;
+    public Action OnTimeOut;
     private float totalTime = GameConfig.TOTAL_TIME;
     private float timeLeft;
     private bool countdownStarted = false; 
-    private MyGameManager _myGameManager;
 
     void Start()
     {        
@@ -73,57 +73,26 @@ public class CountdownTimer : MonoBehaviourPunCallbacks
     {
         // Ocultar el número 1 y comenzar el conteo regresivo real
         UnoGameObject.SetActive(false); 
-        countdownStarted = true;
-        if (LocalOnlineOption.instance.IsOnline())
-            photonView.RPC("StartGame", RpcTarget.Others);
-        else
-        {
-            _myGameManager = FindObjectOfType<MyGameManager>();
-
-            if (_myGameManager != null)
-            {
-                _myGameManager.DoStart(); 
-            }
-        }
         
+        countdownStarted = true;
+       
         Invoke("TimeOut", totalTime);
     }
     
     void LoadScene()
     {
-        PhotonNetwork.Disconnect();
         SceneManager.LoadScene(SceneNames.Title.ToString());
     }
     
     void TimeOut()
     {
-        _myGameManager.DoStop();
-        
+        OnTimeOut?.Invoke();
 
         //Cambiar este boton por el de ver el ranking?
         ExitMenuBtn.SetActive(true);
 
-        if (LocalOnlineOption.instance.IsOnline())
-        {
-            Button exitButton = ExitMenuBtn.GetComponentInChildren<Button>();
-            
-            exitButton.onClick.AddListener(LoadScene);
-        }
-    }
+        Button exitButton = ExitMenuBtn.GetComponentInChildren<Button>();
 
-
-    [PunRPC]
-    void StartGame()
-    {
-        _myGameManager = FindObjectOfType<MyGameManager>();
-
-        if (_myGameManager != null)
-        {
-            _myGameManager.DoStart(); 
-        }
-        else
-        {
-            Debug.LogError("MyGameManager no encontrado en el jugador local.");
-        }
+        exitButton.onClick.AddListener(LoadScene);
     }
 }

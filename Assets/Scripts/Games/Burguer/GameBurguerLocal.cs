@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -39,16 +38,17 @@ public class GameBurguerLocal : MonoBehaviour
     private int remotePlayerTurnCount = 0;
     private bool playerTurnFail = false;
     private bool remotePlayerTurnFail = false;
+    private MyGameManagerLocal _myGameManager;
 
     [SerializeField]
     private GameObject options;
     
-    [SerializeField]
-    private MyGameManager _myGameManager;
 
     private void Start()
     {
         options.SetActive(false);
+
+        Invoke(nameof(DoStart), 4f); // Start the game after 2 seconds
     }
 
     public void DoStart()
@@ -253,7 +253,7 @@ public class GameBurguerLocal : MonoBehaviour
     {
         if (_myGameManager == null)
         {
-            _myGameManager = FindObjectOfType<MyGameManager>();
+            _myGameManager = FindObjectOfType<MyGameManagerLocal>();
         }
         
         _myGameManager.IncreaseLocalScore(1);
@@ -263,7 +263,7 @@ public class GameBurguerLocal : MonoBehaviour
     {
         if (_myGameManager == null)
         {
-            _myGameManager = FindObjectOfType<MyGameManager>();
+            _myGameManager = FindObjectOfType<MyGameManagerLocal>();
         }
         
         _myGameManager.DecreaseLocalScore(1);

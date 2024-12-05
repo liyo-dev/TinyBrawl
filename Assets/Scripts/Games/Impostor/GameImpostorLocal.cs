@@ -18,15 +18,20 @@ public class GameImpostorLocal : MonoBehaviour
     private GameObject Image1;
     private GameObject Image2;
     private GameObject Image3;
-    private MyGameManager _myGameManager;
+    private MyGameManagerLocal _myGameManager;
     private float turnTimer; // Temporizador para el turno actual
     private float timeBetweenTurns = 6f;
     private bool localPlayerCanPlay;
     private bool imagesCalculated = false;
     private bool stopGame = true;
     private bool canClick = false;
-    private int telonLowerCount = 0; 
-    
+    private int telonLowerCount = 0;
+
+    private void Start()
+    {
+        Invoke(nameof(DoStart), 4f); // Start the game after 2 seconds
+    }
+
     private void Update()
     {
         if (!stopGame)
@@ -160,7 +165,7 @@ public class GameImpostorLocal : MonoBehaviour
     {
         if (_myGameManager == null)
         {
-            _myGameManager = FindObjectOfType<MyGameManager>();
+            _myGameManager = FindObjectOfType<MyGameManagerLocal>();
         }
 
         _myGameManager.IncreaseLocalScore(1);
@@ -170,7 +175,7 @@ public class GameImpostorLocal : MonoBehaviour
     {
         if (_myGameManager == null)
         {
-            _myGameManager = FindObjectOfType<MyGameManager>();
+            _myGameManager = FindObjectOfType<MyGameManagerLocal>();
         }
 
         _myGameManager.DecreaseLocalScore(1);
