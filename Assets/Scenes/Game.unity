@@ -1247,7 +1247,7 @@ GameObject:
   - component: {fileID: 309347119}
   - component: {fileID: 309347118}
   m_Layer: 0
-  m_Name: LoadTitle
+  m_Name: LoadMenu
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1265,7 +1265,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2680e563195b8ad4caa10bd1eac6c0c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nextSceneName: 2
+  nextSceneName: 7
 --- !u!4 &309347119
 Transform:
   m_ObjectHideFlags: 0

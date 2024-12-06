@@ -12,7 +12,7 @@ public class GameFishing : MonoBehaviourPunCallbacks
 
     private MyGameManager _myGameManager;
     private int activeOption = -2;
-    private bool isOptionActive = false;
+    private bool canLocalPlayerPlay = false;
 
     void Start()
     {
@@ -33,8 +33,6 @@ public class GameFishing : MonoBehaviourPunCallbacks
     [PunRPC]
     public void ActivateOption(int option)
     {
-        isOptionActive = true;
-
         GameObject targetOption = null;
         switch (option)
         {
@@ -51,16 +49,17 @@ public class GameFishing : MonoBehaviourPunCallbacks
 
         if (targetOption != null)
         {
-            targetOption.transform.DOShakePosition(2f, new Vector3(0.2f, 0, 0), 10, 90, false, true).OnComplete(() =>
-            {
-                isOptionActive = false;
-            }).Play(); 
+            canLocalPlayerPlay = true;
+
+            targetOption.transform.DOShakePosition(2f, new Vector3(0.2f, 0, 0), 10, 90, false, true).Play();
         }
     }
 
     public void OptionSelectedByPlayer(int option)
     {
-        if (!isOptionActive || option != activeOption)
+        if (!canLocalPlayerPlay) return;
+
+        if (option != activeOption)
         {
             ShowWrongFeedback();
             return;
@@ -75,13 +74,14 @@ public class GameFishing : MonoBehaviourPunCallbacks
     public void AwardPoint(int playerId)
     {
         round_txt.text = $"Player {playerId} scored!";
+
         ResetRound();
     }
 
     private void ResetRound()
     {
         activeOption = -2;
-        isOptionActive = false;
+        canLocalPlayerPlay = false;
 
         ResetUI();
 
