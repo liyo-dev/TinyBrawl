@@ -39,12 +39,12 @@ public class GameImpostor : MonoBehaviourPunCallbacks
 
     public void DoStart()
     {
-        photonView.RPC("SyncTurn", RpcTarget.All);
+        photonView.RPC(nameof(SyncTurn), RpcTarget.All);
     }
 
     public void DoStop()
     {
-        photonView.RPC("GameOver", RpcTarget.Others);
+        photonView.RPC(nameof(GameOver), RpcTarget.Others);
     }
     
     private IEnumerator NextTurn()
@@ -55,12 +55,12 @@ public class GameImpostor : MonoBehaviourPunCallbacks
     
         yield return new WaitForSeconds(Telon.animationDuration + 0.1f);
     
-        photonView.RPC("DestroyImages", RpcTarget.Others);
+        photonView.RPC(nameof(DestroyImages), RpcTarget.Others);
 
         // Esperar a que las imágenes sean destruidas antes de calcular e instanciar nuevas imágenes
         yield return new WaitUntil(() => Image1 == null && Image2 == null && Image3 == null);
 
-        if (PhotonNetwork.CurrentRoom.Players.ContainsKey(1) && PhotonNetwork.LocalPlayer.ActorNumber == 1)
+        if (PhotonNetwork.IsMasterClient)
         {
             CalculateImagesIfNeeded();
         }

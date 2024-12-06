@@ -12,25 +12,25 @@ public class MyLauncher : MonoBehaviourPunCallbacks
 
     void Start()
     {
-        if (ServiceLocator.GetService<LocalOnlineOption>().IsImpostor() && PhotonNetwork.CurrentRoom.Players.ContainsKey(1) && PhotonNetwork.LocalPlayer.ActorNumber == 1)
+        if (!PhotonNetwork.IsMasterClient) return;
+
+        //Solo el maestro instancia los juegos
+
+        if (ServiceLocator.GetService<LocalOnlineOption>().IsImpostor())
         {
             PhotonNetwork.Instantiate(GameImpostor.name, transform.position, Quaternion.identity);
         }
-        else if (ServiceLocator.GetService<LocalOnlineOption>().IsBurguer() && PhotonNetwork.CurrentRoom.Players.ContainsKey(1) && PhotonNetwork.LocalPlayer.ActorNumber == 1)
+        else if (ServiceLocator.GetService<LocalOnlineOption>().IsBurguer())
         {
             PhotonNetwork.Instantiate(GameBurguer.name, transform.position, Quaternion.identity);
         }
-        else if (ServiceLocator.GetService<LocalOnlineOption>().IsFishing() && PhotonNetwork.CurrentRoom.Players.ContainsKey(1) && PhotonNetwork.LocalPlayer.ActorNumber == 1)
+        else if (ServiceLocator.GetService<LocalOnlineOption>().IsFishing())
         {
             PhotonNetwork.Instantiate(GameFishing.name, transform.position, Quaternion.identity);
         }
 
-        if (PhotonNetwork.CurrentRoom.Players.ContainsKey(1) && PhotonNetwork.LocalPlayer.ActorNumber == 1)
-        {
-            PhotonNetwork.Instantiate(MyGameManager.name, transform.position, Quaternion.identity);
-            
-            PhotonNetwork.Instantiate(TimerPrefab.name, transform.position, Quaternion.identity);
-        }
+        PhotonNetwork.Instantiate(MyGameManager.name, transform.position, Quaternion.identity);
 
+        PhotonNetwork.Instantiate(TimerPrefab.name, transform.position, Quaternion.identity);
     }
 }

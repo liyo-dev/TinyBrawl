@@ -24,16 +24,21 @@ public class GameFishing : MonoBehaviourPunCallbacks
 
     public void DoStart()
     {
-        if (!PhotonNetwork.IsMasterClient) return;
-
         activeOption = Random.Range(-1, 2);
+
         photonView.RPC(nameof(ActivateOption), RpcTarget.All, activeOption);
     }
 
     [PunRPC]
     public void ActivateOption(int option)
     {
+        ResetUI();
+
+        //Guardo la opcion activa en todos los jugadores
+        activeOption = option;
+
         GameObject targetOption = null;
+
         switch (option)
         {
             case -1:
@@ -62,10 +67,9 @@ public class GameFishing : MonoBehaviourPunCallbacks
         if (option != activeOption)
         {
             ShowWrongFeedback();
+
             return;
         }
-
-        ShowCorrectFeedback();
 
         photonView.RPC(nameof(AwardPoint), RpcTarget.All, PhotonNetwork.LocalPlayer.ActorNumber);
     }
@@ -73,7 +77,14 @@ public class GameFishing : MonoBehaviourPunCallbacks
     [PunRPC]
     public void AwardPoint(int playerId)
     {
+        canLocalPlayerPlay = false;
+
         round_txt.text = $"Player {playerId} scored!";
+
+        if (PhotonNetwork.LocalPlayer.ActorNumber == playerId)
+        {
+            ShowCorrectFeedback();
+        }
 
         ResetRound();
     }
@@ -81,9 +92,6 @@ public class GameFishing : MonoBehaviourPunCallbacks
     private void ResetRound()
     {
         activeOption = -2;
-        canLocalPlayerPlay = false;
-
-        ResetUI();
 
         if (PhotonNetwork.IsMasterClient)
         {
