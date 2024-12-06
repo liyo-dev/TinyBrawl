@@ -1,7 +1,6 @@
 using System;
 using Photon.Pun;
 using Photon.Realtime;
-using Service;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -29,7 +28,17 @@ public class MyLauncherOnline : MonoBehaviourPunCallbacks
         // Conectar a Photon solo si no está conectado
         if (!PhotonNetwork.IsConnected)
         {
+            // Desactivar botones hasta estar conectado al maestro
+            joinPublicButton.interactable = false;
+            joinPrivateButton.interactable = false;
+            canContinue.interactable = false;
             PhotonNetwork.ConnectUsingSettings();
+        } else
+        {
+            // Activar botones de sala si ya estoiy conectado al  maestro
+            joinPublicButton.interactable = true;
+            joinPrivateButton.interactable = true;
+            canContinue.interactable = false;
         }
 
         joinPublicButton.onClick.AddListener(() => {
@@ -52,11 +61,6 @@ public class MyLauncherOnline : MonoBehaviourPunCallbacks
 
         roomCodeButton.onClick.AddListener(() => JoinPrivateRoom(roomCodeInputField.text));
         canContinue.onClick.AddListener(OnCanContinueClicked);
-
-        // Desactivar botones hasta estar conectado al maestro
-        joinPublicButton.interactable = false;
-        joinPrivateButton.interactable = false;
-        canContinue.interactable = false;
 
         // Suscribirse a los eventos del temporizador
         timer.OnTimeChanged += HandleTimerUpdate;

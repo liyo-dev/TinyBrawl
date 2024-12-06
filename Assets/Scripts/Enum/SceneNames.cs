@@ -6,5 +6,8 @@ public enum SceneNames
     SingleOrMultiPlayer,
     Multiplayer,
     ChooseGame,
-    Game
+    Game,
+    Menu,
+    Login,
+    ChoosePlayer
 }
