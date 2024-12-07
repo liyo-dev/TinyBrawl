@@ -25,22 +25,15 @@ public class UserSceneManager : MonoBehaviour
 
     private GameObject activeCharacter; // Personaje actualmente instanciado
 
-    void Start()
+    private void Start()
     {
-        // Desactiva los botones hasta que los datos sean cargados
-        playButton.interactable = false;
-        chooseCharacterButton.interactable = false;
-        equipCharacterButton.interactable = false;
-        shopButton.interactable = false;
-
-        // Cargar datos del usuario desde el ScriptableObject
-        LoadUserData();
-
         // Configurar listeners de botones
         playButton.onClick.AddListener(OnPlayButtonClicked);
         chooseCharacterButton.onClick.AddListener(OnChooseCharacterButtonClicked);
         equipCharacterButton.onClick.AddListener(OnEquipCharacterButtonClicked);
         shopButton.onClick.AddListener(OnShopButtonClicked);
+
+        LoadUserData();
     }
 
     private void LoadUserData()
@@ -60,6 +53,7 @@ public class UserSceneManager : MonoBehaviour
 
         // Cargar los datos del SO y mostrar el personaje seleccionado
         UpdateUI();
+
         ShowSelectedCharacter(playerDataSO.selectedCharacterId);
     }
 

@@ -82,6 +82,25 @@ public class PlayFabConnectionManager : MonoBehaviour
         }, OnError);
     }
 
+    public void DisconnectFromPlayFab()
+    {
+        if (PlayFabClientAPI.IsClientLoggedIn())
+        {
+            PlayFabClientAPI.ForgetAllCredentials();
+            if (debugLogs)
+            {
+                Debug.Log("Desconectado de PlayFab exitosamente.");
+            }
+        }
+        else
+        {
+            if (debugLogs)
+            {
+                Debug.Log("No estás conectado a PlayFab. No es necesario desconectar.");
+            }
+        }
+    }
+
     private void OnError(PlayFabError error)
     {
         Debug.LogError($"Error al recuperar datos del jugador desde PlayFab: {error.GenerateErrorReport()}");
