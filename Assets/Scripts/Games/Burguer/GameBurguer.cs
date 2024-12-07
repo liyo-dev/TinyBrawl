@@ -63,55 +63,6 @@ public class GameBurguer : MonoBehaviourPunCallbacks
         photonView.RPC(nameof(DoStart), RpcTarget.All);
     }
 
-
-    [PunRPC]
-    public void DoStart()
-    {
-        options.SetActive(true);
-
-        // Instancia el pan de abajo en la posición DemoDown
-        DemoDownBread = Instantiate(DownBread, DemoPositionList[demoTurnCount].position, Quaternion.identity);
-        DemoDownBread.GetComponent<SpriteRenderer>().sortingOrder = 1; // Pan de abajo order 1
-        DemoDownBread.SetActive(false);
-
-        // Instancia el pan de arriba en la posición DemoDown más la altura de caída
-        DemoUpBread = Instantiate(UpBread,
-            DemoPositionList[^1].position + Vector3.up * dropHeight,
-            Quaternion.identity);
-        DemoUpBread.GetComponent<SpriteRenderer>().sortingOrder =
-            BurguerOptions.Count + 3; // Pan de arriba order maximo
-        DemoUpBread.SetActive(false);
-
-        // Instancia el pan de abajo en la posición PlayerDown
-        PlayerDownBread = Instantiate(DownBread, PlayerPositionList[playerTurnCount].position, Quaternion.identity);
-        PlayerDownBread.GetComponent<SpriteRenderer>().sortingOrder = 1; // Orden en layer 1
-        PlayerDownBread.SetActive(false);
-
-        // Instancia el pan de arriba en la posición PlayerDown más la altura de caída
-        PlayerUpBread = Instantiate(UpBread, PlayerPositionList[^1].position + Vector3.up * dropHeight,
-            Quaternion.identity);
-        PlayerUpBread.GetComponent<SpriteRenderer>().sortingOrder =
-            BurguerOptions.Count + 3;
-        PlayerUpBread.SetActive(false);
-
-        // Pan de abajo del player remote
-        RemoteDownBread = Instantiate(DownBread, RemotePlayerPositionList[remotePlayerTurnCount].position, Quaternion.identity);
-        RemoteDownBread.GetComponent<SpriteRenderer>().sortingOrder = 1;
-        RemoteDownBread.SetActive(false);
-
-        // Pan de arriba del player remote
-        RemoteUpBread = Instantiate(UpBread, RemotePlayerPositionList[^1].position, Quaternion.identity);
-        RemoteUpBread.GetComponent<SpriteRenderer>().sortingOrder =
-            BurguerOptions.Count + 3;
-        RemoteUpBread.SetActive(false);
-
-        //Comienza la demo
-        if (PhotonNetwork.IsMasterClient)
-        {
-            DemoTurn();
-        }
-    }
-
     public void DoStop()
     {
         photonView.RPC("GameOver", RpcTarget.Others);
@@ -285,6 +236,54 @@ public class GameBurguer : MonoBehaviourPunCallbacks
         playerTurnFail = false;
         remotePlayerTurnFail = false;
 
+        if (PhotonNetwork.IsMasterClient)
+        {
+            DemoTurn();
+        }
+    }
+
+    [PunRPC]
+    public void DoStart()
+    {
+        options.SetActive(true);
+
+        // Instancia el pan de abajo en la posición DemoDown
+        DemoDownBread = Instantiate(DownBread, DemoPositionList[demoTurnCount].position, Quaternion.identity);
+        DemoDownBread.GetComponent<SpriteRenderer>().sortingOrder = 1; // Pan de abajo order 1
+        DemoDownBread.SetActive(false);
+
+        // Instancia el pan de arriba en la posición DemoDown más la altura de caída
+        DemoUpBread = Instantiate(UpBread,
+            DemoPositionList[^1].position + Vector3.up * dropHeight,
+            Quaternion.identity);
+        DemoUpBread.GetComponent<SpriteRenderer>().sortingOrder =
+            BurguerOptions.Count + 3; // Pan de arriba order maximo
+        DemoUpBread.SetActive(false);
+
+        // Instancia el pan de abajo en la posición PlayerDown
+        PlayerDownBread = Instantiate(DownBread, PlayerPositionList[playerTurnCount].position, Quaternion.identity);
+        PlayerDownBread.GetComponent<SpriteRenderer>().sortingOrder = 1; // Orden en layer 1
+        PlayerDownBread.SetActive(false);
+
+        // Instancia el pan de arriba en la posición PlayerDown más la altura de caída
+        PlayerUpBread = Instantiate(UpBread, PlayerPositionList[^1].position + Vector3.up * dropHeight,
+            Quaternion.identity);
+        PlayerUpBread.GetComponent<SpriteRenderer>().sortingOrder =
+            BurguerOptions.Count + 3;
+        PlayerUpBread.SetActive(false);
+
+        // Pan de abajo del player remote
+        RemoteDownBread = Instantiate(DownBread, RemotePlayerPositionList[remotePlayerTurnCount].position, Quaternion.identity);
+        RemoteDownBread.GetComponent<SpriteRenderer>().sortingOrder = 1;
+        RemoteDownBread.SetActive(false);
+
+        // Pan de arriba del player remote
+        RemoteUpBread = Instantiate(UpBread, RemotePlayerPositionList[^1].position, Quaternion.identity);
+        RemoteUpBread.GetComponent<SpriteRenderer>().sortingOrder =
+            BurguerOptions.Count + 3;
+        RemoteUpBread.SetActive(false);
+
+        //Comienza la demo
         if (PhotonNetwork.IsMasterClient)
         {
             DemoTurn();
