@@ -1,0 +1,5 @@
+C:/Users/luarb/dev/unity/TinyBrawl/.utmp/Debug/3d1c1y1p/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Users/luarb/dev/unity/TinyBrawl/.utmp/Debug/3d1c1y1p/armeabi-v7a/CMakeFiles/rebuild_cache.dir
+C:/Users/luarb/dev/unity/TinyBrawl/.utmp/Debug/3d1c1y1p/armeabi-v7a/FramePacing/CMakeFiles/swappywrapper.dir
+C:/Users/luarb/dev/unity/TinyBrawl/.utmp/Debug/3d1c1y1p/armeabi-v7a/FramePacing/CMakeFiles/edit_cache.dir
+C:/Users/luarb/dev/unity/TinyBrawl/.utmp/Debug/3d1c1y1p/armeabi-v7a/FramePacing/CMakeFiles/rebuild_cache.dir

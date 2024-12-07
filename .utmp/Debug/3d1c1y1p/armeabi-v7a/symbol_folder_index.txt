@@ -1,0 +1,1 @@
+C:\Users\luarb\dev\unity\TinyBrawl\Library\Bee\Android\Prj\IL2CPP\Gradle\unityLibrary\build\intermediates\cxx\Debug\3d1c1y1p\obj\armeabi-v7a

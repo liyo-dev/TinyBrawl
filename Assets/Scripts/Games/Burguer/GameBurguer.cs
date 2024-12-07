@@ -52,10 +52,19 @@ public class GameBurguer : MonoBehaviourPunCallbacks
 
         if (PhotonNetwork.IsMasterClient)
         {
-            Invoke(nameof(DoStart), 4f); // Start the game after 2 seconds
+            StartCoroutine(StartGameWithDelay(4f));
         }
     }
 
+    private IEnumerator StartGameWithDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        photonView.RPC(nameof(DoStart), RpcTarget.All);
+    }
+
+
+    [PunRPC]
     public void DoStart()
     {
         options.SetActive(true);
@@ -97,7 +106,7 @@ public class GameBurguer : MonoBehaviourPunCallbacks
         RemoteUpBread.SetActive(false);
 
         //Comienza la demo
-        if (PhotonNetwork.CurrentRoom.Players.ContainsKey(1) && PhotonNetwork.LocalPlayer.ActorNumber == 1)
+        if (PhotonNetwork.IsMasterClient)
         {
             DemoTurn();
         }
@@ -276,7 +285,7 @@ public class GameBurguer : MonoBehaviourPunCallbacks
         playerTurnFail = false;
         remotePlayerTurnFail = false;
 
-        if (PhotonNetwork.CurrentRoom.Players.ContainsKey(1) && PhotonNetwork.LocalPlayer.ActorNumber == 1)
+        if (PhotonNetwork.IsMasterClient)
         {
             DemoTurn();
         }
