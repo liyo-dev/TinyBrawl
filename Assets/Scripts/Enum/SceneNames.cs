@@ -10,5 +10,7 @@ public enum SceneNames
     Menu,
     Login,
     ChoosePlayer,
-    User
+    User,
+    Shop,
+    Inventory
 }

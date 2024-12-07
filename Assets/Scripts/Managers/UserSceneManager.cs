@@ -9,7 +9,7 @@ public class UserSceneManager : MonoBehaviour
     [SerializeField] private TMP_Text profileNameText;
     [SerializeField] private TMP_Text levelText;
     [SerializeField] private TMP_Text pointsText;
-    [SerializeField] private Image selectedCharacterImage;
+    [SerializeField] private Transform characterPosition; // Donde se instanciará el personaje
 
     [Header("Buttons")]
     [SerializeField] private Button playButton;
@@ -19,6 +19,11 @@ public class UserSceneManager : MonoBehaviour
 
     [Header("Player Data")]
     [SerializeField] private PlayerDataSO playerDataSO;
+
+    [Header("Characters")]
+    [SerializeField] private GameObject[] characters; // Lista de prefabs de personajes
+
+    private GameObject activeCharacter; // Personaje actualmente instanciado
 
     void Start()
     {
@@ -40,15 +45,43 @@ public class UserSceneManager : MonoBehaviour
 
     private void LoadUserData()
     {
-        // Cargar datos del ScriptableObject
-        if (playerDataSO != null)
-        {
-            UpdateUI();
-        }
-        else
+        // Validar que el ScriptableObject y los personajes estén configurados
+        if (playerDataSO == null)
         {
             Debug.LogWarning("PlayerDataSO no está asignado.");
+            return;
         }
+
+        if (characters == null || characters.Length == 0)
+        {
+            Debug.LogWarning("No hay personajes asignados en la lista.");
+            return;
+        }
+
+        // Cargar los datos del SO y mostrar el personaje seleccionado
+        UpdateUI();
+        ShowSelectedCharacter(playerDataSO.selectedCharacterId);
+    }
+
+    private void ShowSelectedCharacter(int characterId)
+    {
+        // Validar el índice del personaje
+        if (characterId < 0 || characterId >= characters.Length)
+        {
+            Debug.LogWarning($"Índice de personaje no válido: {characterId}. Mostrando el primero por defecto.");
+            characterId = 0;
+        }
+
+        // Destruir el personaje activo si existe
+        if (activeCharacter != null)
+        {
+            Destroy(activeCharacter);
+        }
+
+        // Instanciar el personaje seleccionado
+        activeCharacter = Instantiate(characters[characterId], characterPosition);
+        activeCharacter.transform.localPosition = Vector3.zero; // Centrar en el padre
+        activeCharacter.transform.localRotation = Quaternion.identity; // Resetear rotación
     }
 
     private void UpdateUI()
@@ -57,19 +90,6 @@ public class UserSceneManager : MonoBehaviour
         profileNameText.text = $"Perfil: {playerDataSO.username}";
         levelText.text = $"Nivel: {playerDataSO.level}";
         pointsText.text = $"Puntos: {playerDataSO.points}";
-
-        // Cargar y mostrar el sprite del personaje seleccionado
-        string characterSpritePath = $"Characters/Character_{playerDataSO.selectedCharacterId}";
-        Sprite characterSprite = Resources.Load<Sprite>(characterSpritePath);
-
-        if (characterSprite != null)
-        {
-            selectedCharacterImage.sprite = characterSprite;
-        }
-        else
-        {
-            Debug.LogWarning($"No se encontró el sprite en la ruta: {characterSpritePath}");
-        }
 
         // Habilitar los botones ahora que los datos están cargados
         playButton.interactable = true;
@@ -80,35 +100,21 @@ public class UserSceneManager : MonoBehaviour
 
     private void OnPlayButtonClicked()
     {
-        Debug.Log("Jugar presionado.");
-        // Cargar la escena de juego
         SceneManager.LoadScene(SceneNames.SingleOrMultiPlayer.ToString());
     }
 
     private void OnChooseCharacterButtonClicked()
     {
-        Debug.Log("Elegir Personaje presionado.");
-        // Cargar la escena de selección de personajes
         SceneManager.LoadScene(SceneNames.ChoosePlayer.ToString());
     }
 
     private void OnEquipCharacterButtonClicked()
     {
-        Debug.Log("Equipar Personaje presionado.");
-        // Guardar los datos seleccionados en el ScriptableObject
-        SaveCharacterData();
+        SceneManager.LoadScene(SceneNames.Inventory.ToString());
     }
 
     private void OnShopButtonClicked()
     {
-        Debug.Log("Tienda presionada.");
-        // Cargar la escena de la tienda
-        SceneManager.LoadScene("Shop");
-    }
-
-    private void SaveCharacterData()
-    {
-        // Aquí puedes implementar cualquier lógica para modificar los datos del ScriptableObject
-        Debug.Log("Datos del personaje actualizados en el ScriptableObject.");
+        SceneManager.LoadScene(SceneNames.Shop.ToString());
     }
 }
