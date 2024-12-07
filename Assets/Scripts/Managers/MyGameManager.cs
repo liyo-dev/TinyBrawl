@@ -1,4 +1,6 @@
 using Photon.Pun;
+using PlayFab;
+using PlayFab.ClientModels;
 using TMPro;
 using UnityEngine;
 
@@ -9,6 +11,9 @@ public class MyGameManager : MonoBehaviourPunCallbacks
     private TextMeshProUGUI scoreTextRemote;
     private int score = 0;
     private CountdownTimer timer;
+
+    [Header("Player Data")]
+    [SerializeField] private PlayerDataSO playerDataSO;
 
     public void Start()
     {
@@ -89,12 +94,36 @@ public class MyGameManager : MonoBehaviourPunCallbacks
         // Mostrar la puntuación
         winnerText.text = "Tu puntuación: " + score;
 
-
         // Obtener la puntuación del jugador local
         var myScore = score;
 
+        //guardo los puntos en el SO del player y en playfab
+        playerDataSO.points = myScore;
+
+        // Guardar los puntos en PlayFab
+        UpdatePointsInPlayFab(score);
+
         // Enviar la puntuación del jugador local al otro cliente
         photonView.RPC("ReceiveOpponentScore", RpcTarget.Others, myScore);
+    }
+
+    private void UpdatePointsInPlayFab(int newPoints)
+    {
+        var request = new UpdateUserDataRequest
+        {
+            Data = new System.Collections.Generic.Dictionary<string, string>
+            {
+                { "Points", newPoints.ToString() }
+            }
+        };
+
+        PlayFabClientAPI.UpdateUserData(request, result =>
+        {
+            Debug.Log("Puntos actualizados en PlayFab correctamente.");
+        }, error =>
+        {
+            Debug.LogError($"Error al actualizar puntos en PlayFab: {error.GenerateErrorReport()}");
+        });
     }
 
     [PunRPC]

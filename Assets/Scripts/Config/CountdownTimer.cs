@@ -15,7 +15,7 @@ public class CountdownTimer : MonoBehaviour
     public Action OnTimeOut;
     private float totalTime = GameConfig.TOTAL_TIME;
     private float timeLeft;
-    private bool countdownStarted = false; 
+    private bool countdownStarted = false;
 
     void Start()
     {        

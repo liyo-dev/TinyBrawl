@@ -9,5 +9,6 @@ public enum SceneNames
     Game,
     Menu,
     Login,
-    ChoosePlayer
+    ChoosePlayer,
+    User
 }

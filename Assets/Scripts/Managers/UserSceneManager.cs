@@ -1,8 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using PlayFab;
-using PlayFab.ClientModels;
 using UnityEngine.SceneManagement;
 
 public class UserSceneManager : MonoBehaviour
@@ -19,10 +17,8 @@ public class UserSceneManager : MonoBehaviour
     [SerializeField] private Button equipCharacterButton;
     [SerializeField] private Button shopButton;
 
-    private string profileName;
-    private int level;
-    private int points;
-    private string characterSpritePath;
+    [Header("Player Data")]
+    [SerializeField] private PlayerDataSO playerDataSO;
 
     void Start()
     {
@@ -32,7 +28,7 @@ public class UserSceneManager : MonoBehaviour
         equipCharacterButton.interactable = false;
         shopButton.interactable = false;
 
-        // Cargar datos del usuario desde PlayFab
+        // Cargar datos del usuario desde el ScriptableObject
         LoadUserData();
 
         // Configurar listeners de botones
@@ -44,36 +40,28 @@ public class UserSceneManager : MonoBehaviour
 
     private void LoadUserData()
     {
-        PlayFabClientAPI.GetUserData(new GetUserDataRequest(), OnUserDataLoaded, OnError);
-    }
-
-    private void OnUserDataLoaded(GetUserDataResult result)
-    {
-        if (result.Data != null)
+        // Cargar datos del ScriptableObject
+        if (playerDataSO != null)
         {
-            // Cargar datos específicos del usuario desde PlayFab
-            profileName = result.Data.ContainsKey("ProfileName") ? result.Data["ProfileName"].Value : "Desconocido";
-            level = result.Data.ContainsKey("Level") ? int.Parse(result.Data["Level"].Value) : 1;
-            points = result.Data.ContainsKey("Points") ? int.Parse(result.Data["Points"].Value) : 0;
-            characterSpritePath = result.Data.ContainsKey("CharacterSprite") ? result.Data["CharacterSprite"].Value : "Characters/DefaultCharacter";
-
-            // Actualizar la interfaz con los datos cargados
             UpdateUI();
         }
         else
         {
-            Debug.LogWarning("No se encontraron datos del usuario en PlayFab.");
+            Debug.LogWarning("PlayerDataSO no está asignado.");
         }
     }
 
     private void UpdateUI()
     {
-        profileNameText.text = $"Perfil: {profileName}";
-        levelText.text = $"Nivel: {level}";
-        pointsText.text = $"Puntos: {points}";
+        // Actualizar la UI con los datos del ScriptableObject
+        profileNameText.text = $"Perfil: {playerDataSO.username}";
+        levelText.text = $"Nivel: {playerDataSO.level}";
+        pointsText.text = $"Puntos: {playerDataSO.points}";
 
         // Cargar y mostrar el sprite del personaje seleccionado
+        string characterSpritePath = $"Characters/Character_{playerDataSO.selectedCharacterId}";
         Sprite characterSprite = Resources.Load<Sprite>(characterSpritePath);
+
         if (characterSprite != null)
         {
             selectedCharacterImage.sprite = characterSprite;
@@ -94,20 +82,20 @@ public class UserSceneManager : MonoBehaviour
     {
         Debug.Log("Jugar presionado.");
         // Cargar la escena de juego
-        SceneManager.LoadScene("GameScene");
+        SceneManager.LoadScene(SceneNames.SingleOrMultiPlayer.ToString());
     }
 
     private void OnChooseCharacterButtonClicked()
     {
         Debug.Log("Elegir Personaje presionado.");
         // Cargar la escena de selección de personajes
-        SceneManager.LoadScene("CharacterSelection");
+        SceneManager.LoadScene(SceneNames.ChoosePlayer.ToString());
     }
 
     private void OnEquipCharacterButtonClicked()
     {
         Debug.Log("Equipar Personaje presionado.");
-        // Guardar personaje seleccionado en PlayFab
+        // Guardar los datos seleccionados en el ScriptableObject
         SaveCharacterData();
     }
 
@@ -120,22 +108,7 @@ public class UserSceneManager : MonoBehaviour
 
     private void SaveCharacterData()
     {
-        var request = new UpdateUserDataRequest
-        {
-            Data = new System.Collections.Generic.Dictionary<string, string>
-            {
-                { "CharacterSprite", characterSpritePath }
-            }
-        };
-
-        PlayFabClientAPI.UpdateUserData(request, result =>
-        {
-            Debug.Log("Personaje equipado y guardado correctamente.");
-        }, OnError);
-    }
-
-    private void OnError(PlayFabError error)
-    {
-        Debug.LogError($"Error: {error.GenerateErrorReport()}");
+        // Aquí puedes implementar cualquier lógica para modificar los datos del ScriptableObject
+        Debug.Log("Datos del personaje actualizados en el ScriptableObject.");
     }
 }

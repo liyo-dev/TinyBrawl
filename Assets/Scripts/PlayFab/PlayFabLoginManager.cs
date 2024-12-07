@@ -2,6 +2,7 @@ using UnityEngine;
 using PlayFab;
 using PlayFab.ClientModels;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class PlayFabLoginManager : MonoBehaviour
 {
@@ -152,7 +153,9 @@ public class PlayFabLoginManager : MonoBehaviour
 
                 Debug.Log($"Datos cargados: Username: {playerDataSO.username}, Nivel: {playerDataSO.level}, Puntos: {playerDataSO.points}, CharacterId: {playerDataSO.selectedCharacterId}");
 
-                feedbackText.text = $"Bienvenido {playerDataSO.username}. Nivel: {playerDataSO.level}, Puntos: {playerDataSO.points}";
+                //feedbackText.text = $"Bienvenido {playerDataSO.username}. Nivel: {playerDataSO.level}, Puntos: {playerDataSO.points}";
+
+                SceneManager.LoadScene(SceneNames.User.ToString());
             }
             else
             {
