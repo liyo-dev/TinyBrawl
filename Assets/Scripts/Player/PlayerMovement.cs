@@ -1,19 +1,16 @@
 using Photon.Pun;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class PlayerMovement : MonoBehaviourPunCallbacks
 {
     [Header("Movement Settings")]
-    public float moveSpeed = 5f;
-    public float rotationSpeed = 10f;
-
-    private Transform cameraTransform;
+    public float moveSpeed = 8f;
+    public float rotationSpeed = 30f;
 
     private DynamicJoystick movementJoystick; // Arrastra aquí tu joystick de movimiento
-    private Button shootButton;        // Arrastra el botón de disparo
-    private Button specialAttackButton; // Arrastra el botón de ataque especial
+    private Button shootButton;               // Arrastra el botón de disparo
+    private Button specialAttackButton;       // Arrastra el botón de ataque especial
 
     private Vector3 movementDirection;
     private bool isShooting = false;
@@ -36,8 +33,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
         if (specialAttackButton != null)
             specialAttackButton.onClick.AddListener(SpecialAttack);
 
-        movementJoystick = FindAnyObjectByType<DynamicJoystick>();
-        cameraTransform = Camera.main.transform;
+        movementJoystick = FindObjectOfType<DynamicJoystick>();
     }
 
     private void FixedUpdate()
@@ -55,20 +51,22 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
 
         movementDirection = new Vector3(horizontalInput, 0, verticalInput).normalized;
 
-        // Si hay movimiento, rotar el personaje hacia la dirección
+        // Si hay movimiento, rota y mueve el personaje
         if (movementDirection.magnitude > 0.1f)
         {
-            // Calcular la dirección relativa a la cámara
-            float targetAngle = Mathf.Atan2(movementDirection.x, movementDirection.z) * Mathf.Rad2Deg + cameraTransform.eulerAngles.y;
+            // Movimiento adelante y atrás en el eje Z del personaje
+            Vector3 moveDirection = transform.forward * movementDirection.z;
 
-            // Rotación suave hacia el ángulo objetivo
-            float angle = Mathf.LerpAngle(transform.eulerAngles.y, targetAngle, rotationSpeed * Time.deltaTime);
-            transform.rotation = Quaternion.Euler(0, angle, 0);
+            // Rotar solo en el eje Y para girar el personaje
+            float rotationInput = movementDirection.x;
+            if (Mathf.Abs(rotationInput) > 0.1f)
+            {
+                float rotationAngle = rotationInput * rotationSpeed * Time.fixedDeltaTime;
+                Quaternion deltaRotation = Quaternion.Euler(0, rotationAngle, 0);
+                rb.MoveRotation(rb.rotation * deltaRotation);
+            }
 
-            // Dirección final del movimiento
-            Vector3 moveDirection = Quaternion.Euler(0, targetAngle, 0) * Vector3.forward;
-
-            // Mover al personaje
+            // Aplicar movimiento en el eje Z
             rb.MovePosition(rb.position + moveDirection * moveSpeed * Time.fixedDeltaTime);
         }
     }
