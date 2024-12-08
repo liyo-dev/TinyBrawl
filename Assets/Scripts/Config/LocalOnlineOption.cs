@@ -45,8 +45,20 @@ public class LocalOnlineOption : MonoBehaviour
         SelectedMiniGame = Minigame.Fishing;
     }
 
+    public void SetWorldGame()
+    {
+        SelectedMiniGame = Minigame.World;
+    }
+
+    public void SetMazeGame()
+    {
+        SelectedMiniGame = Minigame.Maze;
+    }
+
     public bool IsOnline() => SelectedTypePlayer == TypePlayer.Online;
     public bool IsBurguer() => SelectedMiniGame == Minigame.Burguer;
     public bool IsImpostor() => SelectedMiniGame == Minigame.Impostor;
     public bool IsFishing() => SelectedMiniGame == Minigame.Fishing;
+    public bool IsWorld() => SelectedMiniGame == Minigame.World;
+    public bool IsMaze() => SelectedMiniGame == Minigame.Maze;
 }

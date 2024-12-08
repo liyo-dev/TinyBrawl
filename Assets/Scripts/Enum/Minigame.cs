@@ -2,5 +2,7 @@ public enum Minigame
 {
     Impostor,
     Burguer,
-    Fishing
+    Fishing,
+    World,
+    Maze
 }

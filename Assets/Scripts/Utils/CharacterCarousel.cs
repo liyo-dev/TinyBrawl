@@ -52,6 +52,11 @@ public class CharacterCarousel : MonoBehaviour
 
         // Instanciar el personaje actual
         activeCharacter = Instantiate(characters[index], characterParent);
+        Rigidbody rb = activeCharacter.GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.isKinematic = true; // Evitar que la gravedad o las fuerzas afecten al personaje
+        }
         activeCharacter.transform.localPosition = Vector3.zero; // Centrar en el parent
         activeCharacter.transform.localRotation = Quaternion.identity;
 

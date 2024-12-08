@@ -1,4 +1,3 @@
-using DG.Tweening;
 using Photon.Pun;
 using TMPro;
 using UnityEngine;
@@ -6,221 +5,101 @@ using UnityEngine.UI;
 
 public class PlayerMovement : MonoBehaviourPunCallbacks
 {
-    public GameObject PowerUpVisual;
-    public Transform PowerUpPosition;
-    public float comboTimeThreshold = 1f;
-    private int comboCount = 0;
-    private float lastComboTime;
-    public bool isPowerUpActive = false;
-    private float lastPowerUpTime;
-    public float powerUpCooldown = 5f;
+    [Header("Movement Settings")]
+    public float moveSpeed = 5f;
+    public float rotationSpeed = 10f;
 
-    public float veloc = 1f;
-    public int score = 0;
+    private Transform cameraTransform;
 
-    //private GameObject scorePrefab;
-    private TextMeshProUGUI scoreTextLocal;
-    private TextMeshProUGUI scoreTextRemote;
-    private Image energy;
+    private DynamicJoystick movementJoystick; // Arrastra aquí tu joystick de movimiento
+    private Button shootButton;        // Arrastra el botón de disparo
+    private Button specialAttackButton; // Arrastra el botón de ataque especial
 
-    private bool isTouchingFollowMe;
-    private bool isTouchingPlayer;
-    
-    private bool gameStarted = false;
+    private Vector3 movementDirection;
+    private bool isShooting = false;
+    private bool isSpecialAttacking = false;
+
+    private Rigidbody rb;
 
     private void Start()
     {
-        if (photonView.IsMine)
+        rb = GetComponent<Rigidbody>();
+        if (rb == null)
         {
-            scoreTextLocal = GameObject.FindWithTag("ScoreLocal").GetComponent<TextMeshProUGUI>();
-            energy = GameObject.FindWithTag("Energy").GetComponent<Image>();
-            lastComboTime = Time.time;
+            Debug.LogError("No se encontró un componente Rigidbody. Por favor, añade uno al jugador.");
+            return;
         }
+
+        if (shootButton != null)
+            shootButton.onClick.AddListener(Shoot);
+
+        if (specialAttackButton != null)
+            specialAttackButton.onClick.AddListener(SpecialAttack);
+
+        movementJoystick = FindAnyObjectByType<DynamicJoystick>();
+        cameraTransform = Camera.main.transform;
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
-        if (photonView.IsMine)
-        {
-            if (gameStarted) 
-            {
-                HandleMovement();
-                HandleScoreInput();
-                HandlePowerUpInput();
-            }
-        }
+        HandleMovement();
     }
 
     private void HandleMovement()
     {
-        if (Input.touchSupported && Input.touchCount > 0)
+        if (rb == null) return;
+
+        // Leer el input del teclado o joystick
+        float horizontalInput = Input.GetAxis("Horizontal") + (movementJoystick ? movementJoystick.Horizontal : 0);
+        float verticalInput = Input.GetAxis("Vertical") + (movementJoystick ? movementJoystick.Vertical : 0);
+
+        movementDirection = new Vector3(horizontalInput, 0, verticalInput).normalized;
+
+        // Si hay movimiento, rotar el personaje hacia la dirección
+        if (movementDirection.magnitude > 0.1f)
         {
-            // Si se detecta entrada táctil, mueve al personaje hacia la posición del toque
-            Vector3 touchPos = Camera.main.ScreenToWorldPoint(Input.GetTouch(0).position);
-            touchPos.z = 0;
+            // Calcular la dirección relativa a la cámara
+            float targetAngle = Mathf.Atan2(movementDirection.x, movementDirection.z) * Mathf.Rad2Deg + cameraTransform.eulerAngles.y;
 
-            if (Vector3.Distance(transform.position, touchPos) > 0.1f)
-            {
-                Vector2 direction = (touchPos - transform.position).normalized;
-                transform.position += (Vector3)direction * veloc * Time.deltaTime;
-            }
-        }
-        else
-        {
-            // Si no se detecta entrada táctil, sigue al ratón
-            Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            mousePos.z = 0;
+            // Rotación suave hacia el ángulo objetivo
+            float angle = Mathf.LerpAngle(transform.eulerAngles.y, targetAngle, rotationSpeed * Time.deltaTime);
+            transform.rotation = Quaternion.Euler(0, angle, 0);
 
-            if (Vector3.Distance(transform.position, mousePos) > 0.1f)
-            {
-                Vector2 direction = (mousePos - transform.position).normalized;
-                transform.position += (Vector3)direction * veloc * Time.deltaTime;
-            }
-        }
-    
-        float decreaseRate = 0.5f; 
-        veloc -= decreaseRate * Time.deltaTime;
-    
-        veloc = Mathf.Max(1, veloc);
+            // Dirección final del movimiento
+            Vector3 moveDirection = Quaternion.Euler(0, targetAngle, 0) * Vector3.forward;
 
-        energy.fillAmount = veloc / 10.0f;
-    }
-
-
-
-    private void HandleScoreInput()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            if (isTouchingFollowMe)
-            {
-                IncreaseScore(1);
-                photonView.RPC("SyncScore", RpcTarget.Others, photonView.Owner.ActorNumber, score);
-            }
-            else
-            {
-                DecreaseScore(1);
-                photonView.RPC("SyncScore", RpcTarget.Others, photonView.Owner.ActorNumber, score);
-            }
+            // Mover al personaje
+            rb.MovePosition(rb.position + moveDirection * moveSpeed * Time.fixedDeltaTime);
         }
     }
 
-    private void HandlePowerUpInput()
+    private void Shoot()
     {
-        if (Input.GetMouseButtonDown(1) && isPowerUpActive && Time.time - lastPowerUpTime >= powerUpCooldown)
-        {
-            LaunchPowerUp();
-        }
+        if (isShooting) return; // Evitar que el jugador dispare mientras ya está disparando
+
+        Debug.Log("Disparo activado");
+        // Aquí puedes añadir lógica para instanciar proyectiles o disparos
+        isShooting = true;
+        Invoke(nameof(ResetShoot), 0.5f); // Ejemplo: cooldown de 0.5 segundos
     }
 
-    private void LaunchPowerUp()
+    private void ResetShoot()
     {
-        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        GameObject powerUpInstance = PhotonNetwork.Instantiate(PowerUpVisual.name, PowerUpPosition.transform.position, Quaternion.identity);
-        powerUpInstance.transform.DOMove(mousePos, 1f).SetEase(Ease.OutQuad).OnComplete(() =>
-        {
-            PhotonNetwork.Destroy(powerUpInstance);
-            isPowerUpActive = false;
-            lastPowerUpTime = Time.time;
-        });
+        isShooting = false;
     }
 
-    [PunRPC]
-    private void SyncScore(int playerActorNumber, int newScore)
+    private void SpecialAttack()
     {
-        if (scoreTextRemote == null)
-        {
-            scoreTextRemote = GameObject.FindWithTag("ScoreRemote").GetComponent<TextMeshProUGUI>();
-        }
-        
-        scoreTextRemote.text = "Player" + photonView.Owner.ActorNumber + ": " + newScore;
-    }
-    
-    [PunRPC]
-    private void UpdateScore(int newScore)
-    {
-        score = newScore;
-        photonView.RPC("SyncScore", RpcTarget.All, photonView.Owner.ActorNumber, score);
-    }
-    
-    [PunRPC]
-    private void DestroyVelocityPowerUp(GameObject _gameObject)
-    {
-        Destroy(_gameObject);
+        if (isSpecialAttacking) return; // Evitar que el jugador haga el ataque especial mientras ya está atacando
+
+        Debug.Log("Ataque especial activado");
+        // Aquí puedes añadir lógica para el ataque especial
+        isSpecialAttacking = true;
+        Invoke(nameof(ResetSpecialAttack), 2f); // Ejemplo: cooldown de 2 segundos
     }
 
-    private void IncreaseScore(int amount)
+    private void ResetSpecialAttack()
     {
-        if (Time.time - lastComboTime <= comboTimeThreshold)
-        {
-            comboCount++;
-            if (comboCount >= 10)
-            {
-                isPowerUpActive = true;
-                comboCount = 0;
-            }
-        }
-        else
-        {
-            comboCount = 1;
-        }
-
-        lastComboTime = Time.time;
-        score += amount;
-
-        if (scoreTextLocal != null)
-        {
-            scoreTextLocal.text = "Player" + photonView.Owner.ActorNumber + ": " + score;
-        }
-    }
-    
-    private void DecreaseScore(int amount)
-    {
-        score -= amount;
-
-        if (scoreTextLocal != null)
-        {
-            scoreTextLocal.text = "Player" + photonView.Owner.ActorNumber + ": " + score;
-        }
-    }
-    
-    // Método para iniciar el juego
-    public void StartGame()
-    {
-        gameStarted = true;
-    }
-    
-    public void EndGame()
-    {
-        gameStarted = false;
-    }
-
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.CompareTag("FollowMe"))
-        {
-            isTouchingFollowMe = true;
-        }
-        else if (other.CompareTag("PowerUp"))
-        {
-            photonView.RPC("UpdateScore", RpcTarget.All, 0);
-        }
-        else if (other.CompareTag("VelocityPower"))
-        {
-            if (!isTouchingPlayer && !isTouchingFollowMe && veloc < 10)
-            {
-                veloc += 2;
-                //Destroy(other.gameObject);
-                //photonView.RPC("DestroyVelocityPowerUp", RpcTarget.Others, other.gameObject);
-            }
-        }
-    }
-
-    private void OnTriggerExit2D(Collider2D other)
-    {
-        if (other.CompareTag("FollowMe"))
-        {
-            isTouchingFollowMe = false;
-        }
+        isSpecialAttacking = false;
     }
 }

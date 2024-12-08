@@ -12,5 +12,6 @@ public enum SceneNames
     ChoosePlayer,
     User,
     Shop,
-    Inventory
+    Inventory,
+    World
 }

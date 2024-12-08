@@ -42,6 +42,20 @@ public class GameOptionsService : MonoBehaviourPunCallbacks
         photonView.RPC(nameof(SyncFishing), RpcTarget.Others);
     }
 
+    public void World()
+    {
+        localOnlineOption.SetWorldGame();
+
+        photonView.RPC(nameof(SyncWorld), RpcTarget.Others);
+    }
+
+    public void Maze()
+    {
+        localOnlineOption.SetMazeGame();
+
+        photonView.RPC(nameof(SyncMaze), RpcTarget.Others);
+    }
+
     public void LoadGame()
     {
         photonView.RPC(nameof(SyncLoadGame), RpcTarget.All);
@@ -63,6 +77,18 @@ public class GameOptionsService : MonoBehaviourPunCallbacks
     private void SyncFishing()
     {
         localOnlineOption.SetFishingGame();
+    }
+
+    [PunRPC]
+    private void SyncWorld()
+    {
+        localOnlineOption.SetWorldGame();
+    }
+
+    [PunRPC]
+    private void SyncMaze()
+    {
+        localOnlineOption.SetMazeGame();
     }
 
     [PunRPC]

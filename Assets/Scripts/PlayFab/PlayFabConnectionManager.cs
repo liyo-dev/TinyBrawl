@@ -29,7 +29,7 @@ public class PlayFabConnectionManager : MonoBehaviour
             }
 
             // Verificar si el SO del jugador está rellenado
-            if (!string.IsNullOrEmpty(playerDataSO.username))
+            if (!string.IsNullOrEmpty(playerDataSO.username) && playerDataSO.username != "Desconocido")
             {
                 if (debugLogs)
                 {
@@ -45,6 +45,7 @@ public class PlayFabConnectionManager : MonoBehaviour
                 }
                 RetrievePlayerDataFromPlayFab();
             }
+
         }
         else
         {

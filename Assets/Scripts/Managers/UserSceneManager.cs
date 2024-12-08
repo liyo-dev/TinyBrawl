@@ -74,6 +74,11 @@ public class UserSceneManager : MonoBehaviour
 
         // Instanciar el personaje seleccionado
         activeCharacter = Instantiate(characters[characterId], characterPosition);
+        Rigidbody rb = activeCharacter.GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.isKinematic = true; // Evitar que la gravedad o las fuerzas afecten al personaje
+        }
         activeCharacter.transform.localPosition = Vector3.zero; // Centrar en el padre
         activeCharacter.transform.localRotation = Quaternion.identity; // Resetear rotación
     }
