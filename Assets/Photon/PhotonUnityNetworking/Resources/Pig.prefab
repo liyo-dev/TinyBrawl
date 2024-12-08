@@ -767,6 +767,7 @@ GameObject:
   - component: {fileID: 495403447699483741}
   - component: {fileID: 6050860210939844081}
   - component: {fileID: -2417828701578432014}
+  - component: {fileID: -2744306132873979818}
   - component: {fileID: -6403799137516332348}
   m_Layer: 0
   m_Name: Pig
@@ -838,6 +839,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 5
   rotationSpeed: 10
+--- !u!114 &-2744306132873979818
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 495403447699483738}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7180dbd19347aa843b230551006893e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  offset: {x: 0, y: 2, z: 0}
+  playerDataSO: {fileID: 11400000, guid: 59d6e67ac9fa45746a973a641e4e5fb3, type: 2}
+  fontAsset: {fileID: 11400000, guid: 8c21c21d01f46a64080c792bf726c643, type: 2}
 --- !u!54 &-6403799137516332348
 Rigidbody:
   m_ObjectHideFlags: 0

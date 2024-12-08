@@ -1248,6 +1248,7 @@ GameObject:
   - component: {fileID: 1435845769007002740}
   - component: {fileID: 824897960141108085}
   - component: {fileID: -9146903648086226818}
+  - component: {fileID: -8666835480820706491}
   m_Layer: 0
   m_Name: Knight
   m_TagString: Player
@@ -1345,6 +1346,21 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 80
   m_CollisionDetection: 0
+--- !u!114 &-8666835480820706491
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4975976810483710590}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7180dbd19347aa843b230551006893e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  offset: {x: 0, y: 2, z: 0}
+  playerDataSO: {fileID: 11400000, guid: 59d6e67ac9fa45746a973a641e4e5fb3, type: 2}
+  fontAsset: {fileID: 11400000, guid: 8c21c21d01f46a64080c792bf726c643, type: 2}
 --- !u!1 &5144416589626917938
 GameObject:
   m_ObjectHideFlags: 0
