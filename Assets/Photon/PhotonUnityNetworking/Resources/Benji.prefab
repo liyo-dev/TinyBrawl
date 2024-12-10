@@ -456,8 +456,10 @@ GameObject:
   - component: {fileID: 6677572693486630542}
   - component: {fileID: -6080851760987821820}
   - component: {fileID: 8542467480780052209}
+  - component: {fileID: 6814947661152303877}
+  - component: {fileID: 7536836890318771936}
   m_Layer: 0
-  m_Name: SoccerPlayerRed
+  m_Name: Benji
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -492,7 +494,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_PositionModel:
-    SynchronizeEnabled: 0
+    SynchronizeEnabled: 1
     TeleportEnabled: 1
     TeleportIfDistanceGreaterThan: 3
     InterpolateOption: 2
@@ -503,7 +505,7 @@ MonoBehaviour:
     ExtrapolateIncludingRoundTripTime: 1
     ExtrapolateNumberOfStoredPositions: 1
   m_RotationModel:
-    SynchronizeEnabled: 0
+    SynchronizeEnabled: 1
     InterpolateOption: 1
     InterpolateRotateTowardsSpeed: 180
     InterpolateLerpSpeed: 5
@@ -524,8 +526,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2d8929c467c4d043b7a4198baf93a95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 5
-  rotationSpeed: 10
+  moveSpeed: 8
+  rotationSpeed: 25
 --- !u!114 &-6080851760987821820
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -539,7 +541,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   offset: {x: 0, y: 2, z: 0}
-  playerDataSO: {fileID: 11400000, guid: 59d6e67ac9fa45746a973a641e4e5fb3, type: 2}
   fontAsset: {fileID: 11400000, guid: 8c21c21d01f46a64080c792bf726c643, type: 2}
 --- !u!54 &8542467480780052209
 Rigidbody:
@@ -566,8 +567,44 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 80
+  m_Constraints: 112
   m_CollisionDetection: 0
+--- !u!114 &6814947661152303877
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3132827565773464112}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
+--- !u!114 &7536836890318771936
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3132827565773464112}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce1aea354b2298e4b94f3d3ae98ca9e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bulletPrefab: {fileID: 3293353808548675362, guid: 96fb69856970dd14a848db5977b24d80, type: 3}
+  firePoint: {fileID: 0}
 --- !u!1 &5215431059119327633
 GameObject:
   m_ObjectHideFlags: 0

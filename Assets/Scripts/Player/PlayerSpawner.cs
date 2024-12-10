@@ -2,9 +2,12 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using Cinemachine;
+using UnityEngine.Events;
 
 public class WorldManager : MonoBehaviourPunCallbacks
 {
+    public UnityEvent OnPlayerLoaded;
+
     [Header("Player Data")]
     [SerializeField] private PlayerDataSO playerDataSO;
 
@@ -23,6 +26,18 @@ public class WorldManager : MonoBehaviourPunCallbacks
 
     void Start()
     {
+        // Configurar el nickname del jugador basado en PlayerDataSO
+        if (playerDataSO != null && !string.IsNullOrEmpty(playerDataSO.username))
+        {
+            PhotonNetwork.NickName = playerDataSO.username;
+            Debug.Log($"Nickname del jugador configurado como: {PhotonNetwork.NickName}");
+        }
+        else
+        {
+            Debug.LogWarning("PlayerDataSO no está asignado o el username está vacío. Configurando un nickname predeterminado.");
+            PhotonNetwork.NickName = "Player_" + Random.Range(1000, 9999); // Nickname predeterminado
+        }
+
         // Conectar a Photon si no está conectado
         if (!PhotonNetwork.IsConnected)
         {
@@ -121,9 +136,15 @@ public class WorldManager : MonoBehaviourPunCallbacks
         {
             // Configurar la cámara virtual para que siga al jugador
             virtualCamera.Follow = player.transform;
-            virtualCamera.LookAt = player.transform;
+
+            // Configuración para mantener la cámara fija desde arriba
+            Transform cameraTransform = virtualCamera.transform;
+            cameraTransform.position = new Vector3(cameraTransform.position.x, 10f, cameraTransform.position.z);
+            cameraTransform.rotation = Quaternion.Euler(90f, 0f, 0f);
 
             Debug.Log($"Cinemachine ahora sigue a: {player.name}");
+
+            OnPlayerLoaded?.Invoke();
 
             // Detener la repetición, ya que hemos encontrado al jugador
             CancelInvoke(nameof(FindAndFollowPlayer));
@@ -133,6 +154,7 @@ public class WorldManager : MonoBehaviourPunCallbacks
             Debug.LogWarning("No se encontró ningún jugador con el tag 'Player'.");
         }
     }
+
 
     public override void OnJoinRoomFailed(short returnCode, string message)
     {

@@ -6,6 +6,8 @@ using UnityEngine.SceneManagement;
 
 public class PlayFabLoginManager : MonoBehaviour
 {
+    [SerializeField] private GameObject loader;
+
     [Header("Login UI")]
     [SerializeField] private TMP_InputField loginInput;
     [SerializeField] private TMP_InputField loginPasswordInput;
@@ -33,6 +35,8 @@ public class PlayFabLoginManager : MonoBehaviour
             feedbackText.text = "Por favor, llena todos los campos.";
             return;
         }
+
+        loader.SetActive(true); // Activar el loader al iniciar el proceso de login
 
         if (input.Contains("@"))
         {
@@ -78,6 +82,8 @@ public class PlayFabLoginManager : MonoBehaviour
             return;
         }
 
+        loader.SetActive(true); // Activar el loader al iniciar el proceso de registro
+
         var request = new RegisterPlayFabUserRequest
         {
             Email = email,
@@ -121,6 +127,7 @@ public class PlayFabLoginManager : MonoBehaviour
         playerDataSO.username = registerUsernameInput.text;
         SaveInitialPlayerData();
         ShowLoginPanel();
+        loader.SetActive(false); // Desactivar el loader tras completar el registro
     }
 
     private void SaveInitialPlayerData()
@@ -153,8 +160,6 @@ public class PlayFabLoginManager : MonoBehaviour
 
                 Debug.Log($"Datos cargados: Username: {playerDataSO.username}, Nivel: {playerDataSO.level}, Puntos: {playerDataSO.points}, CharacterId: {playerDataSO.selectedCharacterId}");
 
-                //feedbackText.text = $"Bienvenido {playerDataSO.username}. Nivel: {playerDataSO.level}, Puntos: {playerDataSO.points}";
-
                 SceneManager.LoadScene(SceneNames.User.ToString());
             }
             else
@@ -162,6 +167,8 @@ public class PlayFabLoginManager : MonoBehaviour
                 Debug.Log("No se encontraron datos del jugador.");
                 feedbackText.text = "No se encontraron datos del jugador.";
             }
+
+            loader.SetActive(false); // Desactivar el loader tras cargar los datos
         }, OnError);
     }
 
@@ -181,5 +188,6 @@ public class PlayFabLoginManager : MonoBehaviour
     {
         feedbackText.text = "Error: " + error.GenerateErrorReport();
         Debug.LogError("Error: " + error.GenerateErrorReport());
+        loader.SetActive(false); // Desactivar el loader en caso de error
     }
 }

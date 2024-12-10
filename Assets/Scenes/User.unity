@@ -610,7 +610,7 @@ Transform:
   m_GameObject: {fileID: 383093957}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: -4, y: -3.15, z: 0}
+  m_LocalPosition: {x: -4.74, y: -1.42, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1301,6 +1301,50 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &975447738
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 975447740}
+  - component: {fileID: 975447739}
+  m_Layer: 0
+  m_Name: PhotonDisconect
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &975447739
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 975447738}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de218d1cc3fcb1f4fa815d56be6dbe10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &975447740
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 975447738}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1053195517
 GameObject:
   m_ObjectHideFlags: 0
@@ -1888,7 +1932,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 4d9fca58ffe7dd64b92f5e5c7deb9511, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 02e07286a8801774b8c10907f5c2b1ec, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2955,7 +2999,7 @@ GameObject:
   - component: {fileID: 1904086519}
   - component: {fileID: 1904086520}
   m_Layer: 0
-  m_Name: UserSceneManager
+  m_Name: Start -  UserSceneManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3002,6 +3046,21 @@ MonoBehaviour:
   - {fileID: 6644603938449114179, guid: ed625ec1699c44a4e9693bd4e1c536d9, type: 3}
   - {fileID: 5640941148175782696, guid: a0c7ce51a32ba5c42895ac9cfb6edb92, type: 3}
   - {fileID: 2618188073631541129, guid: 474c3eb9f44636f4a9002ec94ffe7a84, type: 3}
+  - {fileID: 4653247046118013287, guid: 8a9fafe92a9541a439b49e62285243c8, type: 3}
+  - {fileID: 8346789638012683817, guid: 5316f4e1d8a32b643871c00b252af875, type: 3}
+  - {fileID: 3300799546944532708, guid: 106c7161880b6c540ba09a15a8b545ff, type: 3}
+  - {fileID: 2601849333618502240, guid: b6aaa8852a36a3b4295448899cc4b631, type: 3}
+  - {fileID: 4975976810483710590, guid: 4ee79ddf24e670143a0099c45a50d27d, type: 3}
+  - {fileID: 7881807149238628900, guid: 7f04b78760b3cb34fa89805fc84e4658, type: 3}
+  - {fileID: 495403447699483738, guid: c927019bea5ff224088234e10cc790d9, type: 3}
+  - {fileID: 1822160269786678409, guid: bf3d937d2b5cac849ab05ff48b183e87, type: 3}
+  - {fileID: 7438494788967298231, guid: d9740517364ee6545a58cdf5854ed57a, type: 3}
+  - {fileID: 631475601059415042, guid: 73b156d3253df944a9b0999efe13ec82, type: 3}
+  - {fileID: 3132827565773464112, guid: f6146937a145093478a249bb209f1255, type: 3}
+  - {fileID: 1075948391855331002, guid: 2f91b45fd27f4da4ba2be1eba05aa6f3, type: 3}
+  - {fileID: 2744035215387846840, guid: 2074fd518eb18a24fa55716e9e90c541, type: 3}
+  - {fileID: 840272330101625621, guid: 29bab53120239e940958d60b247e4ebf, type: 3}
+  - {fileID: 2456748712407318239, guid: cb4299437d10b3d4da86cd2870aafc18, type: 3}
 --- !u!1 &1915767938
 GameObject:
   m_ObjectHideFlags: 0
@@ -3303,3 +3362,4 @@ SceneRoots:
   - {fileID: 111776878}
   - {fileID: 383093958}
   - {fileID: 1904086519}
+  - {fileID: 975447740}

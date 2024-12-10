@@ -88,9 +88,6 @@ public class CountdownTimer : MonoBehaviour
     {
         OnTimeOut?.Invoke();
 
-        //Cambiar este boton por el de ver el ranking?
-        //ExitMenuBtn.SetActive(true);
-
         Button exitButton = ExitMenuBtn.GetComponentInChildren<Button>();
 
         exitButton.onClick.AddListener(LoadScene);

@@ -5,6 +5,8 @@ using PlayFab.ClientModels;
 
 public class PlayFabConnectionManager : MonoBehaviour
 {
+    [SerializeField] private GameObject loader;
+
     [Header("Events")]
     public UnityEvent onPlayFabConnected;
 
@@ -14,8 +16,17 @@ public class PlayFabConnectionManager : MonoBehaviour
     [Header("Player Data")]
     [SerializeField] private PlayerDataSO playerDataSO;
 
+    private void OnEnable()
+    {
+        loader.SetActive(true);
+
+        CheckPlayFabConnection();
+    }
+
     private void Start()
     {
+        loader.SetActive(true);
+
         CheckPlayFabConnection();
     }
 
@@ -35,7 +46,10 @@ public class PlayFabConnectionManager : MonoBehaviour
                 {
                     Debug.Log("El ScriptableObject del jugador ya está rellenado. No es necesario recuperar datos.");
                 }
+
                 onPlayFabConnected?.Invoke();
+
+                loader.SetActive(false);
             }
             else
             {
@@ -52,6 +66,8 @@ public class PlayFabConnectionManager : MonoBehaviour
             if (debugLogs)
             {
                 Debug.Log("No estás conectado a PlayFab. El flujo del login será responsable de conectarte.");
+
+                loader.SetActive(false);
             }
         }
     }
@@ -75,10 +91,14 @@ public class PlayFabConnectionManager : MonoBehaviour
 
                 // Invocar el evento después de cargar los datos
                 onPlayFabConnected?.Invoke();
+
+                loader.SetActive(false);
             }
             else
             {
                 Debug.LogWarning("No se encontraron datos del jugador en PlayFab.");
+
+                loader.SetActive(false);
             }
         }, OnError);
     }

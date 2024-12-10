@@ -29,6 +29,10 @@ public class MyGameManager : MonoBehaviourPunCallbacks
         {
             timer.OnTimeOut += DoStop;
         }
+
+        // Inicializar la puntuación con los puntos existentes en el SO
+        score = playerDataSO.points;
+        UpdateLocalScoreUI();
     }
 
     public void DoStop()
@@ -40,14 +44,7 @@ public class MyGameManager : MonoBehaviourPunCallbacks
     {
         score += _score;
 
-        if (scoreTextLocal != null)
-        {
-            scoreTextLocal.text = "Player " + PhotonNetwork.LocalPlayer.ActorNumber + ": " + score.ToString();
-        }
-        else
-        {
-            Debug.LogError("scoreTextLocal no ha sido inicializado correctamente.");
-        }
+        UpdateLocalScoreUI();
 
         photonView.RPC("SyncScore", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber, score);
     }
@@ -58,6 +55,13 @@ public class MyGameManager : MonoBehaviourPunCallbacks
 
         score -= _score;
 
+        UpdateLocalScoreUI();
+
+        photonView.RPC("SyncScore", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber, score);
+    }
+
+    private void UpdateLocalScoreUI()
+    {
         if (scoreTextLocal != null)
         {
             scoreTextLocal.text = "Player " + PhotonNetwork.LocalPlayer.ActorNumber + ": " + score.ToString();
@@ -66,8 +70,6 @@ public class MyGameManager : MonoBehaviourPunCallbacks
         {
             Debug.LogError("scoreTextLocal no ha sido inicializado correctamente.");
         }
-
-        photonView.RPC("SyncScore", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber, score);
     }
 
     void CalculateWinnerAndDisplay()
@@ -77,15 +79,13 @@ public class MyGameManager : MonoBehaviourPunCallbacks
 
         foreach (string scriptName in scriptNames)
         {
-            // Intenta encontrar el script en la escena
             var script = FindObjectOfType(System.Type.GetType(scriptName));
             if (script != null)
             {
-                // Usa reflexión para llamar al método "DoStop" si existe
                 var method = script.GetType().GetMethod("DoStop");
                 if (method != null)
                 {
-                    method.Invoke(script, null); // Llama al método sin parámetros
+                    method.Invoke(script, null);
                     Debug.Log($"Llamado a DoStop en {scriptName}");
                 }
             }
@@ -94,26 +94,23 @@ public class MyGameManager : MonoBehaviourPunCallbacks
         // Mostrar la puntuación
         winnerText.text = "Tu puntuación: " + score;
 
-        // Obtener la puntuación del jugador local
-        var myScore = score;
-
-        //guardo los puntos en el SO del player y en playfab
-        playerDataSO.points = myScore;
+        // Actualizar los puntos en el SO
+        playerDataSO.points += score;
 
         // Guardar los puntos en PlayFab
-        UpdatePointsInPlayFab(score);
+        UpdatePointsInPlayFab(playerDataSO.points);
 
         // Enviar la puntuación del jugador local al otro cliente
-        photonView.RPC("ReceiveOpponentScore", RpcTarget.Others, myScore);
+        photonView.RPC("ReceiveOpponentScore", RpcTarget.Others, score);
     }
 
-    private void UpdatePointsInPlayFab(int newPoints)
+    private void UpdatePointsInPlayFab(int totalPoints)
     {
         var request = new UpdateUserDataRequest
         {
             Data = new System.Collections.Generic.Dictionary<string, string>
             {
-                { "Points", newPoints.ToString() }
+                { "Points", totalPoints.ToString() }
             }
         };
 
@@ -145,7 +142,6 @@ public class MyGameManager : MonoBehaviourPunCallbacks
     [PunRPC]
     void ReceiveOpponentScore(int opponentScore)
     {
-        // Obtener la puntuación del jugador local
         var myScore = score;
 
         if (myScore > opponentScore)

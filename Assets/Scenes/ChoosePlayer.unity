@@ -130,7 +130,7 @@ GameObject:
   - component: {fileID: 13003288}
   - component: {fileID: 13003289}
   m_Layer: 0
-  m_Name: CharacterCarousel
+  m_Name: Start - CharacterCarousel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -168,6 +168,21 @@ MonoBehaviour:
   - {fileID: 6644603938449114179, guid: ed625ec1699c44a4e9693bd4e1c536d9, type: 3}
   - {fileID: 5640941148175782696, guid: a0c7ce51a32ba5c42895ac9cfb6edb92, type: 3}
   - {fileID: 2618188073631541129, guid: 474c3eb9f44636f4a9002ec94ffe7a84, type: 3}
+  - {fileID: 4653247046118013287, guid: 8a9fafe92a9541a439b49e62285243c8, type: 3}
+  - {fileID: 8346789638012683817, guid: 5316f4e1d8a32b643871c00b252af875, type: 3}
+  - {fileID: 3300799546944532708, guid: 106c7161880b6c540ba09a15a8b545ff, type: 3}
+  - {fileID: 2601849333618502240, guid: b6aaa8852a36a3b4295448899cc4b631, type: 3}
+  - {fileID: 4975976810483710590, guid: 4ee79ddf24e670143a0099c45a50d27d, type: 3}
+  - {fileID: 7881807149238628900, guid: 7f04b78760b3cb34fa89805fc84e4658, type: 3}
+  - {fileID: 495403447699483738, guid: c927019bea5ff224088234e10cc790d9, type: 3}
+  - {fileID: 1822160269786678409, guid: bf3d937d2b5cac849ab05ff48b183e87, type: 3}
+  - {fileID: 7438494788967298231, guid: d9740517364ee6545a58cdf5854ed57a, type: 3}
+  - {fileID: 631475601059415042, guid: 73b156d3253df944a9b0999efe13ec82, type: 3}
+  - {fileID: 3132827565773464112, guid: f6146937a145093478a249bb209f1255, type: 3}
+  - {fileID: 1075948391855331002, guid: 2f91b45fd27f4da4ba2be1eba05aa6f3, type: 3}
+  - {fileID: 2744035215387846840, guid: 2074fd518eb18a24fa55716e9e90c541, type: 3}
+  - {fileID: 840272330101625621, guid: 29bab53120239e940958d60b247e4ebf, type: 3}
+  - {fileID: 2456748712407318239, guid: cb4299437d10b3d4da86cd2870aafc18, type: 3}
   characterNameText: {fileID: 2135745730}
   characterInfoText: {fileID: 401865219}
   selectButton: {fileID: 1244636742}
@@ -1200,7 +1215,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -50, y: 0}
   m_SizeDelta: {x: 179, y: 186}
   m_Pivot: {x: 1, y: 0}
 --- !u!114 &1244636742
@@ -1969,6 +1984,6 @@ SceneRoots:
   - {fileID: 486249506}
   - {fileID: 1889091450}
   - {fileID: 1125629352}
-  - {fileID: 13003288}
   - {fileID: 1297236432}
   - {fileID: 490798511}
+  - {fileID: 13003288}
