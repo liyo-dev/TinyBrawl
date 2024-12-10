@@ -140,7 +140,7 @@ public class WorldManager : MonoBehaviourPunCallbacks
             // Configuración para mantener la cámara fija desde arriba
             Transform cameraTransform = virtualCamera.transform;
             cameraTransform.position = new Vector3(cameraTransform.position.x, 10f, cameraTransform.position.z);
-            cameraTransform.rotation = Quaternion.Euler(90f, 0f, 0f);
+            cameraTransform.rotation = Quaternion.Euler(50f, 0f, 0f);
 
             Debug.Log($"Cinemachine ahora sigue a: {player.name}");
 
