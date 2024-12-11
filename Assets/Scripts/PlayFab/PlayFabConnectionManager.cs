@@ -16,12 +16,6 @@ public class PlayFabConnectionManager : MonoBehaviour
     [Header("Player Data")]
     [SerializeField] private PlayerDataSO playerDataSO;
 
-    private void OnEnable()
-    {
-        loader.SetActive(true);
-
-        CheckPlayFabConnection();
-    }
 
     private void Start()
     {

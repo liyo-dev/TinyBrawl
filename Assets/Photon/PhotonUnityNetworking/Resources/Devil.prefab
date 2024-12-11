@@ -1230,6 +1230,8 @@ GameObject:
   - component: {fileID: 1428501557859812566}
   - component: {fileID: 3408432102206026848}
   - component: {fileID: -6482127701909462646}
+  - component: {fileID: 4688147723611634097}
+  - component: {fileID: 7677701007371743106}
   m_Layer: 0
   m_Name: Devil
   m_TagString: Player
@@ -1379,6 +1381,35 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bulletPrefab: {fileID: 3293353808548675362, guid: 96fb69856970dd14a848db5977b24d80, type: 3}
   firePoint: {fileID: 7149992171082296922}
+--- !u!114 &4688147723611634097
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2601849333618502240}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a95a3dde870c9749916e6a2040b471e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  offset: {x: 0, y: 2.5, z: 0}
+  maxHealth: 100
+--- !u!114 &7677701007371743106
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2601849333618502240}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f51cf07243a7744fa3618de3880b91f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerDataSO: {fileID: 11400000, guid: 59d6e67ac9fa45746a973a641e4e5fb3, type: 2}
+  maxHealth: 100
+  healthBar: {fileID: 0}
 --- !u!1 &2962076198817612445
 GameObject:
   m_ObjectHideFlags: 0

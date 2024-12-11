@@ -87,6 +87,10 @@ MonoBehaviour:
   - RegisterFirstPlayer
   - SyncMaze
   - SyncWorld
+  - DestroyBullet
+  - SyncHealth
+  - SyncHealHealth
+  - SyncReduceHealth
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

@@ -7,4 +7,5 @@ public class PlayerDataSO : ScriptableObject
     public int level;          // Nivel del jugador
     public int points;         // Puntos del jugador
     public int selectedCharacterId; // Id del personaje seleccionado
+    public float hp;
 }

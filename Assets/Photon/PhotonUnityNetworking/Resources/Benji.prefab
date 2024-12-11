@@ -458,6 +458,8 @@ GameObject:
   - component: {fileID: 8542467480780052209}
   - component: {fileID: 6814947661152303877}
   - component: {fileID: 7536836890318771936}
+  - component: {fileID: 8341006417112180942}
+  - component: {fileID: -4290634241074366046}
   m_Layer: 0
   m_Name: Benji
   m_TagString: Player
@@ -528,6 +530,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 8
   rotationSpeed: 25
+  lastRotationAngle: 0
 --- !u!114 &-6080851760987821820
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -587,7 +590,8 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
-  ObservedComponents: []
+  ObservedComponents:
+  - {fileID: 2719944516523861806}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -605,6 +609,35 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bulletPrefab: {fileID: 3293353808548675362, guid: 96fb69856970dd14a848db5977b24d80, type: 3}
   firePoint: {fileID: 0}
+--- !u!114 &8341006417112180942
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3132827565773464112}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a95a3dde870c9749916e6a2040b471e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  offset: {x: 0, y: 2.5, z: 0}
+  barSize: {x: 200, y: 20}
+  maxHealth: 100
+--- !u!114 &-4290634241074366046
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3132827565773464112}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f51cf07243a7744fa3618de3880b91f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerDataSO: {fileID: 11400000, guid: 59d6e67ac9fa45746a973a641e4e5fb3, type: 2}
+  maxHealth: 100
 --- !u!1 &5215431059119327633
 GameObject:
   m_ObjectHideFlags: 0

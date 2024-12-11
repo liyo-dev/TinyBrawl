@@ -1508,6 +1508,8 @@ GameObject:
   - component: {fileID: 7115137596014967127}
   - component: {fileID: 7484183782137828932}
   - component: {fileID: 690422757967390383}
+  - component: {fileID: -8678087016157316085}
+  - component: {fileID: 8774474829549926297}
   m_Layer: 0
   m_Name: Robber
   m_TagString: Player
@@ -1657,6 +1659,35 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bulletPrefab: {fileID: 3293353808548675362, guid: 96fb69856970dd14a848db5977b24d80, type: 3}
   firePoint: {fileID: 9204024331896075465}
+--- !u!114 &-8678087016157316085
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7438494788967298231}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a95a3dde870c9749916e6a2040b471e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  offset: {x: 0, y: 2.5, z: 0}
+  maxHealth: 100
+--- !u!114 &8774474829549926297
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7438494788967298231}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f51cf07243a7744fa3618de3880b91f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerDataSO: {fileID: 11400000, guid: 59d6e67ac9fa45746a973a641e4e5fb3, type: 2}
+  maxHealth: 100
+  healthBar: {fileID: 0}
 --- !u!1 &7654464796460211274
 GameObject:
   m_ObjectHideFlags: 0

@@ -165,6 +165,8 @@ GameObject:
   - component: {fileID: 1501282173470442651}
   - component: {fileID: 3277894332004512994}
   - component: {fileID: 7655682915399452160}
+  - component: {fileID: -4107466620749154117}
+  - component: {fileID: -958340726260204959}
   m_Layer: 0
   m_Name: Streaker
   m_TagString: Player
@@ -314,6 +316,35 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bulletPrefab: {fileID: 3293353808548675362, guid: 96fb69856970dd14a848db5977b24d80, type: 3}
   firePoint: {fileID: 4603711744340030449}
+--- !u!114 &-4107466620749154117
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1075948391855331002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a95a3dde870c9749916e6a2040b471e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  offset: {x: 0, y: 2.5, z: 0}
+  maxHealth: 100
+--- !u!114 &-958340726260204959
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1075948391855331002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f51cf07243a7744fa3618de3880b91f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerDataSO: {fileID: 11400000, guid: 59d6e67ac9fa45746a973a641e4e5fb3, type: 2}
+  maxHealth: 100
+  healthBar: {fileID: 0}
 --- !u!1 &2818223673294155358
 GameObject:
   m_ObjectHideFlags: 0

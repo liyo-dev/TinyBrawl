@@ -17,6 +17,7 @@ TagManager:
   - BurguerOptions
   - SpecialAttackBtn
   - AttackBtn
+  - Bullet
   layers:
   - Default
   - TransparentFX

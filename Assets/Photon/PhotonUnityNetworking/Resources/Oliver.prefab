@@ -84,6 +84,8 @@ GameObject:
   - component: {fileID: 8024876489840318314}
   - component: {fileID: 5346848586242885324}
   - component: {fileID: -1962487482627060094}
+  - component: {fileID: 7175613152066159841}
+  - component: {fileID: 4168920191046860375}
   m_Layer: 0
   m_Name: Oliver
   m_TagString: Player
@@ -233,6 +235,35 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bulletPrefab: {fileID: 3293353808548675362, guid: 96fb69856970dd14a848db5977b24d80, type: 3}
   firePoint: {fileID: 7339964044841996886}
+--- !u!114 &7175613152066159841
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 631475601059415042}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a95a3dde870c9749916e6a2040b471e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  offset: {x: 0, y: 2.5, z: 0}
+  maxHealth: 100
+--- !u!114 &4168920191046860375
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 631475601059415042}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f51cf07243a7744fa3618de3880b91f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerDataSO: {fileID: 11400000, guid: 59d6e67ac9fa45746a973a641e4e5fb3, type: 2}
+  maxHealth: 100
+  healthBar: {fileID: 0}
 --- !u!1 &2923051629204497502
 GameObject:
   m_ObjectHideFlags: 0

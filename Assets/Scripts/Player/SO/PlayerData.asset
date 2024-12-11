@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9071a78ba0ff7f4bb9be68f1cf556b2, type: 3}
   m_Name: PlayerData
   m_EditorClassIdentifier: 
-  profileName: 
-  level: 0
-  points: 0
-  selectedCharacter: {fileID: 0}
+  username: liyodev
+  level: 1
+  points: 15
+  selectedCharacterId: 17
+  hp: 100

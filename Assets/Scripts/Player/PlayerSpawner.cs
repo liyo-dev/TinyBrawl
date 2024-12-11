@@ -140,7 +140,9 @@ public class WorldManager : MonoBehaviourPunCallbacks
             // Configuración para mantener la cámara fija desde arriba
             Transform cameraTransform = virtualCamera.transform;
             cameraTransform.position = new Vector3(cameraTransform.position.x, 10f, cameraTransform.position.z);
-            cameraTransform.rotation = Quaternion.Euler(50f, 0f, 0f);
+            cameraTransform.rotation = Quaternion.Euler(40f, 0f, 0f);
+
+            ConfigureVirtualCamera();
 
             Debug.Log($"Cinemachine ahora sigue a: {player.name}");
 
@@ -152,6 +154,23 @@ public class WorldManager : MonoBehaviourPunCallbacks
         else
         {
             Debug.LogWarning("No se encontró ningún jugador con el tag 'Player'.");
+        }
+    }
+
+    private void ConfigureVirtualCamera()
+    {
+        if (virtualCamera != null)
+        {
+            var transposer = virtualCamera.GetCinemachineComponent<CinemachineTransposer>();
+            if (transposer != null)
+            {
+                transposer.m_FollowOffset = new Vector3(0, 3, -10); // Configurar el Follow Offset
+                Debug.Log("Follow Offset configurado en la Cinemachine Virtual Camera.");
+            }
+            else
+            {
+                Debug.LogWarning("No se encontró un componente CinemachineTransposer en la cámara virtual.");
+            }
         }
     }
 

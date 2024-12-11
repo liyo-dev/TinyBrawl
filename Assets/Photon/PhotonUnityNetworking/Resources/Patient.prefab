@@ -2939,6 +2939,8 @@ GameObject:
   - component: {fileID: 7481328034961644507}
   - component: {fileID: 4247178552500765157}
   - component: {fileID: -7125035853386395268}
+  - component: {fileID: -8613180697961632825}
+  - component: {fileID: 3349197983357460028}
   m_Layer: 0
   m_Name: Patient
   m_TagString: Player
@@ -3010,6 +3012,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 8
   rotationSpeed: 25
+  lastRotationAngle: 0
 --- !u!114 &-3494610436393970880
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3088,6 +3091,35 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bulletPrefab: {fileID: 3293353808548675362, guid: 96fb69856970dd14a848db5977b24d80, type: 3}
   firePoint: {fileID: 462858990733542251}
+--- !u!114 &-8613180697961632825
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7881807149238628900}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a95a3dde870c9749916e6a2040b471e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  offset: {x: 0, y: 2.5, z: 0}
+  barSize: {x: 200, y: 20}
+  maxHealth: 100
+--- !u!114 &3349197983357460028
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7881807149238628900}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f51cf07243a7744fa3618de3880b91f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerDataSO: {fileID: 11400000, guid: 59d6e67ac9fa45746a973a641e4e5fb3, type: 2}
+  maxHealth: 100
 --- !u!1 &7927236269272520591
 GameObject:
   m_ObjectHideFlags: 0

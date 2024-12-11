@@ -353,6 +353,8 @@ GameObject:
   - component: {fileID: 7938813684933642507}
   - component: {fileID: 1783484326091189618}
   - component: {fileID: -5467118636586793324}
+  - component: {fileID: -4505791878653625511}
+  - component: {fileID: 6676036018297421071}
   m_Layer: 0
   m_Name: Pilgrim
   m_TagString: Player
@@ -502,6 +504,35 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bulletPrefab: {fileID: 3293353808548675362, guid: 96fb69856970dd14a848db5977b24d80, type: 3}
   firePoint: {fileID: 9148239986005283940}
+--- !u!114 &-4505791878653625511
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1822160269786678409}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a95a3dde870c9749916e6a2040b471e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  offset: {x: 0, y: 2.5, z: 0}
+  maxHealth: 100
+--- !u!114 &6676036018297421071
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1822160269786678409}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f51cf07243a7744fa3618de3880b91f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerDataSO: {fileID: 11400000, guid: 59d6e67ac9fa45746a973a641e4e5fb3, type: 2}
+  maxHealth: 100
+  healthBar: {fileID: 0}
 --- !u!1 &1862448239209954546
 GameObject:
   m_ObjectHideFlags: 0

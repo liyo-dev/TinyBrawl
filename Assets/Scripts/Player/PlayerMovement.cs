@@ -6,6 +6,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
     [Header("Movement Settings")]
     public float moveSpeed = 8f;
     public float rotationSpeed = 30f;
+    public float lastRotationAngle = 0f;
 
     private DynamicJoystick movementJoystick;
 
@@ -46,6 +47,8 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
 
         movementDirection = new Vector3(horizontalInput, 0, verticalInput).normalized;
 
+        rb.MoveRotation(Quaternion.Euler(0, lastRotationAngle, 0));//Reseteo de la rotacion para que no se quede girando
+
         // Si hay movimiento, rotar y mover al personaje
         if (movementDirection.magnitude > 0.1f)
         {
@@ -55,6 +58,7 @@ public class PlayerMovement : MonoBehaviourPunCallbacks
             // Rotar suavemente hacia el ángulo deseado
             float angle = Mathf.LerpAngle(transform.eulerAngles.y, targetAngle, rotationSpeed * Time.fixedDeltaTime);
             rb.MoveRotation(Quaternion.Euler(0, angle, 0));
+            lastRotationAngle = angle;
 
             // Mover al personaje en la dirección que está mirando
             Vector3 moveDirection = movementDirection;
