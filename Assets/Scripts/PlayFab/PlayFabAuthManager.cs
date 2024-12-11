@@ -3,6 +3,7 @@ using UnityEngine.Events;
 using PlayFab;
 using PlayFab.ClientModels;
 using System.IO;
+using UnityEngine.SceneManagement;
 
 public class PlayFabAuthManager : MonoBehaviour
 {
@@ -109,7 +110,7 @@ public class PlayFabAuthManager : MonoBehaviour
     private void OnLoginSuccess(LoginResult result)
     {
         Debug.Log("Login exitoso.");
-        onLoginSuccess?.Invoke();
+        LoadPlayerData();
     }
 
     private void OnError(PlayFabError error)
@@ -129,11 +130,6 @@ public class PlayFabAuthManager : MonoBehaviour
             if (debugLogs)
                 Debug.Log("Datos de login cargados desde el archivo local correctamente.");
 
-            playerDataSO.username = "";
-            playerDataSO.hp = 100f;
-            playerDataSO.points = 0;
-            playerDataSO.level = 0;
-
             return loginData;
         }
         catch (System.Exception ex)
@@ -143,5 +139,29 @@ public class PlayFabAuthManager : MonoBehaviour
 
             return null;
         }
+    }
+
+    private void LoadPlayerData()
+    {
+        PlayFabClientAPI.GetUserData(new GetUserDataRequest(), result =>
+        {
+            if (result.Data != null)
+            {
+                playerDataSO.level = result.Data.ContainsKey("Level") ? int.Parse(result.Data["Level"].Value) : 1;
+                playerDataSO.points = result.Data.ContainsKey("Points") ? int.Parse(result.Data["Points"].Value) : 0;
+                playerDataSO.selectedCharacterId = result.Data.ContainsKey("SelectedCharacterId") ? int.Parse(result.Data["SelectedCharacterId"].Value) : 0;
+                playerDataSO.rightHandItemId = result.Data.ContainsKey("RightHandItemId") ? int.Parse(result.Data["RightHandItemId"].Value) : -1;
+                playerDataSO.leftHandItemId = result.Data.ContainsKey("LeftHandItemId") ? int.Parse(result.Data["LeftHandItemId"].Value) : -1;
+
+                Debug.Log($"Datos cargados: Username: {playerDataSO.username}, Nivel: {playerDataSO.level}, Puntos: {playerDataSO.points}, CharacterId: {playerDataSO.selectedCharacterId}");
+
+                onLoginSuccess?.Invoke();
+            }
+            else
+            {
+                Debug.Log("No se encontraron datos del jugador.");
+            }
+
+        }, OnError);
     }
 }

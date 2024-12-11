@@ -196,6 +196,8 @@ public class PlayFabLoginManager : MonoBehaviour
                 playerDataSO.level = result.Data.ContainsKey("Level") ? int.Parse(result.Data["Level"].Value) : 1;
                 playerDataSO.points = result.Data.ContainsKey("Points") ? int.Parse(result.Data["Points"].Value) : 0;
                 playerDataSO.selectedCharacterId = result.Data.ContainsKey("SelectedCharacterId") ? int.Parse(result.Data["SelectedCharacterId"].Value) : 0;
+                playerDataSO.rightHandItemId = result.Data.ContainsKey("RightHandItemId") ? int.Parse(result.Data["RightHandItemId"].Value) : -1;
+                playerDataSO.leftHandItemId = result.Data.ContainsKey("LeftHandItemId") ? int.Parse(result.Data["LeftHandItemId"].Value) : -1;
 
                 Debug.Log($"Datos cargados: Username: {playerDataSO.username}, Nivel: {playerDataSO.level}, Puntos: {playerDataSO.points}, CharacterId: {playerDataSO.selectedCharacterId}");
 
@@ -204,10 +206,8 @@ public class PlayFabLoginManager : MonoBehaviour
             else
             {
                 Debug.Log("No se encontraron datos del jugador.");
-                feedbackText.text = "No se encontraron datos del jugador.";
             }
 
-            loader.SetActive(false); // Desactivar el loader tras cargar los datos
         }, OnError);
     }
 

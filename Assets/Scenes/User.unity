@@ -1707,7 +1707,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 289488867}
         m_TargetAssemblyTypeName: LoadScene, Assembly-CSharp
-        m_MethodName: LoadInstant
+        m_MethodName: LoadNoTransition
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3065,6 +3065,11 @@ MonoBehaviour:
   - {fileID: 2744035215387846840, guid: 2074fd518eb18a24fa55716e9e90c541, type: 3}
   - {fileID: 840272330101625621, guid: 29bab53120239e940958d60b247e4ebf, type: 3}
   - {fileID: 2456748712407318239, guid: cb4299437d10b3d4da86cd2870aafc18, type: 3}
+  inventoryItems:
+  - {fileID: 2410114350040114610, guid: 4603d2cd3ffcb6e46add7daf3a524b6c, type: 3}
+  - {fileID: 2939461966237491692, guid: 6dc5bbadc807ebe4d926b32d4cee4f6f, type: 3}
+  - {fileID: 5795407589716557517, guid: 9214597ca565f5840be2b48f71eb9966, type: 3}
+  - {fileID: 323333351367080586, guid: 87b744073f89d274ea9986018a77d4e4, type: 3}
 --- !u!1 &1915767938
 GameObject:
   m_ObjectHideFlags: 0
@@ -3365,5 +3370,5 @@ SceneRoots:
   - {fileID: 289488866}
   - {fileID: 111776878}
   - {fileID: 383093958}
-  - {fileID: 1904086519}
   - {fileID: 975447740}
+  - {fileID: 1904086519}

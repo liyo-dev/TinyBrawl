@@ -6,11 +6,8 @@ TagManager:
   tags:
   - Score
   - WaitForOthersTxt
-  - Energy
-  - PowerUp
   - ScoreLocal
   - ScoreRemote
-  - FollowMe
   - StartSceneEvent
   - VelocityPower
   - WinnerText
@@ -18,6 +15,10 @@ TagManager:
   - SpecialAttackBtn
   - AttackBtn
   - Bullet
+  - seleccion
+  - timer
+  - EquipLeft
+  - EquipRight
   layers:
   - Default
   - TransparentFX

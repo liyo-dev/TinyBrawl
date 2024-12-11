@@ -16,6 +16,9 @@ public class WorldManager : MonoBehaviourPunCallbacks
     [Header("Characters")]
     [SerializeField] private GameObject[] characterPrefabs; // Lista de prefabs de personajes
 
+    [Header("Inventory Items")]
+    [SerializeField] private GameObject[] inventoryItems; // Lista de prefabs de armas
+
     [Header("Spawn Settings")]
     [SerializeField] private Transform spawnPoint; // Punto donde instanciar el personaje
 
@@ -100,6 +103,7 @@ public class WorldManager : MonoBehaviourPunCallbacks
     {
         Debug.Log($"Conectado a la sala '{RoomName}' con {PhotonNetwork.CurrentRoom.PlayerCount} jugadores.");
         SpawnCharacter();
+        EquipWeapons();
     }
 
     private void SpawnCharacter()
@@ -155,6 +159,41 @@ public class WorldManager : MonoBehaviourPunCallbacks
         // Buscar al jugador una vez instanciado
         InvokeRepeating(nameof(FindAndFollowPlayer), 0.5f, 1f);
     }
+
+    private void EquipWeapons()
+    {
+        // Usar GameObject.FindWithTag para encontrar las zonas de las manos
+        GameObject leftHandObject = GameObject.FindWithTag("EquipLeft");
+        GameObject rightHandObject = GameObject.FindWithTag("EquipRight");
+
+        // Obtener los transform de las zonas de las manos
+        Transform leftHandZone = leftHandObject != null ? leftHandObject.transform : null;
+        Transform rightHandZone = rightHandObject != null ? rightHandObject.transform : null;
+
+        if (leftHandZone != null && playerDataSO.leftHandItemId >= 0 && playerDataSO.leftHandItemId < inventoryItems.Length)
+        {
+            InstantiateWeapon(inventoryItems[playerDataSO.leftHandItemId], leftHandZone);
+        }
+
+        if (rightHandZone != null && playerDataSO.rightHandItemId >= 0 && playerDataSO.rightHandItemId < inventoryItems.Length)
+        {
+            InstantiateWeapon(inventoryItems[playerDataSO.rightHandItemId], rightHandZone);
+        }
+    }
+
+
+    private void InstantiateWeapon(GameObject weaponPrefab, Transform handZone)
+    {
+        if (handZone.childCount > 0)
+        {
+            Destroy(handZone.GetChild(0).gameObject);
+        }
+
+        GameObject weapon = Instantiate(weaponPrefab, handZone);
+        weapon.transform.localPosition = Vector3.zero;
+        weapon.transform.localRotation = Quaternion.identity;
+    }
+
 
     private void FindAndFollowPlayer()
     {

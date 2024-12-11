@@ -23,6 +23,9 @@ public class UserSceneManager : MonoBehaviour
     [Header("Characters")]
     [SerializeField] private GameObject[] characters; // Lista de prefabs de personajes
 
+    [Header("Inventory Items")]
+    [SerializeField] private GameObject[] inventoryItems; // Lista de prefabs de armas
+
     private GameObject activeCharacter; // Personaje actualmente instanciado
 
     private void Start()
@@ -55,6 +58,8 @@ public class UserSceneManager : MonoBehaviour
         UpdateUI();
 
         ShowSelectedCharacter(playerDataSO.selectedCharacterId);
+
+        EquipWeapons();
     }
 
     private void ShowSelectedCharacter(int characterId)
@@ -81,6 +86,40 @@ public class UserSceneManager : MonoBehaviour
         }
         activeCharacter.transform.localPosition = Vector3.zero; // Centrar en el padre
         activeCharacter.transform.localRotation = Quaternion.identity; // Resetear rotación
+    }
+
+    private void EquipWeapons()
+    {
+        // Usar GameObject.FindWithTag para encontrar las zonas de las manos
+        GameObject leftHandObject = GameObject.FindWithTag("EquipLeft");
+        GameObject rightHandObject = GameObject.FindWithTag("EquipRight");
+
+        // Obtener los transform de las zonas de las manos
+        Transform leftHandZone = leftHandObject != null ? leftHandObject.transform : null;
+        Transform rightHandZone = rightHandObject != null ? rightHandObject.transform : null;
+
+        if (leftHandZone != null && playerDataSO.leftHandItemId >= 0 && playerDataSO.leftHandItemId < inventoryItems.Length)
+        {
+            InstantiateWeapon(inventoryItems[playerDataSO.leftHandItemId], leftHandZone);
+        }
+
+        if (rightHandZone != null && playerDataSO.rightHandItemId >= 0 && playerDataSO.rightHandItemId < inventoryItems.Length)
+        {
+            InstantiateWeapon(inventoryItems[playerDataSO.rightHandItemId], rightHandZone);
+        }
+    }
+
+
+    private void InstantiateWeapon(GameObject weaponPrefab, Transform handZone)
+    {
+        if (handZone.childCount > 0)
+        {
+            Destroy(handZone.GetChild(0).gameObject);
+        }
+
+        GameObject weapon = Instantiate(weaponPrefab, handZone);
+        weapon.transform.localPosition = Vector3.zero;
+        weapon.transform.localRotation = Quaternion.identity;
     }
 
     private void UpdateUI()

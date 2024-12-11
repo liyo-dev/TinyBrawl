@@ -1,6 +1,7 @@
 using EasyTransition;
 using Service;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LoadScene : MonoBehaviour
 {
@@ -23,5 +24,16 @@ public class LoadScene : MonoBehaviour
         }
 
         ServiceLocator.GetService<TransitionManager>().Transition(nextSceneName.ToString(), transition, startDelay);
+    }
+
+    public void LoadNoTransition()
+    {
+        if (nextSceneName == SceneNames.None)
+        {
+            Debug.LogWarning("No se proporcionó un nombre de escena válido.");
+            return;
+        }
+
+        SceneManager.LoadScene(nextSceneName.ToString());
     }
 }

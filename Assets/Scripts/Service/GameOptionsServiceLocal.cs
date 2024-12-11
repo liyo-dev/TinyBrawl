@@ -1,8 +1,6 @@
 using EasyTransition;
 using Service;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-
 public class GameOptionsServiceLocal : MonoBehaviour
 {
     private LocalOnlineOption localOnlineOption;
