@@ -3,6 +3,7 @@ using PlayFab;
 using PlayFab.ClientModels;
 using TMPro;
 using UnityEngine.SceneManagement;
+using System.IO;
 
 public class PlayFabLoginManager : MonoBehaviour
 {
@@ -24,6 +25,14 @@ public class PlayFabLoginManager : MonoBehaviour
 
     [Header("Player Data")]
     [SerializeField] private PlayerDataSO playerDataSO;
+
+    private string playerDataFilePath;
+
+    private void Awake()
+    {
+        // Establecer la ruta del archivo JSON
+        playerDataFilePath = Path.Combine(Application.persistentDataPath, "PlayerLoginData.json");
+    }
 
     public void Login()
     {
@@ -56,6 +65,8 @@ public class PlayFabLoginManager : MonoBehaviour
             Password = password
         };
 
+        SavePlayerLoginData(email, "", password);
+
         PlayFabClientAPI.LoginWithEmailAddress(request, OnLoginSuccess, OnError);
     }
 
@@ -66,6 +77,8 @@ public class PlayFabLoginManager : MonoBehaviour
             Username = username,
             Password = password
         };
+
+        SavePlayerLoginData("", username, password);
 
         PlayFabClientAPI.LoginWithPlayFab(request, OnLoginSuccess, OnError);
     }
@@ -146,6 +159,30 @@ public class PlayFabLoginManager : MonoBehaviour
         {
             Debug.Log("Datos iniciales guardados correctamente.");
         }, OnError);
+    }
+
+    public void SavePlayerLoginData(string email, string userName, string password)
+    {
+        try
+        {
+            PlayerLoginData loginData = new PlayerLoginData
+            {
+                Email = email,
+                UserName = userName,
+                Password = password
+            };
+
+            string json = JsonUtility.ToJson(loginData, true);
+            File.WriteAllText(playerDataFilePath, json);
+
+
+            Debug.Log("Datos de login guardados en el archivo JSON.");
+        }
+        catch (System.Exception ex)
+        {
+
+            Debug.LogError($"Error al guardar el archivo JSON: {ex.Message}");
+        }
     }
 
     private void LoadPlayerData()
