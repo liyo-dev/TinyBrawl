@@ -4,6 +4,7 @@ using PlayFab.ClientModels;
 using TMPro;
 using UnityEngine.SceneManagement;
 using System.IO;
+using Service;
 
 public class PlayFabLoginManager : MonoBehaviour
 {
@@ -24,7 +25,7 @@ public class PlayFabLoginManager : MonoBehaviour
     [SerializeField] private TMP_Text feedbackText;
 
     [Header("Player Data")]
-    [SerializeField] private PlayerDataSO playerDataSO;
+    private PlayerDataSO playerDataSO;
 
     private string playerDataFilePath;
 
@@ -32,6 +33,11 @@ public class PlayFabLoginManager : MonoBehaviour
     {
         // Establecer la ruta del archivo JSON
         playerDataFilePath = Path.Combine(Application.persistentDataPath, "PlayerLoginData.json");
+    }
+
+    private void Start()
+    {
+        playerDataSO = ServiceLocator.GetService<PlayerDataService>().GetData();
     }
 
     public void Login()

@@ -5,13 +5,14 @@ using Cinemachine;
 using UnityEngine.Events;
 using PlayFab;
 using PlayFab.ClientModels;
+using Service;
 
 public class WorldManager : MonoBehaviourPunCallbacks
 {
     public UnityEvent OnPlayerLoaded;
 
     [Header("Player Data")]
-    [SerializeField] private PlayerDataSO playerDataSO;
+    private PlayerDataSO playerDataSO;
 
     [Header("Characters")]
     [SerializeField] private GameObject[] characterPrefabs; // Lista de prefabs de personajes
@@ -31,6 +32,8 @@ public class WorldManager : MonoBehaviourPunCallbacks
 
     void Start()
     {
+        playerDataSO = ServiceLocator.GetService<PlayerDataService>().GetData();
+
         // Configurar o recuperar el nickname del jugador
         if (playerDataSO != null && !string.IsNullOrEmpty(playerDataSO.username))
         {

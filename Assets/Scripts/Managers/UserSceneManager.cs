@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
+using Service;
 
 public class UserSceneManager : MonoBehaviour
 {
@@ -18,7 +19,7 @@ public class UserSceneManager : MonoBehaviour
     [SerializeField] private Button shopButton;
 
     [Header("Player Data")]
-    [SerializeField] private PlayerDataSO playerDataSO;
+    private PlayerDataSO playerDataSO;
 
     [Header("Characters")]
     [SerializeField] private GameObject[] characters; // Lista de prefabs de personajes
@@ -35,6 +36,8 @@ public class UserSceneManager : MonoBehaviour
         chooseCharacterButton.onClick.AddListener(OnChooseCharacterButtonClicked);
         equipCharacterButton.onClick.AddListener(OnEquipCharacterButtonClicked);
         shopButton.onClick.AddListener(OnShopButtonClicked);
+
+        playerDataSO = ServiceLocator.GetService<PlayerDataService>().GetData();
 
         LoadUserData();
     }

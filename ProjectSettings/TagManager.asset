@@ -13,12 +13,11 @@ TagManager:
   - WinnerText
   - BurguerOptions
   - SpecialAttackBtn
-  - AttackBtn
-  - Bullet
-  - seleccion
-  - timer
   - EquipLeft
   - EquipRight
+  - AttackLeft
+  - seleccion
+  - AttackRight
   layers:
   - Default
   - TransparentFX

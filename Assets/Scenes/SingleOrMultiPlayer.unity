@@ -148,6 +148,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71fad49431af9dc4dbb4071a98d792ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  transition: {fileID: 0}
 --- !u!4 &70039567
 Transform:
   m_ObjectHideFlags: 0
@@ -359,6 +360,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nextSceneName: 4
+  transition: {fileID: 0}
+  startDelay: 0
 --- !u!4 &289387577
 Transform:
   m_ObjectHideFlags: 0
@@ -608,7 +611,7 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 289387576}
         m_TargetAssemblyTypeName: LoadScene, Assembly-CSharp
-        m_MethodName: LoadInstant
+        m_MethodName: LoadNoTransition
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -822,6 +825,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nextSceneName: 5
+  transition: {fileID: 0}
+  startDelay: 0
 --- !u!4 &739292519
 Transform:
   m_ObjectHideFlags: 0
@@ -964,6 +969,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nextSceneName: 7
+  transition: {fileID: 0}
+  startDelay: 0
 --- !u!4 &895305182
 Transform:
   m_ObjectHideFlags: 0
@@ -1076,7 +1083,7 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 739292518}
         m_TargetAssemblyTypeName: LoadScene, Assembly-CSharp
-        m_MethodName: LoadInstant
+        m_MethodName: LoadNoTransition
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1665,7 +1672,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 895305181}
         m_TargetAssemblyTypeName: LoadScene, Assembly-CSharp
-        m_MethodName: LoadInstant
+        m_MethodName: LoadNoTransition
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

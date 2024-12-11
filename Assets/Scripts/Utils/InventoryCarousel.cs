@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine.UI;
 using PlayFab;
 using PlayFab.ClientModels;
+using Service;
 
 public class InventoryCarousel : MonoBehaviour
 {
@@ -20,7 +21,7 @@ public class InventoryCarousel : MonoBehaviour
     public Button equipLeftHandButton;
 
     [Header("Player Data")]
-    [SerializeField] private PlayerDataSO playerDataSO;
+    private PlayerDataSO playerDataSO;
 
     void Start()
     {
@@ -36,6 +37,7 @@ public class InventoryCarousel : MonoBehaviour
         equipRightHandButton.onClick.AddListener(() => EquipItemToHand("EquipRight"));
         equipLeftHandButton.onClick.AddListener(() => EquipItemToHand("EquipLeft"));
 
+        playerDataSO = ServiceLocator.GetService<PlayerDataService>().GetData();
         // Mostrar el primer ítem
         ShowItem(currentIndex);
     }

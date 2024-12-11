@@ -28,6 +28,9 @@ namespace Service
 
            var transitionManager = FindFirstObjectByType<TransitionManager>();
            ServiceLocator.AddService(transitionManager);
+
+            var playerDataSO = FindFirstObjectByType<PlayerDataService>();
+            ServiceLocator.AddService(playerDataSO);
         }
     }
 }

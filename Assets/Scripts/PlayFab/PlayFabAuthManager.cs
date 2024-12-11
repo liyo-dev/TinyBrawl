@@ -4,6 +4,7 @@ using PlayFab;
 using PlayFab.ClientModels;
 using System.IO;
 using UnityEngine.SceneManagement;
+using Service;
 
 public class PlayFabAuthManager : MonoBehaviour
 {
@@ -18,7 +19,7 @@ public class PlayFabAuthManager : MonoBehaviour
     [SerializeField] private bool debugLogs = true;
 
     [Header("Player Data")]
-    [SerializeField] private PlayerDataSO playerDataSO;
+    private PlayerDataSO playerDataSO;
 
     private string playerDataFilePath;
 
@@ -32,6 +33,7 @@ public class PlayFabAuthManager : MonoBehaviour
     private void Start()
     {
         loader.SetActive(true);
+        playerDataSO = ServiceLocator.GetService<PlayerDataService>().GetData();
         CheckLocalDataOrLogin();
     }
 

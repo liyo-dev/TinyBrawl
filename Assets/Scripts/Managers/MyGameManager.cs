@@ -1,6 +1,7 @@
 using Photon.Pun;
 using PlayFab;
 using PlayFab.ClientModels;
+using Service;
 using TMPro;
 using UnityEngine;
 
@@ -13,10 +14,11 @@ public class MyGameManager : MonoBehaviourPunCallbacks
     private CountdownTimer timer;
 
     [Header("Player Data")]
-    [SerializeField] private PlayerDataSO playerDataSO;
+    private PlayerDataSO playerDataSO;
 
     public void Start()
     {
+        playerDataSO = ServiceLocator.GetService<PlayerDataService>().GetData();
         Invoke(nameof(DoStart), 2f);
     }
 
