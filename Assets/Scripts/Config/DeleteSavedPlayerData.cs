@@ -11,9 +11,7 @@ public class DeleteSavedPlayerData: MonoBehaviour
         {
             playerDataFilePath = Path.Combine(Application.persistentDataPath, "PlayerLoginData.json");
         }
-
     }
-
 
     /// <summary>
     /// Borra el archivo de datos del jugador si existe.

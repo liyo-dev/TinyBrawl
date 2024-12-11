@@ -30,8 +30,8 @@ public class MyGameManager : MonoBehaviourPunCallbacks
             timer.OnTimeOut += DoStop;
         }
 
-        // Inicializar la puntuación con los puntos existentes en el SO
-        score = playerDataSO.points;
+        score = 0;
+
         UpdateLocalScoreUI();
     }
 
