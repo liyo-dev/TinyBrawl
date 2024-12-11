@@ -3,6 +3,8 @@ using Photon.Pun;
 using Photon.Realtime;
 using Cinemachine;
 using UnityEngine.Events;
+using PlayFab;
+using PlayFab.ClientModels;
 
 public class WorldManager : MonoBehaviourPunCallbacks
 {
@@ -26,18 +28,45 @@ public class WorldManager : MonoBehaviourPunCallbacks
 
     void Start()
     {
-        // Configurar el nickname del jugador basado en PlayerDataSO
+        // Configurar o recuperar el nickname del jugador
         if (playerDataSO != null && !string.IsNullOrEmpty(playerDataSO.username))
         {
             PhotonNetwork.NickName = playerDataSO.username;
             Debug.Log($"Nickname del jugador configurado como: {PhotonNetwork.NickName}");
+
+            ConnectToPhoton();
         }
         else
         {
-            Debug.LogWarning("PlayerDataSO no está asignado o el username está vacío. Configurando un nickname predeterminado.");
-            PhotonNetwork.NickName = "Player_" + Random.Range(1000, 9999); // Nickname predeterminado
+            Debug.Log("Recuperando datos del usuario desde PlayFab...");
+            RetrievePlayerDataFromPlayFab();
         }
+    }
 
+    private void RetrievePlayerDataFromPlayFab()
+    {
+        PlayFabClientAPI.GetAccountInfo(new GetAccountInfoRequest(), result =>
+        {
+            if (result.AccountInfo != null && !string.IsNullOrEmpty(result.AccountInfo.Username))
+            {
+                playerDataSO.username = result.AccountInfo.Username;
+                PhotonNetwork.NickName = playerDataSO.username;
+
+                Debug.Log($"Datos del usuario recuperados: {playerDataSO.username}");
+                ConnectToPhoton();
+            }
+            else
+            {
+                Debug.LogError("No se pudo recuperar el username del usuario desde PlayFab.");
+            }
+        }, error =>
+        {
+            Debug.LogError($"Error al recuperar datos del usuario desde PlayFab: {error.GenerateErrorReport()}");
+        });
+    }
+
+    private void ConnectToPhoton()
+    {
         // Conectar a Photon si no está conectado
         if (!PhotonNetwork.IsConnected)
         {
@@ -173,7 +202,6 @@ public class WorldManager : MonoBehaviourPunCallbacks
             }
         }
     }
-
 
     public override void OnJoinRoomFailed(short returnCode, string message)
     {

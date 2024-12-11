@@ -16,6 +16,9 @@ public class PlayFabAuthManager : MonoBehaviour
     [Header("Debug Options")]
     [SerializeField] private bool debugLogs = true;
 
+    [Header("Player Data")]
+    [SerializeField] private PlayerDataSO playerDataSO;
+
     private string playerDataFilePath;
 
     private void Awake()
@@ -125,6 +128,11 @@ public class PlayFabAuthManager : MonoBehaviour
 
             if (debugLogs)
                 Debug.Log("Datos de login cargados desde el archivo local correctamente.");
+
+            playerDataSO.username = "";
+            playerDataSO.hp = 100f;
+            playerDataSO.points = 0;
+            playerDataSO.level = 0;
 
             return loginData;
         }

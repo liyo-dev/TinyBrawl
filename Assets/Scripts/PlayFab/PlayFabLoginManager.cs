@@ -163,6 +163,8 @@ public class PlayFabLoginManager : MonoBehaviour
 
     public void SavePlayerLoginData(string email, string userName, string password)
     {
+        Debug.Log("El username a guardar es: " + userName);
+
         try
         {
             PlayerLoginData loginData = new PlayerLoginData
