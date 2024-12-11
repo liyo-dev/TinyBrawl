@@ -1,9 +1,12 @@
+using EasyTransition;
+using Service;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class LoadScene : MonoBehaviour
 {
     [SerializeField] private SceneNames nextSceneName = SceneNames.None;
+    public TransitionSettings transition;
+    public float startDelay;
 
     public void LoadInstant()
     {
@@ -13,11 +16,12 @@ public class LoadScene : MonoBehaviour
             return;
         }
 
-        SceneManager.LoadScene(nextSceneName.ToString());
-    }
+        if (transition == null)
+        {
+            Debug.LogError("Hay que asignar una transición");
+            return;
+        }
 
-    public void LoadAsync()
-    {
-
+        ServiceLocator.GetService<TransitionManager>().Transition(nextSceneName.ToString(), transition, startDelay);
     }
 }

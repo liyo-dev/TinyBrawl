@@ -1,3 +1,4 @@
+using EasyTransition;
 using Service;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -5,6 +6,7 @@ using UnityEngine.SceneManagement;
 public class GameOptionsServiceLocal : MonoBehaviour
 {
     private LocalOnlineOption localOnlineOption;
+    public TransitionSettings transition;
     private void Start()
     {
         localOnlineOption = ServiceLocator.GetService<LocalOnlineOption>();
@@ -23,6 +25,6 @@ public class GameOptionsServiceLocal : MonoBehaviour
 
     public void LoadGame()
     {
-        SceneManager.LoadScene(SceneNames.Game.ToString());
+        ServiceLocator.GetService<TransitionManager>().Transition(SceneNames.Game.ToString(), transition, 0);
     }
 }

@@ -1,4 +1,5 @@
 
+using EasyTransition;
 using UnityEngine;
 
 namespace Service
@@ -24,6 +25,9 @@ namespace Service
         {
            var localOnlineOption = FindFirstObjectByType<LocalOnlineOption>();
            ServiceLocator.AddService(localOnlineOption);
+
+           var transitionManager = FindFirstObjectByType<TransitionManager>();
+           ServiceLocator.AddService(transitionManager);
         }
     }
 }

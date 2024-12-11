@@ -1,3 +1,4 @@
+using EasyTransition;
 using Photon.Pun;
 using Service;
 using System;
@@ -6,6 +7,8 @@ using UnityEngine.SceneManagement;
 public class GameOptionsService : MonoBehaviourPunCallbacks
 {
     private LocalOnlineOption localOnlineOption;
+
+    public TransitionSettings transition;
     private void Start()
     {
         localOnlineOption = ServiceLocator.GetService<LocalOnlineOption>();
@@ -94,7 +97,7 @@ public class GameOptionsService : MonoBehaviourPunCallbacks
     [PunRPC]
     public void SyncLoadGame()
     {
-        SceneManager.LoadScene(SceneNames.Game.ToString());
+        ServiceLocator.GetService<TransitionManager>().Transition(SceneNames.Game.ToString(), transition, 0);
     }
 
 
