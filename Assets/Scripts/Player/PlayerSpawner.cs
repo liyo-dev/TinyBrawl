@@ -18,7 +18,7 @@ public class WorldManager : MonoBehaviourPunCallbacks
     [SerializeField] private GameObject[] characterPrefabs; // Lista de prefabs de personajes
 
     [Header("Inventory Items")]
-    [SerializeField] private GameObject[] inventoryItems; // Lista de prefabs de armas
+    private GameObject[] inventoryItems; // Lista de prefabs de armas
 
     [Header("Spawn Settings")]
     [SerializeField] private Transform spawnPoint; // Punto donde instanciar el personaje
@@ -33,6 +33,8 @@ public class WorldManager : MonoBehaviourPunCallbacks
     void Start()
     {
         playerDataSO = ServiceLocator.GetService<PlayerDataService>().GetData();
+
+        inventoryItems = playerDataSO.inventory?.inventoryItems.ToArray();
 
         // Configurar o recuperar el nickname del jugador
         if (playerDataSO != null && !string.IsNullOrEmpty(playerDataSO.username))

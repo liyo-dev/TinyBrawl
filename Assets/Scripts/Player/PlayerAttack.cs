@@ -13,15 +13,10 @@ public class PlayerAttack : MonoBehaviourPunCallbacks
     private Button attackBtnLeft;
     private Button attackBtnRight;
 
-    [Header("Weapon Images")]
-    public RawImage leftWeaponImage;
-    public RawImage rightWeaponImage;
-
-    [Header("Player Data")]
     private PlayerDataSO playerDataSO;
 
-    [Header("Inventory Items")]
-    public GameObject[] inventoryItems; // Lista de prefabs de ítems del inventario
+    private Weapon leftHandWeapon;
+    private Weapon rightHandWeapon;
 
     private void Awake()
     {
@@ -48,65 +43,123 @@ public class PlayerAttack : MonoBehaviourPunCallbacks
     {
         playerDataSO = ServiceLocator.GetService<PlayerDataService>().GetData();
 
+        firePoint = transform.Find("FirePoint");
+
+        // Recuperar las armas equipadas
+        EquipWeapons();
+
+        // Recuperar el nombre de las armas para los botones
+        UpdateWeaponButtonLabels();
+
         if (attackBtnLeft != null)
         {
-            attackBtnLeft.onClick.AddListener(() => Attack("left"));
-        }
-        else
-        {
-            Debug.LogWarning("El botón de ataque izquierdo no se encontró en la escena.");
+            attackBtnLeft.onClick.AddListener(() => UseWeapon(leftHandWeapon, attackBtnLeft));
         }
 
         if (attackBtnRight != null)
         {
-            attackBtnRight.onClick.AddListener(() => Attack("right"));
+            attackBtnRight.onClick.AddListener(() => UseWeapon(rightHandWeapon, attackBtnRight));
         }
-        else
+    }
+
+    private void EquipWeapons()
+    {
+        // Usar el InventorySO para obtener las armas equipadas
+        if (playerDataSO.inventory == null)
         {
-            Debug.LogWarning("El botón de ataque derecho no se encontró en la escena.");
+            Debug.LogWarning("El inventario del jugador no está asignado.");
+            return;
         }
 
-        if (specialAttackBtn != null)
+        var inventoryItems = playerDataSO.inventory.inventoryItems;
+
+        GameObject leftHandItem = playerDataSO.leftHandItemId >= 0 && playerDataSO.leftHandItemId < inventoryItems.Count
+            ? inventoryItems[playerDataSO.leftHandItemId]
+            : null;
+
+        GameObject rightHandItem = playerDataSO.rightHandItemId >= 0 && playerDataSO.rightHandItemId < inventoryItems.Count
+            ? inventoryItems[playerDataSO.rightHandItemId]
+            : null;
+
+        if (leftHandItem != null)
         {
-            specialAttackBtn.onClick.AddListener(SpecialAttack);
-        }
-        else
-        {
-            Debug.LogWarning("El botón de ataque especial no se encontró en la escena.");
+            leftHandWeapon = leftHandItem.GetComponent<Weapon>();
         }
 
-        UpdateWeaponButtonLabels();
+        if (rightHandItem != null)
+        {
+            rightHandWeapon = rightHandItem.GetComponent<Weapon>();
+        }
     }
 
     private void UpdateWeaponButtonLabels()
     {
-        if (playerDataSO != null)
+        if (playerDataSO == null || playerDataSO.inventory == null) return;
+
+        var inventoryItems = playerDataSO.inventory.inventoryItems;
+
+        if (playerDataSO.leftHandItemId >= 0 && playerDataSO.leftHandItemId < inventoryItems.Count)
         {
-            if (playerDataSO.leftHandItemId >= 0 && playerDataSO.leftHandItemId < inventoryItems.Length)
+            var leftWeaponPrefab = inventoryItems[playerDataSO.leftHandItemId];
+            if (attackBtnLeft != null)
             {
-                var leftWeaponPrefab = inventoryItems[playerDataSO.leftHandItemId];
-                if (attackBtnLeft != null)
+                var leftButtonLabel = attackBtnLeft.GetComponentInChildren<TMP_Text>();
+                if (leftButtonLabel != null)
                 {
-                    var leftButtonLabel = attackBtnLeft.GetComponentInChildren<TMP_Text>();
-                    if (leftButtonLabel != null)
-                    {
-                        leftButtonLabel.text = leftWeaponPrefab.name;
-                    }
+                    leftButtonLabel.text = leftWeaponPrefab.name;
                 }
+            }
+        }
+
+        if (playerDataSO.rightHandItemId >= 0 && playerDataSO.rightHandItemId < inventoryItems.Count)
+        {
+            var rightWeaponPrefab = inventoryItems[playerDataSO.rightHandItemId];
+            if (attackBtnRight != null)
+            {
+                var rightButtonLabel = attackBtnRight.GetComponentInChildren<TMP_Text>();
+                if (rightButtonLabel != null)
+                {
+                    rightButtonLabel.text = rightWeaponPrefab.name;
+                }
+            }
+        }
+    }
+
+    private void UseWeapon(Weapon weapon, Button attackButton)
+    {
+        if (weapon != null && photonView.IsMine)
+        {
+            switch (weapon.weaponData.weaponType)
+            {
+                case WeaponType.Melee:
+                    var meleeEffect = PhotonNetwork.Instantiate(weapon.weaponData.effectPrefab.name, firePoint.position, firePoint.rotation);
+                    StartCoroutine(DestroyEffectAfterDelay(meleeEffect, weapon.weaponData.effectDuration));
+                    break;
+
+                case WeaponType.Ranged:
+                    Debug.Log("Arma de rango seleccionada.");
+                    break;
+
+                case WeaponType.Defensive:
+                    if (photonView.IsMine)
+                    {
+                        var defensiveEffect = PhotonNetwork.Instantiate(weapon.weaponData.effectPrefab.name, transform.position, transform.rotation);
+                        StartCoroutine(DestroyEffectAfterDelay(defensiveEffect, weapon.weaponData.effectDuration));
+
+                        // Enviar información a otros jugadores sobre el efecto defensivo
+                        photonView.RPC(nameof(SyncDefensiveEffect), RpcTarget.AllBuffered, defensiveEffect.GetComponent<PhotonView>().ViewID);
+                    }
+                    break;
+
+
+
+                default:
+                    Debug.LogWarning("Tipo de arma no manejado.");
+                    break;
             }
 
-            if (playerDataSO.rightHandItemId >= 0 && playerDataSO.rightHandItemId < inventoryItems.Length)
-            {
-                var rightWeaponPrefab = inventoryItems[playerDataSO.rightHandItemId];
-                if (attackBtnRight != null)
-                {
-                    var rightButtonLabel = attackBtnRight.GetComponentInChildren<TMP_Text>();
-                    if (rightButtonLabel != null)
-                    {
-                        rightButtonLabel.text = rightWeaponPrefab.name;
-                    }
-                }
-            }
+            // Cooldown
+            StartCoroutine(Cooldown(attackButton, weapon.weaponData.cooldown));
         }
     }
 
@@ -122,8 +175,62 @@ public class PlayerAttack : MonoBehaviourPunCallbacks
         }
     }
 
-    private void SpecialAttack()
+    private System.Collections.IEnumerator DestroyEffectAfterDelay(GameObject effect, float delay)
     {
-        Debug.Log("Special Attack pressed");
+        yield return new WaitForSeconds(delay);
+        if (effect != null && effect.GetComponent<PhotonView>().IsMine)
+        {
+            Debug.Log("Destruyendo efecto después de la duración");
+            PhotonNetwork.Destroy(effect);
+        }
     }
+
+
+    private System.Collections.IEnumerator Cooldown(Button button, float cooldownTime)
+    {
+        button.interactable = false;
+        var fillImage = button.GetComponent<Image>();
+        if (fillImage != null)
+        {
+            fillImage.fillAmount = 0;
+        }
+
+        float elapsedTime = 0f;
+
+        while (elapsedTime < cooldownTime)
+        {
+            elapsedTime += Time.deltaTime;
+            if (fillImage != null)
+            {
+                fillImage.fillAmount = elapsedTime / cooldownTime;
+            }
+            yield return null;
+        }
+
+        button.interactable = true;
+        if (fillImage != null)
+        {
+            fillImage.fillAmount = 1;
+        }
+    }
+
+    [PunRPC]
+    private void SyncDefensiveEffect(int effectViewID)
+    {
+        var defensiveEffect = PhotonView.Find(effectViewID)?.gameObject;
+
+        if (defensiveEffect != null)
+        {
+            // Ajustar el efecto como hijo del jugador correspondiente
+            defensiveEffect.transform.SetParent(transform, true);
+            defensiveEffect.transform.localPosition = Vector3.zero; // Centrar en el jugador
+            defensiveEffect.transform.localRotation = Quaternion.identity; // Asegurar rotación predeterminada
+            defensiveEffect.transform.localScale = Vector3.one; // Resetear la escala
+        }
+        else
+        {
+            Debug.LogWarning("No se encontró el PhotonView para el efecto defensivo.");
+        }
+    }
+
 }

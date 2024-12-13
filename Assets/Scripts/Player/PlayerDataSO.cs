@@ -10,4 +10,5 @@ public class PlayerDataSO : ScriptableObject
     public float hp;// No es necesario guardar en playfab ya que durante una partida no se pueden guardar los datos
     public int leftHandItemId;
     public int rightHandItemId;
+    public InventorySO inventory;
 }

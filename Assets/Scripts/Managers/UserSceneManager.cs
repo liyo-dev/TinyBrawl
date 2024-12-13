@@ -25,7 +25,7 @@ public class UserSceneManager : MonoBehaviour
     [SerializeField] private GameObject[] characters; // Lista de prefabs de personajes
 
     [Header("Inventory Items")]
-    [SerializeField] private GameObject[] inventoryItems; // Lista de prefabs de armas
+    private GameObject[] inventoryItems; // Lista de prefabs de armas
 
     private GameObject activeCharacter; // Personaje actualmente instanciado
 
@@ -38,6 +38,8 @@ public class UserSceneManager : MonoBehaviour
         shopButton.onClick.AddListener(OnShopButtonClicked);
 
         playerDataSO = ServiceLocator.GetService<PlayerDataService>().GetData();
+
+        inventoryItems = playerDataSO.inventory?.inventoryItems.ToArray();
 
         LoadUserData();
     }

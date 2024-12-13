@@ -17,3 +17,6 @@ MonoBehaviour:
   points: 15
   selectedCharacterId: 17
   hp: 100
+  leftHandItemId: 0
+  rightHandItemId: 0
+  inventory: {fileID: 11400000, guid: ebcd8b74fd2f31a419b208ed714d17af, type: 2}

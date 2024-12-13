@@ -1,7 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
+using Photon.Pun;
 
-public class PlayerHealthBar : MonoBehaviour
+public class PlayerHealthBar : MonoBehaviourPun, IPunObservable
 {
     [Header("Settings")]
     public Vector3 offset = new Vector3(0, 2.5f, 0); // Offset para posicionar la barra de vida encima del personaje
@@ -72,12 +73,17 @@ public class PlayerHealthBar : MonoBehaviour
     {
         if (amount <= 0) return;
 
-        currentHealth = Mathf.Clamp(currentHealth - amount, 0, maxHealth);
-        UpdateHealthBar();
-
-        if (currentHealth <= 0)
+        if (photonView.IsMine)
         {
-            Debug.Log("Jugador ha muerto.");
+            currentHealth = Mathf.Clamp(currentHealth - amount, 0, maxHealth);
+            UpdateHealthBar();
+
+            photonView.RPC(nameof(SyncHealth), RpcTarget.Others, currentHealth);
+
+            if (currentHealth <= 0)
+            {
+                Debug.Log("Jugador ha muerto.");
+            }
         }
     }
 
@@ -85,17 +91,17 @@ public class PlayerHealthBar : MonoBehaviour
     {
         if (amount <= 0) return;
 
-        currentHealth = Mathf.Clamp(currentHealth + amount, 0, maxHealth);
-        UpdateHealthBar();
+        if (photonView.IsMine)
+        {
+            currentHealth = Mathf.Clamp(currentHealth + amount, 0, maxHealth);
+            UpdateHealthBar();
+
+            photonView.RPC(nameof(SyncHealth), RpcTarget.Others, currentHealth);
+        }
     }
 
     private void UpdateHealthBar()
     {
-        Debug.Log("CurrentHealth es: " + currentHealth);
-        Debug.Log("Actual porcentaje es: " + currentHealth / maxHealth);
-        Debug.Log("El fillamount es: " + healthBarFill.fillAmount);
-
-        // Actualizar el relleno de la barra de vida
         float healthPercentage = currentHealth / maxHealth;
         healthBarFill.fillAmount = healthPercentage;
 
@@ -111,6 +117,28 @@ public class PlayerHealthBar : MonoBehaviour
         else
         {
             healthBarFill.color = Color.red;
+        }
+    }
+
+    [PunRPC]
+    public void SyncHealth(float health)
+    {
+        currentHealth = health;
+        UpdateHealthBar();
+    }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            // Enviar datos a otros jugadores
+            stream.SendNext(currentHealth);
+        }
+        else
+        {
+            // Recibir datos de otros jugadores
+            currentHealth = (float)stream.ReceiveNext();
+            UpdateHealthBar();
         }
     }
 }
