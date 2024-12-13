@@ -18,6 +18,8 @@ public class PlayerAttack : MonoBehaviourPunCallbacks
     private Weapon leftHandWeapon;
     private Weapon rightHandWeapon;
 
+    private Collider[] meleeHitResults = new Collider[10];
+
     private void Awake()
     {
         var specialAttackBtnObj = GameObject.FindGameObjectWithTag("SpecialAttackBtn");
@@ -131,22 +133,37 @@ public class PlayerAttack : MonoBehaviourPunCallbacks
         {
             switch (weapon.weaponData.weaponType)
             {
-                case WeaponType.Melee:
-                    var meleeEffect = PhotonNetwork.Instantiate(weapon.weaponData.effectPrefab.name, firePoint.position, firePoint.rotation);
-                    StartCoroutine(DestroyEffectAfterDelay(meleeEffect, weapon.weaponData.effectDuration));
+                case WeaponType.Shoot:
+                    if (photonView.IsMine)
+                    {
+                        var meleeEffect = PhotonNetwork.Instantiate(weapon.weaponData.effectPrefab.name, firePoint.position, firePoint.rotation);
+
+                        WeaponVisuals(weapon);
+
+                        PerformMeleeAttack(weapon);
+
+                        StartCoroutine(DestroyEffectAfterDelay(meleeEffect, weapon.weaponData.effectDuration));
+                    }
                     break;
 
                 case WeaponType.Ranged:
-                    Debug.Log("Arma de rango seleccionada.");
+                    if (photonView.IsMine)
+                    {
+                        var meleeEffect = PhotonNetwork.Instantiate(weapon.weaponData.effectPrefab.name, transform.position, firePoint.rotation);
+
+                        WeaponVisuals(weapon);
+
+                        StartCoroutine(DestroyEffectAfterDelay(meleeEffect, weapon.weaponData.effectDuration));
+                    }
                     break;
 
                 case WeaponType.Defensive:
                     if (photonView.IsMine)
                     {
                         var defensiveEffect = PhotonNetwork.Instantiate(weapon.weaponData.effectPrefab.name, transform.position, transform.rotation);
+                        
                         StartCoroutine(DestroyEffectAfterDelay(defensiveEffect, weapon.weaponData.effectDuration));
-
-                        // Enviar información a otros jugadores sobre el efecto defensivo
+                        
                         photonView.RPC(nameof(SyncDefensiveEffect), RpcTarget.AllBuffered, defensiveEffect.GetComponent<PhotonView>().ViewID);
                     }
                     break;
@@ -163,14 +180,42 @@ public class PlayerAttack : MonoBehaviourPunCallbacks
         }
     }
 
-    private void Attack(string hand)
+    private void WeaponVisuals(Weapon weapon)
     {
-        if (bulletPrefab != null && firePoint != null)
+        string actionComponentName = weapon.weaponData.name + "Action";
+
+        var actionComponent = weapon.gameObject.GetComponent(actionComponentName);
+
+        if (actionComponent != null)
         {
-            if (photonView.IsMine)
+            var method = actionComponent.GetType().GetMethod("DoStart");
+            if (method != null)
             {
-                Debug.Log($"Ataque con la mano {hand} iniciado.");
-                PhotonNetwork.Instantiate(bulletPrefab.name, firePoint.position, firePoint.rotation);
+                method.Invoke(actionComponent, null);
+            }
+        }
+    }
+
+    private void PerformMeleeAttack(Weapon weapon)
+    {
+        float attackRange = weapon.weaponData.attackRange;
+
+        // Detectar colisiones dentro del rango
+        int hitCount = Physics.OverlapSphereNonAlloc(transform.position, attackRange, meleeHitResults);
+
+        for (int i = 0; i < hitCount; i++)
+        {
+            Collider hit = meleeHitResults[i];
+
+            if (hit.CompareTag("Player") && hit.gameObject != gameObject) // Asegurarse de no golpear al jugador mismo
+            {
+                PlayerHealth targetHealth = hit.GetComponent<PlayerHealth>();
+
+                if (targetHealth != null)
+                {
+                    Debug.Log($"Golpeando a: {hit.gameObject.name} con {weapon.weaponData.attackDamage} de daño.");
+                    targetHealth.TakeDamage(weapon.weaponData.attackDamage);
+                }
             }
         }
     }
@@ -234,3 +279,4 @@ public class PlayerAttack : MonoBehaviourPunCallbacks
     }
 
 }
+ 
