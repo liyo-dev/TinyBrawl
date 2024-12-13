@@ -2262,6 +2262,7 @@ GameObject:
   - component: {fileID: 5942839897355889031}
   - component: {fileID: -778917007872184173}
   - component: {fileID: -8609266304267076144}
+  - component: {fileID: -435343994146398921}
   m_Layer: 0
   m_Name: Cop
   m_TagString: Player
@@ -2437,7 +2438,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bulletPrefab: {fileID: 3293353808548675362, guid: 96fb69856970dd14a848db5977b24d80, type: 3}
   firePoint: {fileID: 8427757228427657287}
-  inventoryItems: []
 --- !u!114 &-778917007872184173
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2465,8 +2465,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f51cf07243a7744fa3618de3880b91f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerDataSO: {fileID: 11400000, guid: 59d6e67ac9fa45746a973a641e4e5fb3, type: 2}
+  currentHealth: 100
   maxHealth: 100
+--- !u!65 &-435343994146398921
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6644603938449114179}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &6869289770107773416
 GameObject:
   m_ObjectHideFlags: 0

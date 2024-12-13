@@ -18,5 +18,5 @@ MonoBehaviour:
   description: "Descripci\xF3n Chakram"
   effectPrefab: {fileID: 9080140021571130472, guid: 82066d902ed0dd6488ddfd32eb994801, type: 3}
   effectDuration: 2
-  cooldown: 5
+  cooldown: 3
   weaponType: 1

@@ -1,17 +1,27 @@
 using Photon.Pun;
 using UnityEngine;
 
-public class PlayerHealth : MonoBehaviourPun
+public class PlayerHealth : MonoBehaviourPunCallbacks
 {
     public float currentHealth = 100f;
     public float maxHealth = 100f;
+
+    private PlayerHealthBar healthBar;
+
+    private void Start()
+    {
+        healthBar = GetComponent<PlayerHealthBar>();
+    }
 
     public void TakeDamage(float damage)
     {
         if (photonView.IsMine)
         {
             currentHealth -= damage;
+
             currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+
+            healthBar.ReduceHealth(currentHealth);
 
             Debug.Log($"Recibiste daño: {damage}. Vida restante: {currentHealth}");
 

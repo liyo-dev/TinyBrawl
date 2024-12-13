@@ -1003,18 +1003,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5207ea07c954c3944b0d467aa6bf6adc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inventoryItems:
-  - {fileID: 2410114350040114610, guid: 4603d2cd3ffcb6e46add7daf3a524b6c, type: 3}
-  - {fileID: 2939461966237491692, guid: 6dc5bbadc807ebe4d926b32d4cee4f6f, type: 3}
-  - {fileID: 5795407589716557517, guid: 9214597ca565f5840be2b48f71eb9966, type: 3}
-  - {fileID: 323333351367080586, guid: 87b744073f89d274ea9986018a77d4e4, type: 3}
   itemNameText: {fileID: 1536815828}
   itemInfoText: {fileID: 1416293105}
   nextButton: {fileID: 1845431525}
   previousButton: {fileID: 1653104539}
   equipRightHandButton: {fileID: 192133777}
   equipLeftHandButton: {fileID: 1994647528}
-  playerDataSO: {fileID: 11400000, guid: 59d6e67ac9fa45746a973a641e4e5fb3, type: 2}
 --- !u!1 &1416293103
 GameObject:
   m_ObjectHideFlags: 0
@@ -1236,7 +1230,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1608418819}
         m_TargetAssemblyTypeName: LoadScene, Assembly-CSharp
-        m_MethodName: LoadInstant
+        m_MethodName: LoadNoTransition
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

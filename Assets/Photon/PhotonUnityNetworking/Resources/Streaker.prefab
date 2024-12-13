@@ -167,6 +167,7 @@ GameObject:
   - component: {fileID: 7655682915399452160}
   - component: {fileID: -4107466620749154117}
   - component: {fileID: -958340726260204959}
+  - component: {fileID: 1270167716924513778}
   m_Layer: 0
   m_Name: Streaker
   m_TagString: Player
@@ -346,8 +347,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f51cf07243a7744fa3618de3880b91f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerDataSO: {fileID: 11400000, guid: 59d6e67ac9fa45746a973a641e4e5fb3, type: 2}
+  currentHealth: 100
   maxHealth: 100
+--- !u!65 &1270167716924513778
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1075948391855331002}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &2818223673294155358
 GameObject:
   m_ObjectHideFlags: 0

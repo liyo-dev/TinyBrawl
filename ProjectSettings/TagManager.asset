@@ -18,6 +18,7 @@ TagManager:
   - AttackLeft
   - seleccion
   - AttackRight
+  - Escudo
   layers:
   - Default
   - TransparentFX

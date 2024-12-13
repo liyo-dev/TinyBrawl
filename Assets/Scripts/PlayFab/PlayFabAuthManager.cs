@@ -3,7 +3,6 @@ using UnityEngine.Events;
 using PlayFab;
 using PlayFab.ClientModels;
 using System.IO;
-using UnityEngine.SceneManagement;
 using Service;
 
 public class PlayFabAuthManager : MonoBehaviour
@@ -26,8 +25,7 @@ public class PlayFabAuthManager : MonoBehaviour
     private void Awake()
     {
         // Establecer la ruta del archivo JSONnad
-        playerDataFilePath = Path.Combine(Application.persistentDataPath, "PlayerLoginData.json");
-        Debug.Log("La ruta donde esta el fichero guardado es: " + playerDataFilePath);
+        playerDataFilePath = PathUtils.GetPlayerDataFilePath("PlayerLoginData.json");
     }
 
     private void Start()

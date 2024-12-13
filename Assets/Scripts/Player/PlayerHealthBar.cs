@@ -10,6 +10,7 @@ public class PlayerHealthBar : MonoBehaviourPun, IPunObservable
 
     private GameObject healthBarGO;
     private Image healthBarFill;
+    private RectTransform fillRect;
 
     [Header("Health")]
     [SerializeField] private float maxHealth = 100f; // Salud máxima
@@ -24,7 +25,7 @@ public class PlayerHealthBar : MonoBehaviourPun, IPunObservable
         healthBarGO = new GameObject("HealthBar");
         healthBarGO.transform.SetParent(transform); // Hacer que la barra de vida sea hija del jugador
         healthBarGO.transform.localPosition = offset; // Posicionar la barra de vida según el offset
-        healthBarGO.transform.localScale = new Vector3(0.01f, 0.015f, 1f);
+        healthBarGO.transform.localScale = new Vector3(0.005f, 0.015f, 1f);
 
         // Configurar el Canvas para la barra de vida
         Canvas healthCanvas = healthBarGO.AddComponent<Canvas>();
@@ -33,6 +34,21 @@ public class PlayerHealthBar : MonoBehaviourPun, IPunObservable
 
         CanvasScaler canvasScaler = healthBarGO.AddComponent<CanvasScaler>();
         canvasScaler.dynamicPixelsPerUnit = 10f;
+        // Crear el relleno de la barra de vida
+        GameObject fillBarBG = new GameObject("Fill");
+        fillBarBG.transform.SetParent(healthBarGO.transform);
+        healthBarFill = fillBarBG.AddComponent<Image>();
+        healthBarFill.color = Color.grey;
+
+        // Configuración del RectTransform
+        RectTransform fillRectBG = fillBarBG.GetComponent<RectTransform>();
+        fillRectBG.sizeDelta = barSize; // Aplica las dimensiones configuradas en barSize
+        fillRectBG.localScale = Vector3.one; // Escala uniforme para evitar deformaciones
+        fillRectBG.anchorMin = new Vector2(0, 0.5f); // Ancla inferior
+        fillRectBG.anchorMax = new Vector2(1, 0.5f); // Ancla superior
+        fillRectBG.pivot = new Vector2(0.5f, 0.5f); // Mantén el pivote en el centro
+        fillRectBG.localPosition = Vector3.zero; // Centra la posición
+
 
         // Crear el relleno de la barra de vida
         GameObject fillBar = new GameObject("Fill");
@@ -41,7 +57,7 @@ public class PlayerHealthBar : MonoBehaviourPun, IPunObservable
         healthBarFill.color = Color.green;
 
         // Configuración del RectTransform
-        RectTransform fillRect = fillBar.GetComponent<RectTransform>();
+        fillRect = fillBar.GetComponent<RectTransform>();
         fillRect.sizeDelta = barSize; // Aplica las dimensiones configuradas en barSize
         fillRect.localScale = Vector3.one; // Escala uniforme para evitar deformaciones
         fillRect.anchorMin = new Vector2(0, 0.5f); // Ancla inferior
@@ -71,11 +87,22 @@ public class PlayerHealthBar : MonoBehaviourPun, IPunObservable
 
     public void ReduceHealth(float amount)
     {
-        if (amount <= 0) return;
 
         if (photonView.IsMine)
         {
-            currentHealth = Mathf.Clamp(currentHealth - amount, 0, maxHealth);
+            if (amount <= 0)
+            {
+                currentHealth = 0;
+
+                UpdateHealthBar();
+
+                photonView.RPC(nameof(SyncHealth), RpcTarget.Others, currentHealth);
+
+                return;
+            }
+
+            currentHealth = amount;
+
             UpdateHealthBar();
 
             photonView.RPC(nameof(SyncHealth), RpcTarget.Others, currentHealth);
@@ -103,7 +130,8 @@ public class PlayerHealthBar : MonoBehaviourPun, IPunObservable
     private void UpdateHealthBar()
     {
         float healthPercentage = currentHealth / maxHealth;
-        healthBarFill.fillAmount = healthPercentage;
+        // healthBarFill.fillAmount = healthPercentage;
+        fillRect.localScale = new Vector3(healthPercentage, fillRect.localScale.y);
 
         // Cambiar el color según la cantidad de vida
         if (healthPercentage > 0.5f)
@@ -129,16 +157,16 @@ public class PlayerHealthBar : MonoBehaviourPun, IPunObservable
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
-        if (stream.IsWriting)
-        {
-            // Enviar datos a otros jugadores
-            stream.SendNext(currentHealth);
-        }
-        else
-        {
-            // Recibir datos de otros jugadores
-            currentHealth = (float)stream.ReceiveNext();
-            UpdateHealthBar();
-        }
+        /*  if (stream.IsWriting)
+          {
+              // Enviar datos a otros jugadores
+              stream.SendNext(currentHealth);
+          }
+          else
+          {
+              // Recibir datos de otros jugadores
+              currentHealth = (float)stream.ReceiveNext();
+              UpdateHealthBar();
+          }*/
     }
 }

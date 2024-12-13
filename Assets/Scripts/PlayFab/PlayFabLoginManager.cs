@@ -32,7 +32,7 @@ public class PlayFabLoginManager : MonoBehaviour
     private void Awake()
     {
         // Establecer la ruta del archivo JSON
-        playerDataFilePath = Path.Combine(Application.persistentDataPath, "PlayerLoginData.json");
+        playerDataFilePath = PathUtils.GetPlayerDataFilePath("PlayerLoginData.json");
     }
 
     private void Start()

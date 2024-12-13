@@ -9,7 +9,7 @@ public class DeleteSavedPlayerData: MonoBehaviour
     {
         if (string.IsNullOrEmpty(playerDataFilePath))
         {
-            playerDataFilePath = Path.Combine(Application.persistentDataPath, "PlayerLoginData.json");
+            playerDataFilePath = PathUtils.GetPlayerDataFilePath("PlayerLoginData.json");
         }
     }
 

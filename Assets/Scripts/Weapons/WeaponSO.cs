@@ -4,7 +4,7 @@ using UnityEngine;
 public class WeaponSO : ScriptableObject
 {
     public float attackRange = 1.5f; // Rango del ataque
-    public int attackDamage = 20; // Daño que inflige el ataque
+    public float attackDamage = 20; // Daño que inflige el ataque
     public string weaponName; // Nombre del arma
     public string description; // Descripción del arma
     public GameObject effectPrefab; // Prefab del efecto del arma

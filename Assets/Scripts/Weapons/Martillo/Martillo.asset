@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Martillo
   m_EditorClassIdentifier: 
   attackRange: 3
-  attackDamage: 50
+  attackDamage: 40
   weaponName: Martillo
   description: "Descripci\xF3n Martillo"
   effectPrefab: {fileID: 3077343761403282166, guid: f78aaaec3b393e24ca74cd6de8194347, type: 3}
-  effectDuration: 3
-  cooldown: 10
+  effectDuration: 1
+  cooldown: 4
   weaponType: 0

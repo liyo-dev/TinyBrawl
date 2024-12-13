@@ -1554,7 +1554,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 490798510}
         m_TargetAssemblyTypeName: LoadScene, Assembly-CSharp
-        m_MethodName: LoadInstant
+        m_MethodName: LoadNoTransition
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
