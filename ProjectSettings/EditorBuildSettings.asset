@@ -44,5 +44,11 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/World.unity
     guid: 9b218b66cda5db54b917b7f509fb2beb
+  - enabled: 1
+    path: Assets/Scenes/WaitingRoom.unity
+    guid: 5e2ffabadfa28eb40b25e65fa40b801e
+  - enabled: 1
+    path: Assets/Scenes/Maze.unity
+    guid: e49b67c35e6fb4d4c9794ba9e0272e77
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0

@@ -250,7 +250,6 @@ public class PlayerAttack : MonoBehaviourPunCallbacks
         yield return new WaitForSeconds(delay);
         if (effect != null && effect.GetComponent<PhotonView>().IsMine)
         {
-            Debug.Log("Destruyendo efecto después de la duración");
             PhotonNetwork.Destroy(effect);
         }
     }
