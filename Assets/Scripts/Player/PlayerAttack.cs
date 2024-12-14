@@ -20,14 +20,8 @@ public class PlayerAttack : MonoBehaviourPunCallbacks
 
     private Collider[] meleeHitResults = new Collider[30];
 
-    private float gizmoAttackRange; // Para visualizar el área de ataque
-    private bool showAttackGizmo = false; // Para controlar si mostramos el Gizmo
-
-    //Escudo
-    private bool isShieldActive = false;
-
-    //Todo
-    private bool hasHit = false;
+    private float gizmoAttackRange;
+    private bool showAttackGizmo = false;
 
     private void Awake()
     {
@@ -174,6 +168,8 @@ public class PlayerAttack : MonoBehaviourPunCallbacks
                         StartCoroutine(DestroyEffectAfterDelay(defensiveEffect, weapon.weaponData.effectDuration));
 
                         photonView.RPC(nameof(SyncDefensiveEffect), RpcTarget.AllBuffered, defensiveEffect.GetComponent<PhotonView>().ViewID);
+
+                        PerformMeleeAttack(weapon);
                     }
                     break;
 
@@ -215,57 +211,38 @@ public class PlayerAttack : MonoBehaviourPunCallbacks
         Invoke(nameof(HideGizmos), weapon.weaponData.effectDuration);
 
         // Detectar colisiones dentro del rango
-        int hitCount = Physics.OverlapSphereNonAlloc(transform.position, attackRange + 2, meleeHitResults);
+        int hitCount = Physics.OverlapSphereNonAlloc(transform.position, attackRange, meleeHitResults);
 
         for (int i = 0; i < hitCount; i++)
         {
             Collider hit = meleeHitResults[i];
 
-            //No hago daño si hay un escudo
-            if (hit.CompareTag("Escudo") && hit.gameObject != gameObject)
-            {
-                isShieldActive = true;
-
-                Invoke(nameof(DeactivateShield), weapon.weaponData.effectDuration);
-
-                Feedbacks feedbacks = hit.gameObject.GetComponent<Feedbacks>();
-
-                if (feedbacks != null)
-                {
-                    PhotonNetwork.Instantiate(feedbacks.Feedback.name, firePoint.transform.position, firePoint.rotation);
-                }
-            }
-
-
-            // Asegúrate de no golpear al propio jugador
-            if (hit.CompareTag("Player") && hit.gameObject != gameObject && !isShieldActive)
+            if (hit.CompareTag("Player") && hit.gameObject != gameObject)
             {
                 PhotonView targetPhotonView = hit.GetComponent<PhotonView>();
-                if (targetPhotonView != null)
+                PlayerHealth targetHealth = hit.GetComponent<PlayerHealth>();
+                //No hago daño si hay un escudo
+                if (hit.CompareTag("Escudo") && hit.gameObject != gameObject)
                 {
-                    hasHit = true;
+                    Debug.Log($"Jugador {hit.gameObject.name} está protegido por un escudo. No se aplica daño.");
 
-                    StartCoroutine(CheckHasHit(targetPhotonView, weapon));
+                    Feedbacks feedbacks = hit.gameObject.GetComponent<Feedbacks>();
+
+                    if (feedbacks != null)
+                    {
+                        PhotonNetwork.Instantiate(feedbacks.Feedback.name, firePoint.transform.position, firePoint.rotation);
+                    }
+
+                    continue;
+
                 }
+
+                // Aplicar daño si no hay escudo
+                Debug.Log($"Golpeando a: {hit.gameObject.name} con {weapon.weaponData.attackDamage} de daño.");
+                targetPhotonView.RPC(nameof(PlayerHealth.TakeDamageRPC), RpcTarget.AllBuffered, weapon.weaponData.attackDamage);
+       
             }
         }
-    }
-
-    private System.Collections.IEnumerator CheckHasHit(PhotonView targetPhotonView, Weapon weapon)
-    {
-        yield return new WaitForSeconds(.5f);
-
-        if (hasHit && !isShieldActive)
-        {
-            targetPhotonView.RPC(nameof(PlayerHealth.TakeDamageRPC), RpcTarget.AllBuffered, weapon.weaponData.attackDamage);
-
-            hasHit = false;
-        }
-    }
-
-    private void DeactivateShield()
-    {
-        isShieldActive = false;
     }
 
     private System.Collections.IEnumerator DestroyEffectAfterDelay(GameObject effect, float delay)
@@ -277,7 +254,6 @@ public class PlayerAttack : MonoBehaviourPunCallbacks
             PhotonNetwork.Destroy(effect);
         }
     }
-
 
     private System.Collections.IEnumerator Cooldown(Button button, float cooldownTime)
     {

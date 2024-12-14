@@ -6,6 +6,7 @@ using UnityEngine.Events;
 using PlayFab;
 using PlayFab.ClientModels;
 using Service;
+using System.Linq;
 
 public class WorldManager : MonoBehaviourPunCallbacks
 {
@@ -15,18 +16,18 @@ public class WorldManager : MonoBehaviourPunCallbacks
     private PlayerDataSO playerDataSO;
 
     [Header("Characters")]
-    [SerializeField] private GameObject[] characterPrefabs; // Lista de prefabs de personajes
+    private GameObject[] characterPrefabs;
 
     [Header("Inventory Items")]
-    private GameObject[] inventoryItems; // Lista de prefabs de armas
+    private GameObject[] inventoryItems; 
 
     [Header("Spawn Settings")]
-    [SerializeField] private Transform spawnPoint; // Punto donde instanciar el personaje
+    [SerializeField] private Transform spawnPoint; 
 
     [Header("Cinemachine Virtual Camera")]
     [SerializeField] private CinemachineVirtualCamera virtualCamera;
 
-    private GameObject activeCharacter; // Personaje actualmente instanciado
+    private GameObject activeCharacter;
 
     private const string RoomName = "World";
 
@@ -35,6 +36,8 @@ public class WorldManager : MonoBehaviourPunCallbacks
         playerDataSO = ServiceLocator.GetService<PlayerDataService>().GetData();
 
         inventoryItems = playerDataSO.inventory?.inventoryItems.ToArray();
+
+        characterPrefabs = ServiceLocator.GetService<CharacterDataService>().GetData().characters.ToArray();
 
         // Configurar o recuperar el nickname del jugador
         if (playerDataSO != null && !string.IsNullOrEmpty(playerDataSO.username))

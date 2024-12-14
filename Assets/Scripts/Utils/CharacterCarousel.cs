@@ -4,13 +4,15 @@ using UnityEngine.UI;
 using PlayFab;
 using PlayFab.ClientModels;
 using UnityEngine.SceneManagement;
+using Service;
+using System.Linq;
 
 public class CharacterCarousel : MonoBehaviour
 {
     [Header("Characters")]
-    public GameObject[] characters; // Lista de prefabs de personajes
-    private int currentIndex = 0; // Índice del personaje actual
-    private GameObject activeCharacter; // Personaje actualmente instanciado
+    private GameObject[] characters; 
+    private int currentIndex = 0; 
+    private GameObject activeCharacter;
 
     [Header("UI Elements")]
     public TextMeshProUGUI characterNameText;
@@ -20,13 +22,17 @@ public class CharacterCarousel : MonoBehaviour
     public Button previousButton;
 
     [Header("Parent Object")]
-    public Transform characterParent; // Donde instanciamos el personaje en pantalla
+    public Transform characterParent;
 
     [Header("Player Data")]
-    [SerializeField] private PlayerDataSO playerDataSO;
+    private PlayerDataSO playerDataSO;
 
     void Start()
     {
+        playerDataSO = ServiceLocator.GetService<PlayerDataService>().GetData();
+
+        characters = ServiceLocator.GetService<CharacterDataService>().GetData().characters.ToArray();
+
         if (characters.Length == 0)
         {
             Debug.LogError("No se han asignado personajes en el carrusel.");

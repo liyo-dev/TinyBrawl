@@ -23,14 +23,17 @@ namespace Service
 
         private void AddServices()
         {
-           var localOnlineOption = FindFirstObjectByType<LocalOnlineOption>();
-           ServiceLocator.AddService(localOnlineOption);
+            var localOnlineOption = FindFirstObjectByType<LocalOnlineOption>();
+            ServiceLocator.AddService(localOnlineOption);
 
-           var transitionManager = FindFirstObjectByType<TransitionManager>();
-           ServiceLocator.AddService(transitionManager);
+            var transitionManager = FindFirstObjectByType<TransitionManager>();
+            ServiceLocator.AddService(transitionManager);
 
             var playerDataSO = FindFirstObjectByType<PlayerDataService>();
             ServiceLocator.AddService(playerDataSO);
+
+            var characterDataSO = FindFirstObjectByType<CharacterDataService>();
+            ServiceLocator.AddService(characterDataSO);
         }
     }
 }

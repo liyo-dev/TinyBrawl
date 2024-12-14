@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
 using Service;
+using System.Linq;
 
 public class UserSceneManager : MonoBehaviour
 {
@@ -10,7 +11,7 @@ public class UserSceneManager : MonoBehaviour
     [SerializeField] private TMP_Text profileNameText;
     [SerializeField] private TMP_Text levelText;
     [SerializeField] private TMP_Text pointsText;
-    [SerializeField] private Transform characterPosition; // Donde se instanciará el personaje
+    [SerializeField] private Transform characterPosition; 
 
     [Header("Buttons")]
     [SerializeField] private Button playButton;
@@ -22,15 +23,17 @@ public class UserSceneManager : MonoBehaviour
     private PlayerDataSO playerDataSO;
 
     [Header("Characters")]
-    [SerializeField] private GameObject[] characters; // Lista de prefabs de personajes
+    private GameObject[] characters;
 
     [Header("Inventory Items")]
-    private GameObject[] inventoryItems; // Lista de prefabs de armas
+    private GameObject[] inventoryItems; 
 
-    private GameObject activeCharacter; // Personaje actualmente instanciado
+    private GameObject activeCharacter; 
 
     private void Start()
     {
+        characters = ServiceLocator.GetService<CharacterDataService>().GetData().characters.ToArray();
+
         // Configurar listeners de botones
         playButton.onClick.AddListener(OnPlayButtonClicked);
         chooseCharacterButton.onClick.AddListener(OnChooseCharacterButtonClicked);
