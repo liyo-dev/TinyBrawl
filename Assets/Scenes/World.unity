@@ -207,6 +207,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8526919290720662786, guid: 31e1448bbc469064e89a752925fc2ea4, type: 3}
+      propertyPath: m_Radius
+      value: 0.35
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -841,8 +845,9 @@ GameObject:
   m_Component:
   - component: {fileID: 360519719}
   - component: {fileID: 360519720}
+  - component: {fileID: 360519721}
   m_Layer: 0
-  m_Name: Start - CharacterSpawn
+  m_Name: Start - PlayerSpawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -902,8 +907,32 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  maxPlayersInRoom: 20
   spawnPoint: {fileID: 1227828875}
   virtualCamera: {fileID: 2044674709}
+  RoomName: World
+--- !u!114 &360519721
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 360519718}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 2
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1001 &386690894
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3259,7 +3288,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1344548566}
   m_Layer: 0
-  m_Name: Portal_maze
+  m_Name: Portal_LABERINTO
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3274,8 +3303,8 @@ Transform:
   m_GameObject: {fileID: 1344548565}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.25, y: 1.88, z: 6.33}
-  m_LocalScale: {x: 6, y: 2, z: 1}
+  m_LocalPosition: {x: 0.25, y: -0.6, z: 6.33}
+  m_LocalScale: {x: 4, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5246760}
@@ -5294,7 +5323,7 @@ SceneRoots:
   - {fileID: 848859092}
   - {fileID: 1061787569}
   - {fileID: 1600523356}
+  - {fileID: 1344548566}
   - {fileID: 1555634989}
   - {fileID: 360519719}
   - {fileID: 94128116}
-  - {fileID: 1344548566}

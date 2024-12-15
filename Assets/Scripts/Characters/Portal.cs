@@ -1,10 +1,16 @@
 using Photon.Pun;
 using UnityEngine;
+using Photon.Realtime;
+using UnityEngine.SceneManagement;
 
 public class Portal : MonoBehaviourPunCallbacks
 {
     [Header("Portal Settings")]
     [SerializeField] private string waitingRoomSceneName = "WaitingRoom"; // Nombre de la sala de espera
+
+    private GameObject playerGameObject;
+
+    private bool isPhotonViewMine = false;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -13,28 +19,29 @@ public class Portal : MonoBehaviourPunCallbacks
         {
             Debug.Log($"Jugador {other.name} ha entrado al portal.");
 
+            isPhotonViewMine = true;
+
+            playerGameObject = other.gameObject;
+
             PopUp.Instance.Show("Entrar al laberinto", "¿Estás seguro de continuar?", TransferToWaitingRoom, OnNoAction);
         }
     }
 
     public void TransferToWaitingRoom()
     {
-        if (PhotonNetwork.IsConnected && PhotonNetwork.InRoom)
+        if (isPhotonViewMine)
         {
-            // El primer jugador que entra se convierte en el maestro
-            if (PhotonNetwork.IsMasterClient)
-            {
-                Debug.Log("Soy el maestro del juego.");
-            }
+            //GameObject leftHandObject = GameObject.FindWithTag("EquipLeft");
+            //GameObject rightHandObject = GameObject.FindWithTag("EquipRight");
 
-            // Cambiar a la escena de la sala de espera
-            PhotonNetwork.LoadLevel(waitingRoomSceneName);
-        }
-        else
-        {
-            Debug.LogWarning("No estás conectado a Photon o no estás en una sala.");
+            PhotonNetwork.Destroy(playerGameObject);
+            //PhotonNetwork.Destroy(leftHandObject);
+            //PhotonNetwork.Destroy(rightHandObject);
+
+            SceneManager.LoadScene(SceneNames.WaitingRoom.ToString());
         }
     }
+
 
     private void OnNoAction()
     {

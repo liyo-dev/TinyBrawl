@@ -126,7 +126,7 @@ GameObject:
   - component: {fileID: -1969380950328163302}
   - component: {fileID: 5039226195498930533}
   - component: {fileID: 6743884678037603032}
-  - component: {fileID: 334330408510234542}
+  - component: {fileID: -4240630428686325949}
   m_Layer: 0
   m_Name: Pumpkin
   m_TagString: Player
@@ -241,7 +241,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 112
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!114 &-1969380950328163302
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -285,8 +285,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentHealth: 100
   maxHealth: 100
---- !u!65 &334330408510234542
-BoxCollider:
+--- !u!136 &-4240630428686325949
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -303,8 +303,10 @@ BoxCollider:
   m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 1
+  m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1240631900266277228
 GameObject:

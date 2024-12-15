@@ -1510,7 +1510,7 @@ GameObject:
   - component: {fileID: 690422757967390383}
   - component: {fileID: -8678087016157316085}
   - component: {fileID: 8774474829549926297}
-  - component: {fileID: -4791038126659309025}
+  - component: {fileID: -6385546395480012262}
   m_Layer: 0
   m_Name: Robber
   m_TagString: Player
@@ -1625,7 +1625,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 112
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!114 &7484183782137828932
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1646,6 +1646,7 @@ MonoBehaviour:
   observableSearch: 2
   ObservedComponents:
   - {fileID: -4706141361451078299}
+  - {fileID: -8678087016157316085}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -1692,8 +1693,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentHealth: 100
   maxHealth: 100
---- !u!65 &-4791038126659309025
-BoxCollider:
+--- !u!136 &-6385546395480012262
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1710,8 +1711,10 @@ BoxCollider:
   m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 1
+  m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &7654464796460211274
 GameObject:

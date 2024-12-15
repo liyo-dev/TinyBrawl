@@ -15,7 +15,7 @@ public class PlayFabAuthManager : MonoBehaviour
     public UnityEvent onLoginFailed;      // Evento cuando el login falla
 
     [Header("Debug Options")]
-    [SerializeField] private bool debugLogs = true;
+    [SerializeField] private bool debugLogs = false;
 
     [Header("Player Data")]
     private PlayerDataSO playerDataSO;

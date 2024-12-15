@@ -13,5 +13,7 @@ public enum SceneNames
     User,
     Shop,
     Inventory,
-    World
+    World,
+    WaitingRoom,
+    Maze
 }

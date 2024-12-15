@@ -3003,7 +3003,7 @@ GameObject:
   - component: {fileID: -7125035853386395268}
   - component: {fileID: -8613180697961632825}
   - component: {fileID: 3349197983357460028}
-  - component: {fileID: 5781458472832625953}
+  - component: {fileID: 1609445104693297296}
   m_Layer: 0
   m_Name: Patient
   m_TagString: Player
@@ -3118,7 +3118,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 112
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!114 &4247178552500765157
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3139,6 +3139,7 @@ MonoBehaviour:
   observableSearch: 2
   ObservedComponents:
   - {fileID: -8206765010663652656}
+  - {fileID: -8613180697961632825}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -3185,8 +3186,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentHealth: 100
   maxHealth: 100
---- !u!65 &5781458472832625953
-BoxCollider:
+--- !u!136 &1609445104693297296
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -3203,8 +3204,10 @@ BoxCollider:
   m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 1
+  m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &7927236269272520591
 GameObject:

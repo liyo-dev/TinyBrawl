@@ -8,9 +8,12 @@ using PlayFab.ClientModels;
 using Service;
 using System.Linq;
 
-public class WorldManager : MonoBehaviourPunCallbacks
+public class PlayerSpawner : MonoBehaviourPunCallbacks
 {
     public UnityEvent OnPlayerLoaded;
+
+    [Header("Player Data")]
+    [SerializeField] private int maxPlayersInRoom;
 
     [Header("Player Data")]
     private PlayerDataSO playerDataSO;
@@ -19,17 +22,17 @@ public class WorldManager : MonoBehaviourPunCallbacks
     private GameObject[] characterPrefabs;
 
     [Header("Inventory Items")]
-    private GameObject[] inventoryItems; 
+    private GameObject[] inventoryItems;
 
     [Header("Spawn Settings")]
-    [SerializeField] private Transform spawnPoint; 
+    [SerializeField] private Transform spawnPoint;
 
     [Header("Cinemachine Virtual Camera")]
     [SerializeField] private CinemachineVirtualCamera virtualCamera;
 
     private GameObject activeCharacter;
 
-    private const string RoomName = "World";
+    public string RoomName = "";
 
     void Start()
     {
@@ -62,8 +65,6 @@ public class WorldManager : MonoBehaviourPunCallbacks
             {
                 playerDataSO.username = result.AccountInfo.Username;
                 PhotonNetwork.NickName = playerDataSO.username;
-
-                Debug.Log($"Datos del usuario recuperados: {playerDataSO.username}");
                 ConnectToPhoton();
             }
             else
@@ -85,21 +86,37 @@ public class WorldManager : MonoBehaviourPunCallbacks
         }
         else
         {
-            JoinWorldRoom();
+            // Verificar si ya estás en una sala
+            if (!PhotonNetwork.InRoom)
+            {
+                JoinRoom();
+            }
+            else
+            {
+                PhotonNetwork.LeaveRoom();
+            }
         }
     }
 
+
     public override void OnConnectedToMaster()
     {
-        Debug.Log("Conectado al servidor de Photon.");
-        JoinWorldRoom();
+        JoinRoom();
     }
 
-    private void JoinWorldRoom()
+    public override void OnJoinedLobby()
+    {
+        if (!PhotonNetwork.IsMasterClient)
+        {
+            JoinRoom();
+        }
+    }
+
+    private void JoinRoom()
     {
         RoomOptions roomOptions = new RoomOptions
         {
-            MaxPlayers = 20, // Límite de jugadores en la sala
+            MaxPlayers = maxPlayersInRoom,
             IsVisible = true,
             IsOpen = true
         };
@@ -109,7 +126,6 @@ public class WorldManager : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
-        Debug.Log($"Conectado a la sala '{RoomName}' con {PhotonNetwork.CurrentRoom.PlayerCount} jugadores.");
         SpawnCharacter();
         EquipWeapons();
     }
@@ -134,7 +150,6 @@ public class WorldManager : MonoBehaviourPunCallbacks
         int characterId = playerDataSO.selectedCharacterId;
         if (characterId < 0 || characterId >= characterPrefabs.Length)
         {
-            Debug.LogWarning($"Índice de personaje inválido ({characterId}). Se usará el primer personaje.");
             characterId = 0; // Usar el primer personaje como predeterminado
         }
 
@@ -154,8 +169,6 @@ public class WorldManager : MonoBehaviourPunCallbacks
 
         // Instanciar el personaje seleccionado con Photon
         activeCharacter = PhotonNetwork.Instantiate(prefabName, spawnPoint.position, spawnPoint.rotation);
-
-        Debug.Log($"Personaje instanciado: {prefabName}");
 
         // Validar que la cámara virtual esté asignada
         if (virtualCamera == null)
@@ -220,8 +233,6 @@ public class WorldManager : MonoBehaviourPunCallbacks
 
             ConfigureVirtualCamera();
 
-            Debug.Log($"Cinemachine ahora sigue a: {player.name}");
-
             OnPlayerLoaded?.Invoke();
 
             // Detener la repetición, ya que hemos encontrado al jugador
@@ -241,13 +252,17 @@ public class WorldManager : MonoBehaviourPunCallbacks
             if (transposer != null)
             {
                 transposer.m_FollowOffset = new Vector3(0, 3, -10); // Configurar el Follow Offset
-                Debug.Log("Follow Offset configurado en la Cinemachine Virtual Camera.");
             }
             else
             {
                 Debug.LogWarning("No se encontró un componente CinemachineTransposer en la cámara virtual.");
             }
         }
+    }
+
+    public override void OnLeftRoom()
+    {
+        Debug.LogWarning($"Abandonando la sala");
     }
 
     public override void OnJoinRoomFailed(short returnCode, string message)
