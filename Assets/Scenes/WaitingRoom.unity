@@ -380,6 +380,76 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 3.3242493, y: 29.135159, z: 43.745262}
   m_Center: {x: 20, y: 9.154316, z: -0.0323143}
+--- !u!1 &113988813
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 113988814}
+  - component: {fileID: 113988815}
+  - component: {fileID: 113988816}
+  m_Layer: 0
+  m_Name: LoadMazePun
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &113988814
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 113988813}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &113988815
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 113988813}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04fc00d4ee7a5b14692868afa33bbcc1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nextSceneName: 15
+  transition: {fileID: 11400000, guid: b577ec7af0d48c34a9d31ce17f830a8d, type: 2}
+  startDelay: 0
+--- !u!114 &113988816
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 113988813}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 2
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1001 &123254207
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -814,14 +884,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 360222747}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.010733539, y: 0, z: 0, w: 0.9999424}
-  m_LocalPosition: {x: -1.27, y: 198.30534, z: -9.997696}
+  m_LocalRotation: {x: 0.42261827, y: 0, z: 0, w: 0.9063079}
+  m_LocalPosition: {x: -1.27, y: 206.18048, z: -6.427871}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 644996807}
   m_Father: {fileID: 651009758}
-  m_LocalEulerAnglesHint: {x: -1.23, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 50, y: 0, z: 0}
 --- !u!114 &360222749
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1547,6 +1617,7 @@ GameObject:
   - component: {fileID: 744240704}
   - component: {fileID: 744240703}
   - component: {fileID: 744240702}
+  - component: {fileID: 744240705}
   m_Layer: 5
   m_Name: LoadMazeBtn
   m_TagString: Untagged
@@ -1613,18 +1684,18 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 744240703}
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: 
+      - m_Target: {fileID: 113988815}
+        m_TargetAssemblyTypeName: LoadScenePun, Assembly-CSharp
+        m_MethodName: LoadNoTransition
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -1668,6 +1739,33 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 744240700}
   m_CullTransparentMesh: 1
+--- !u!114 &744240705
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 744240700}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5392221266ea224cbf21fffd2fece3b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OnMasterClient:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 744240702}
+        m_TargetAssemblyTypeName: UnityEngine.UI.Selectable, UnityEngine.UI
+        m_MethodName: set_interactable
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
 --- !u!1001 &794189983
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1968,8 +2066,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 993114616}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.010733539, y: 0, z: 0, w: 0.9999424}
-  m_LocalPosition: {x: -1.27, y: 198.30534, z: -9.997696}
+  m_LocalRotation: {x: 0.42261827, y: 0, z: 0, w: 0.9063079}
+  m_LocalPosition: {x: -1.27, y: 206.18048, z: -6.427871}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2793,6 +2891,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  generator: {fileID: 0}
   maxPlayersInRoom: 10
   spawnPoint: {fileID: 647967538}
   virtualCamera: {fileID: 360222749}
@@ -3851,6 +3950,7 @@ SceneRoots:
   - {fileID: 1626580208}
   - {fileID: 559535479}
   - {fileID: 61176765}
+  - {fileID: 113988814}
   - {fileID: 647967538}
   - {fileID: 1511900119}
   - {fileID: 454452782}
