@@ -227,7 +227,7 @@ GameObject:
   - component: {fileID: 3746928169460061139}
   - component: {fileID: 1618709998812205896}
   - component: {fileID: -7850005119440235944}
-  - component: {fileID: -7918061418263814450}
+  - component: {fileID: 2706167132095489188}
   m_Layer: 0
   m_Name: Maze_Square Corner
   m_TagString: Untagged
@@ -310,7 +310,7 @@ MonoBehaviour:
     InterpolateOption: 0
     InterpolateMoveTowardsSpeed: 1
     InterpolateLerpSpeed: 0
---- !u!65 &-7918061418263814450
+--- !u!65 &2706167132095489188
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

@@ -7,7 +7,7 @@ public class CheckIfMasterClient : MonoBehaviourPunCallbacks
 
     void Start()
     {
-        if (PhotonNetwork.CurrentRoom.PlayerCount == 1)
+        if (PhotonNetwork.CurrentRoom.PlayerCount == 1 || PhotonNetwork.IsMasterClient)
         {
             OnMasterClient?.Invoke();
         }

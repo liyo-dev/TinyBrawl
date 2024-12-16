@@ -119,7 +119,7 @@ GameObject:
   - component: {fileID: 696436432277967870}
   - component: {fileID: 7922293351396621340}
   - component: {fileID: -3107972574043899706}
-  - component: {fileID: 4480931075683459427}
+  - component: {fileID: 2042474004281224329}
   m_Layer: 0
   m_Name: Maze_Outer Corner
   m_TagString: OuterCorner
@@ -200,7 +200,7 @@ MonoBehaviour:
     InterpolateOption: 0
     InterpolateMoveTowardsSpeed: 1
     InterpolateLerpSpeed: 0
---- !u!65 &4480931075683459427
+--- !u!65 &2042474004281224329
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

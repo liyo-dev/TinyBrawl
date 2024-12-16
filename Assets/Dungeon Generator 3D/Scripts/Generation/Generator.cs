@@ -82,7 +82,7 @@ public class Generator : MonoBehaviour
     public Room PlayerSpawnRoom { get => playerSpawnRoom; }
     public List<GameObject> DoorGameObjects { get => doorGameObjects; }
     public List<ObjectList> Enemies { get => enemies; }
-    public int AmountOfAdjacentRoomsToConnect { get => amountOfAdjacentRoomsToConnect; }
+    public int AmountOfAdjacentRoomsToConnect { get => amountOfAdjacentRoomsToConnect; } 
     public GenerationSettings GenerationSettings { get => generationSettings; }
 
     private void Awake()
@@ -797,15 +797,15 @@ public class Generator : MonoBehaviour
 
     private void CreateCorridor(int corridor, bool calculateNext, bool isFirstTime, Transform target, Transform startPoint)
     {
-        GameObject corridorFloor;
+        GameObject corridorFloor = null;
 
-        //Only does this the first time
+        int corridorWidth = 3; // Define el ancho del pasillo
+
         if (isFirstTime)
         {
-            Room tempTarget = target.transform.parent.gameObject.GetComponent<Room>();
-            Room tempStart = startPoint.transform.parent.gameObject.GetComponent<Room>();
+            Room tempTarget = target.transform.parent.GetComponent<Room>();
+            Room tempStart = startPoint.transform.parent.GetComponent<Room>();
 
-            //If the targeted room contains start room, remove it from the connected rooms of target
             if (tempTarget.ConnectedRooms.Contains(tempStart))
             {
                 tempTarget.SavedConnectedRooms = tempTarget.ConnectedRooms;
@@ -817,119 +817,78 @@ public class Generator : MonoBehaviour
             corridors[corridorNumber].name = "Corridor " + corridorNumber;
         }
 
-        //Do X Corridor
-        if (corridor == 0)
+        if (corridor == 0) // Dirección Z
         {
             int additive = 0;
 
             do
             {
-                if (startPoint.position.z < target.position.z)
+                if (startPoint.position.z < target.position.z) additive++;
+                else additive--;
+
+                for (int w = -corridorWidth / 2; w <= corridorWidth / 2; w++)
                 {
-                    additive++;
-                }
-                else
-                {
-                    additive--;
-                }
+                    int tempX = Mathf.RoundToInt(startPoint.position.x + w);
+                    int tempY = Mathf.RoundToInt(startPoint.position.z + additive);
 
-                //Get string from the self
-                string tempString = startPoint.gameObject.name;
-                string[] tempStringArray = tempString.Split(floorRemovables, System.StringSplitOptions.RemoveEmptyEntries);
-
-                //Make a parent object for corridor which is child of room
-                int tempIntY = int.Parse(tempStringArray[1]) + additive;
-                int tempIntX = int.Parse(tempStringArray[0]);
-
-                int randomFloor = Random.Range(0, flooring.Count);
-                corridorFloor = Instantiate(flooring[randomFloor].gameObject, new Vector3(startPoint.position.x, 0, startPoint.position.z + additive), Quaternion.identity);
-                //Name corridor floor
-                corridorFloor.name = "Floor (" + tempIntX + ", " + tempIntY + ")";
-
-                //Set parent to be corridor parent object
-                corridorFloor.transform.SetParent(corridors[corridorNumber].transform);
-
-                if (area[tempIntX, tempIntY] != null)
-                {
-                    DestroyImmediate(corridorFloor);
-                    corridorFloor = area[tempIntX, tempIntY];
-                }
-                else
-                {
-                    area[tempIntX, tempIntY] = corridorFloor;
+                    // Verificar límites antes de acceder al array
+                    if (tempX >= 0 && tempX < area.GetLength(0) && tempY >= 0 && tempY < area.GetLength(1))
+                    {
+                        if (area[tempX, tempY] == null)
+                        {
+                            int randomFloor = Random.Range(0, flooring.Count);
+                            corridorFloor = Instantiate(flooring[randomFloor].gameObject, new Vector3(tempX, 0, tempY), Quaternion.identity, corridors[corridorNumber].transform);
+                            corridorFloor.name = $"Floor ({tempX}, {tempY})";
+                            area[tempX, tempY] = corridorFloor;
+                        }
+                    }
                 }
 
-            } while (corridorFloor.transform.position.z != target.position.z);
-
+            } while (Mathf.RoundToInt(startPoint.position.z + additive) != Mathf.RoundToInt(target.position.z));
 
             if (calculateNext)
             {
-                CreateCorridor(1, false, false, target, corridorFloor.transform);
+                CreateCorridor(1, false, false, target, corridorFloor != null ? corridorFloor.transform : startPoint);
             }
         }
-        else if (corridor == 1) // Do Y corridor
+        else if (corridor == 1) // Dirección X
         {
             int additive = 0;
 
             do
             {
-                if (startPoint.position.x < target.position.x)
+                if (startPoint.position.x < target.position.x) additive++;
+                else additive--;
+
+                for (int w = -corridorWidth / 2; w <= corridorWidth / 2; w++)
                 {
-                    additive++;
-                }
-                else
-                {
-                    additive--;
-                }
+                    int tempX = Mathf.RoundToInt(startPoint.position.x + additive);
+                    int tempY = Mathf.RoundToInt(startPoint.position.z + w);
 
-
-                string tempString = startPoint.gameObject.name;
-                string[] tempStringArray = tempString.Split(floorRemovables, System.StringSplitOptions.RemoveEmptyEntries);
-                tempStringArray[0].Remove(0);
-
-
-                //Make a parent object for corridor which is child of room
-                int tempIntY = int.Parse(tempStringArray[1]);
-                int tempIntX = int.Parse(tempStringArray[0]) + additive;
-
-                int randomFloor = Random.Range(0, flooring.Count);
-                corridorFloor = Instantiate(flooring[randomFloor].gameObject, new Vector3(startPoint.position.x + additive, 0, startPoint.position.z), Quaternion.identity);
-
-                //Name corridor floor
-                corridorFloor.name = "Floor" + " (" + tempIntX + ", " + tempStringArray[1] + ")";
-
-                //Set parent to be corridor parent object
-                corridorFloor.transform.SetParent(corridors[corridorNumber].transform);
-
-                if (area[tempIntX, tempIntY] != null)
-                {
-                    DestroyImmediate(corridorFloor);
-                    corridorFloor = area[tempIntX, tempIntY];
-                }
-                else
-                {
-                    area[tempIntX, tempIntY] = corridorFloor;
+                    // Verificar límites antes de acceder al array
+                    if (tempX >= 0 && tempX < area.GetLength(0) && tempY >= 0 && tempY < area.GetLength(1))
+                    {
+                        if (area[tempX, tempY] == null)
+                        {
+                            int randomFloor = Random.Range(0, flooring.Count);
+                            corridorFloor = Instantiate(flooring[randomFloor].gameObject, new Vector3(tempX, 0, tempY), Quaternion.identity, corridors[corridorNumber].transform);
+                            corridorFloor.name = $"Floor ({tempX}, {tempY})";
+                            area[tempX, tempY] = corridorFloor;
+                        }
+                    }
                 }
 
-
-            } while (corridorFloor.transform.position.x != target.position.x);
+            } while (Mathf.RoundToInt(startPoint.position.x + additive) != Mathf.RoundToInt(target.position.x));
 
             if (calculateNext)
             {
-                CreateCorridor(0, false, false, target, corridorFloor.transform);
+                CreateCorridor(0, false, false, target, corridorFloor != null ? corridorFloor.transform : startPoint);
             }
         }
-        else
-        {
-            Debug.LogError("Create Corridor Function's int passed non available to create corridor in specific axis");
-        }
 
-        if (isFirstTime)
-        {
-            //Increase corridor number
-            corridorNumber++;
-        }
+        if (isFirstTime) corridorNumber++;
     }
+
 
     private void CalculateClosestRooms()
     {
