@@ -48,7 +48,6 @@ public class LoadScenePun : MonoBehaviourPunCallbacks
     [PunRPC]
     private void LoadNoTransitionRPC()
     {
-        Debug.Log("Entro");
         SceneManager.LoadScene(nextSceneName.ToString());
     }
 }

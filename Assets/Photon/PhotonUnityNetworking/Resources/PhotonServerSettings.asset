@@ -99,6 +99,10 @@ MonoBehaviour:
   - RPC_SyncMaze
   - LoadInstantRPC
   - LoadNoTransitionRPC
+  - SyncRemotePlayerPosition
+  - SpawnPlayerInRoom
+  - SpawnPlayers
+  - SyncGemPosition
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

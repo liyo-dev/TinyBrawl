@@ -4,6 +4,16 @@ using UnityEngine;
 public static class PathUtils
 {
     private const string PlayerDataFolderName = "PlayerSavedData";
+    private static string uniqueFolderName;
+    /// <summary>
+    /// Inicializa el nombre único de la carpeta usando un identificador único.
+    /// </summary>
+    static PathUtils()
+    {
+        // Usa el Process ID como identificador único
+        uniqueFolderName = $"{PlayerDataFolderName}_{System.Diagnostics.Process.GetCurrentProcess().Id}";
+    }
+
 
     /// <summary>
     /// Devuelve la ruta completa de la carpeta PlayerSavedData dentro de la ubicación persistente.
@@ -13,7 +23,7 @@ public static class PathUtils
     public static string GetPlayerDataFolderPath()
     {
         // Crear la ruta para la carpeta "PlayerSavedData" dentro de "persistentDataPath"
-        string playerDataFolder = Path.Combine(Application.persistentDataPath, PlayerDataFolderName);
+        string playerDataFolder = Path.Combine(Application.persistentDataPath, uniqueFolderName);
 
         // Verificar si la carpeta no existe y crearla
         if (!Directory.Exists(playerDataFolder))

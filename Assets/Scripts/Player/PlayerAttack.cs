@@ -23,6 +23,8 @@ public class PlayerAttack : MonoBehaviourPunCallbacks
     private float gizmoAttackRange;
     private bool showAttackGizmo = false;
 
+    private int minAttackRange = 4;
+
     private void Awake()
     {
         var specialAttackBtnObj = GameObject.FindGameObjectWithTag("SpecialAttackBtn");
@@ -211,7 +213,7 @@ public class PlayerAttack : MonoBehaviourPunCallbacks
         Invoke(nameof(HideGizmos), weapon.weaponData.effectDuration);
 
         // Detectar colisiones dentro del rango
-        int hitCount = Physics.OverlapSphereNonAlloc(transform.position, attackRange, meleeHitResults);
+        int hitCount = Physics.OverlapSphereNonAlloc(transform.position, attackRange + minAttackRange, meleeHitResults);
 
         for (int i = 0; i < hitCount; i++)
         {

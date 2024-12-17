@@ -12,8 +12,6 @@ public class PlayerSpawner : MonoBehaviourPunCallbacks
 {
     public UnityEvent OnPlayerLoaded;
 
-    public Generator generator;
-
     [Header("Player Data")]
     [SerializeField] private int maxPlayersInRoom;
 
@@ -28,6 +26,8 @@ public class PlayerSpawner : MonoBehaviourPunCallbacks
 
     [Header("Spawn Settings")]
     [SerializeField] private Transform spawnPoint;
+
+    public Transform SpawnPoint => spawnPoint;
 
     [Header("Cinemachine Virtual Camera")]
     [SerializeField] private CinemachineVirtualCamera virtualCamera;
@@ -169,18 +169,7 @@ public class PlayerSpawner : MonoBehaviourPunCallbacks
             return;
         }
 
-        // Instanciar el personaje seleccionado con Photon
-        if (generator != null)
-        {
-            spawnPoint = generator.PlayerSpawnRoom.transform;
-        }
-
         activeCharacter = PhotonNetwork.Instantiate(prefabName, spawnPoint.position, spawnPoint.rotation);
-
-        if (generator != null)
-        {
-            activeCharacter.transform.position = new Vector3(spawnPoint.position.x, 5, spawnPoint.position.z);
-        }
 
         // Validar que la cámara virtual esté asignada
         if (virtualCamera == null)
