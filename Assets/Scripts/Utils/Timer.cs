@@ -10,13 +10,6 @@ public class Timer : MonoBehaviour
     public event Action<float> OnTimeChanged; 
     public event Action OnTimerCompleted;
 
-    public bool IsActive = false;
-
-    private void Start()
-    {
-        gameObject.SetActive(IsActive);
-    }
-
     public void StartTimer()
     {
         gameObject.SetActive(true);

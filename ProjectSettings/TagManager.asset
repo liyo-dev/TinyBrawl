@@ -19,6 +19,13 @@ TagManager:
   - seleccion
   - AttackRight
   - Escudo
+  - Bullet
+  - Floor
+  - Wall
+  - OuterCorner
+  - Room
+  - WinnerPopUp
+  - LooserPopUp
   layers:
   - Default
   - TransparentFX
