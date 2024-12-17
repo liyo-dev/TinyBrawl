@@ -6613,7 +6613,7 @@ GameObject:
   - component: {fileID: 8465897723095290497}
   - component: {fileID: 8689255618670541228}
   m_Layer: 0
-  m_Name: Clown
+  m_Name: Pennywise
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
