@@ -20,11 +20,6 @@ public class CheckWinner : MonoBehaviourPun
             if (winnerPopUp)
             {
                 winnerPopUp.GetComponent<ShowPopUpService>().Show();
-            }
-
-            // Solo el jugador maestro ejecuta la lógica de "matar" a los demás
-            if (PhotonNetwork.IsMasterClient)
-            {
                 KillAllOtherPlayers(other.gameObject);
             }
         }
@@ -41,11 +36,10 @@ public class CheckWinner : MonoBehaviourPun
             if (player == winner) continue;
 
             // Obtener el componente PlayerHealth y "matar" al jugador
-            PlayerHealth playerHealth = player.GetComponent<PlayerHealth>();
-            if (playerHealth != null)
+            PhotonView playerView = player.GetComponent<PhotonView>();
+            if (playerView != null)
             {
-               // photonView.RPC(nameof(SyncPlayerLoose), player.GetComponent<PhotonView>().Owner);
-                playerHealth.TakeDamageRPC(int.MaxValue); // Matar al jugador directamente
+                photonView.RPC(nameof(SyncPlayerLoose), playerView.Owner, playerView.ViewID);
             }
         }
     }

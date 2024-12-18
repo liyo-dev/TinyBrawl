@@ -2255,7 +2255,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: b30e663c331465743b4a595ff258359c, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e9e6f8b8877e39c4b9b1183ad025da55, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2522,8 +2522,8 @@ RectTransform:
   - {fileID: 1718649855}
   - {fileID: 410246913}
   - {fileID: 167612870}
-  - {fileID: 2081887341}
   - {fileID: 695388390}
+  - {fileID: 2081887341}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -4955,7 +4955,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   wallPrefab: {fileID: 4191847227215644432, guid: 5b26158c3edf23c44a1eb1b28795c416, type: 3}
   floorPrefab: {fileID: 8782799977182611608, guid: c1017d2aee6dbf7449ffce97f205eaaa, type: 3}
-  gemPrefab: {fileID: 7076797555764645405, guid: 5897b8aeaee587c489a11d29461e3e32, type: 3}
+  finalPrefab: {fileID: 3695761631345175056, guid: f8efe6d58f779ef4ab8342daf9bb909b, type: 3}
   mazeSize: 11
   roomCount: 10
   roomSize: 8
@@ -6438,6 +6438,10 @@ PrefabInstance:
     - target: {fileID: 3528509326098648117, guid: e2c2ef9a3cc6e284e96571b9f1f1ff3c, type: 3}
       propertyPath: m_Name
       value: Panel_spinner
+      objectReference: {fileID: 0}
+    - target: {fileID: 3528509326098648117, guid: e2c2ef9a3cc6e284e96571b9f1f1ff3c, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6353685266050224714, guid: e2c2ef9a3cc6e284e96571b9f1f1ff3c, type: 3}
       propertyPath: m_Enabled

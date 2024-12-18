@@ -6,7 +6,7 @@ public class LabyrinthGenerator : MonoBehaviourPun
 {
     public GameObject wallPrefab;       // Prefab de las paredes
     public GameObject floorPrefab;      // Prefab del suelo
-    public GameObject gemPrefab;      // Prefab de la gema final
+    public GameObject finalPrefab;      // Prefab de la gema final
 
     public int mazeSize = 11;           // Tamaño del laberinto (debe ser impar para garantizar un centro)
     public int roomCount = 10;          // Número de jugadores y salas
@@ -52,10 +52,10 @@ public class LabyrinthGenerator : MonoBehaviourPun
 
                     // Instanciar la gema localmente en el MasterClient
                     Vector3 gemPosition = centerPosition + new Vector3(0, 1f, 0); // Añadir altura
-                    GameObject gem = Instantiate(gemPrefab, gemPosition, Quaternion.identity);
+                   // GameObject gem = Instantiate(finalPrefab, gemPosition, Quaternion.identity);
 
                     // Notificar a los demás jugadores la posición de la gema
-                    photonView.RPC(nameof(SyncGemPosition), RpcTarget.Others, gemPosition);
+                    photonView.RPC(nameof(SyncFinalPosition), RpcTarget.All, gemPosition);
                 }
             }
         }
@@ -145,10 +145,10 @@ public class LabyrinthGenerator : MonoBehaviourPun
     }
 
     [PunRPC]
-    void SyncGemPosition(Vector3 position)
+    void SyncFinalPosition(Vector3 position)
     {
         // Instanciar la gema en los clientes no maestros
-        Instantiate(gemPrefab, position, Quaternion.identity);
+        Instantiate(finalPrefab, position, Quaternion.identity);
     }
     #endregion
 }
