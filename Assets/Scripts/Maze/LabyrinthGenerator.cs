@@ -135,6 +135,7 @@ public class LabyrinthGenerator : MonoBehaviourPun
         {
             Vector3 spawnPosition = spawnPositions[playerIndex];
             spawnPosition = new Vector3(spawnPosition.x, spawnPosition.y + 2, spawnPosition.z);
+            //playerSpawner.MovePlayerToPosition(spawnPosition);
             playerSpawner.SpawnPoint.position = spawnPosition;
         }
         else

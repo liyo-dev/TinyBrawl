@@ -1,3 +1,4 @@
+using DG.Tweening;
 using Photon.Pun;
 using UnityEngine;
 
@@ -5,6 +6,7 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
 {
     public float currentHealth = 100f;
     public float maxHealth = 100f;
+    public GameObject deadFeedback;
 
     private PlayerHealthBar healthBar;
 
@@ -42,5 +44,20 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
     {
         Debug.Log("Jugador ha muerto.");
         // Agregar lógica de muerte, como deshabilitar controles, mostrar UI, etc.
+        GetComponent<PlayerMovement>().enabled = false;
+        transform.DOLocalMoveX(transform.localPosition.x + 1, 1)
+            .SetLoops(3, LoopType.Yoyo) // Repite en modo Yoyo para moverse de ida y vuelta
+            .SetEase(Ease.InOutSine).Play().OnComplete(() =>
+            {
+                GameObject explosion = PhotonNetwork.Instantiate(deadFeedback.name, transform.position, Quaternion.identity);
+                explosion.transform.localScale = new Vector3(5, 5, 5);
+                Invoke(nameof(DestroyObject), 2f);
+            }); ;
+
+    }
+
+    private void DestroyObject()
+    {
+        PhotonNetwork.Destroy(gameObject);
     }
 }

@@ -32,7 +32,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2807303528156947341}
-  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!198 &5994214099033958316
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -4846,8 +4846,8 @@ GameObject:
   - component: {fileID: 3784915425326225168}
   - component: {fileID: -2464388157535980205}
   - component: {fileID: 4606823392915452957}
-  - component: {fileID: 8526919290720662786}
   - component: {fileID: 3042746845833869285}
+  - component: {fileID: 6921496339369634105}
   m_Layer: 0
   m_Name: vfx_Portal_02
   m_TagString: Untagged
@@ -4865,7 +4865,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 874847364906880072}
@@ -9729,7 +9729,20 @@ MonoBehaviour:
     InterpolateOption: 0
     InterpolateMoveTowardsSpeed: 1
     InterpolateLerpSpeed: 0
---- !u!135 &8526919290720662786
+--- !u!114 &3042746845833869285
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3165652264736840632}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 593401db9e71f11418cfd246ac7bd462, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  waitingRoomSceneName: WaitingRoom
+--- !u!135 &6921496339369634105
 SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -9750,22 +9763,6 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.71
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &3042746845833869285
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3165652264736840632}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 593401db9e71f11418cfd246ac7bd462, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  waitingRoomSceneName: WaitingRoom
-  OnPlayerEnter:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1 &4851888791825363751
 GameObject:
   m_ObjectHideFlags: 0
@@ -9798,7 +9795,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2807303528156947341}
-  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!198 &3494825089296628698
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -14625,13 +14622,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8792836471345979806}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2807303528156947341}
-  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!198 &2635889863004977920
 ParticleSystem:
   m_ObjectHideFlags: 0

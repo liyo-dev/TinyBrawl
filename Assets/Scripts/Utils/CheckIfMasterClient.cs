@@ -1,48 +1,38 @@
 using Photon.Pun;
+using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class CheckIfMasterClient : MonoBehaviourPunCallbacks
+public class WaitingRoomManager : MonoBehaviourPunCallbacks
 {
     [Header("Eventos")]
-    public UnityEvent OnMasterClient;   // Evento a ejecutar si es el MasterClient
-    public UnityEvent OnNotMasterClient; // Evento opcional si no es el MasterClient
+    public UnityEvent OnFirstPlayerEnterd; // Evento cuando el primer jugador entra en la sala
 
-    void Start()
-    {
-        CheckMasterClientStatus();
-    }
+    private bool firstPlayerNotified = false; // Para asegurar que solo se emite una vez
 
     /// <summary>
-    /// Verifica si el jugador actual es el MasterClient y ejecuta los eventos correspondientes.
+    /// Este método se llama cuando un jugador entra en la sala.
     /// </summary>
-    public void CheckMasterClientStatus()
+    public override void OnPlayerEnteredRoom(Photon.Realtime.Player newPlayer)
     {
-        if (PhotonNetwork.CurrentRoom == null)
+        // Si no se ha notificado aún y este jugador es el primero en entrar
+        if (!firstPlayerNotified && PhotonNetwork.CurrentRoom.PlayerCount == 1)
         {
-            Debug.LogWarning("No se puede comprobar el MasterClient: no estás en una sala.");
-            return;
-        }
-
-        if (PhotonNetwork.IsMasterClient)
-        {
-            Debug.Log("El jugador actual es el MasterClient.");
-            OnMasterClient?.Invoke();
-        }
-        else
-        {
-            Debug.Log("El jugador actual NO es el MasterClient.");
-            OnNotMasterClient?.Invoke();
+            firstPlayerNotified = true;
+            OnFirstPlayerEnterd?.Invoke();
         }
     }
 
     /// <summary>
-    /// Se llama automáticamente cuando hay un cambio de MasterClient.
+    /// Este método también se ejecuta al unirse a la sala, en caso de que este jugador sea el primero.
     /// </summary>
-    /// <param name="newMasterClient">El nuevo MasterClient de la sala.</param>
-    public override void OnMasterClientSwitched(Photon.Realtime.Player newMasterClient)
+    public override void OnJoinedRoom()
     {
-        Debug.Log($"El MasterClient ha cambiado a: {newMasterClient.NickName}");
-        CheckMasterClientStatus();
+        // Verificar si este jugador es el primero al unirse
+        if (!firstPlayerNotified && PhotonNetwork.CurrentRoom.PlayerCount == 1)
+        {
+            firstPlayerNotified = true;
+            OnFirstPlayerEnterd?.Invoke();
+        }
     }
 }

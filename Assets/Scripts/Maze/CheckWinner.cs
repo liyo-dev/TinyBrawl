@@ -16,15 +16,36 @@ public class CheckWinner : MonoBehaviourPun
     {
         if (other.CompareTag("Player"))
         {
-            //Mostrar pop up he ganado
+            // Mostrar pop-up de victoria para el jugador ganador
             if (winnerPopUp)
             {
                 winnerPopUp.GetComponent<ShowPopUpService>().Show();
             }
 
-            if (photonView.IsMine)
+            // Solo el jugador maestro ejecuta la lógica de "matar" a los demás
+            if (PhotonNetwork.IsMasterClient)
             {
-                photonView.RPC(nameof(SyncPlayerLoose), RpcTarget.Others);
+                KillAllOtherPlayers(other.gameObject);
+            }
+        }
+    }
+
+    private void KillAllOtherPlayers(GameObject winner)
+    {
+        // Buscar todos los jugadores con el tag "Player"
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+
+        foreach (GameObject player in players)
+        {
+            // Saltar al jugador ganador
+            if (player == winner) continue;
+
+            // Obtener el componente PlayerHealth y "matar" al jugador
+            PlayerHealth playerHealth = player.GetComponent<PlayerHealth>();
+            if (playerHealth != null)
+            {
+               // photonView.RPC(nameof(SyncPlayerLoose), player.GetComponent<PhotonView>().Owner);
+                playerHealth.TakeDamageRPC(int.MaxValue); // Matar al jugador directamente
             }
         }
     }
@@ -32,11 +53,10 @@ public class CheckWinner : MonoBehaviourPun
     [PunRPC]
     void SyncPlayerLoose()
     {
-        //Mostrar pop up he perdido
+        // Mostrar pop-up de derrota para los jugadores perdedores
         if (looserPopUp)
         {
             looserPopUp.GetComponent<ShowPopUpService>().Show();
         }
-
     }
 }

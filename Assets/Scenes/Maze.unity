@@ -221,81 +221,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 8135886326569738822, guid: 56fae09712773584fb63896d473a98ee, type: 3}
   m_PrefabInstance: {fileID: 4030437}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &7763858
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 7763860}
-  - component: {fileID: 7763859}
-  - component: {fileID: 7763861}
-  m_Layer: 0
-  m_Name: Timer
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!114 &7763859
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7763858}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3beefe0f69a29fd44a8f992fbedf40f9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  duration: 30
---- !u!4 &7763860
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7763858}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7763861
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7763858}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ab84640391868434394f71e6123ea053, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ActualAction:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 7763859}
-        m_TargetAssemblyTypeName: Timer, Assembly-CSharp
-        m_MethodName: StartTimer
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  Delay: 0
-  Repeat: 0
 --- !u!1001 &29451319
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -836,7 +761,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -4965,9 +4890,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5f3870be9f7a924fb5f130baf5d4606, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  wallPrefab: {fileID: 4725644372996588504, guid: 149a4fa0a96e08148aab0a113d1ccef5, type: 3}
-  floorPrefab: {fileID: 8761019777689142071, guid: 0234e9a5ed8e17845afb71ada7e4676d, type: 3}
-  gemPrefab: {fileID: 3580850165668990844, guid: 6d09f1047ed7fb244a255fa66291cb94, type: 3}
+  wallPrefab: {fileID: 4191847227215644432, guid: 5b26158c3edf23c44a1eb1b28795c416, type: 3}
+  floorPrefab: {fileID: 8782799977182611608, guid: c1017d2aee6dbf7449ffce97f205eaaa, type: 3}
+  gemPrefab: {fileID: 7076797555764645405, guid: 5897b8aeaee587c489a11d29461e3e32, type: 3}
   mazeSize: 11
   roomCount: 10
   roomSize: 8
@@ -5188,6 +5113,7 @@ MonoBehaviour:
   maxPlayersInRoom: 10
   spawnPoint: {fileID: 906284535}
   virtualCamera: {fileID: 1046842128}
+  cameraRotation: 40
   RoomName: Maze
 --- !u!4 &1714488445
 Transform:
@@ -5492,7 +5418,7 @@ GameObject:
   - component: {fileID: 1841282019}
   - component: {fileID: 1841282018}
   m_Layer: 0
-  m_Name: Plane
+  m_Name: tmp_playerPos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5582,7 +5508,7 @@ Transform:
   m_GameObject: {fileID: 1841282017}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -100, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -6636,4 +6562,3 @@ SceneRoots:
   - {fileID: 203015192}
   - {fileID: 1142608073}
   - {fileID: 1057918775}
-  - {fileID: 7763860}

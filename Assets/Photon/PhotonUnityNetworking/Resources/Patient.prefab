@@ -3186,6 +3186,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentHealth: 100
   maxHealth: 100
+  deadFeedback: {fileID: 5162910912013668194, guid: cf82839c411151342a7b2337bda9fb34, type: 3}
 --- !u!136 &1609445104693297296
 CapsuleCollider:
   m_ObjectHideFlags: 0

@@ -32,6 +32,9 @@ public class PlayerSpawner : MonoBehaviourPunCallbacks
     [Header("Cinemachine Virtual Camera")]
     [SerializeField] private CinemachineVirtualCamera virtualCamera;
 
+    [SerializeField]
+    private float cameraRotation = 15f;
+
     private GameObject activeCharacter;
 
     public string RoomName = "";
@@ -230,7 +233,7 @@ public class PlayerSpawner : MonoBehaviourPunCallbacks
             // Configuración para mantener la cámara fija desde arriba
             Transform cameraTransform = virtualCamera.transform;
             cameraTransform.position = new Vector3(cameraTransform.position.x, 10f, cameraTransform.position.z);
-            cameraTransform.rotation = Quaternion.Euler(40f, 0f, 0f);
+            cameraTransform.rotation = Quaternion.Euler(cameraRotation, 0f, 0f);
 
             ConfigureVirtualCamera();
 
@@ -258,6 +261,24 @@ public class PlayerSpawner : MonoBehaviourPunCallbacks
             {
                 Debug.LogWarning("No se encontró un componente CinemachineTransposer en la cámara virtual.");
             }
+        }
+    }
+
+    /// <summary>
+    /// Método para mover el personaje del jugador a una nueva posición.
+    /// </summary>
+    /// <param name="newPosition">Nueva posición a la que se debe mover el personaje.</param>
+    public void MovePlayerToPosition(Vector3 newPosition)
+    {
+        if (activeCharacter != null)
+        {
+            spawnPoint.position = newPosition;
+            activeCharacter.transform.position = newPosition;
+            Debug.Log($"El jugador ha sido movido a la posición: {newPosition}");
+        }
+        else
+        {
+            Debug.LogWarning("No hay un personaje activo para mover.");
         }
     }
 
