@@ -35,11 +35,11 @@ public class GoogleMobileAdsDemoScript : MonoBehaviour
 
     public void Start()
     {
-        // Initialize the Google Mobile Ads SDK.
-        MobileAds.Initialize((InitializationStatus initStatus) =>
-        {
-            // This callback is called once the MobileAds SDK is initialized.
+#if UNITY_ANDROID || UNITY_IOS || UNITY_EDITOR
+        GoogleMobileAds.Api.MobileAds.Initialize((initStatus) => {
+            Debug.Log("Google Mobile Ads initialized.");
         });
+#endif
     }
 
     /// <summary>

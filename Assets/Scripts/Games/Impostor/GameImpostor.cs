@@ -11,8 +11,8 @@ public class GameImpostor : MonoBehaviourPunCallbacks
     public DotUpDown Telon;
     public GameObject GoodFeedback;
     public GameObject WrongFeedback;
-    
-    
+
+
     private int correctIndexImage;
     private int wrongIndexImage;
     private int positionOk;
@@ -46,15 +46,13 @@ public class GameImpostor : MonoBehaviourPunCallbacks
     {
         photonView.RPC(nameof(GameOver), RpcTarget.Others);
     }
-    
+
     private IEnumerator NextTurn()
     {
-        canClick = false;
-        
         Telon.Down();
-    
+
         yield return new WaitForSeconds(Telon.animationDuration + 0.1f);
-    
+
         photonView.RPC(nameof(DestroyImages), RpcTarget.Others);
 
         // Esperar a que las imágenes sean destruidas antes de calcular e instanciar nuevas imágenes
@@ -63,13 +61,12 @@ public class GameImpostor : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsMasterClient)
         {
             CalculateImagesIfNeeded();
+            photonView.RPC(nameof(SyncTelonUp), RpcTarget.All);
         }
 
-        Telon.Up();
-        
         canClick = true;
     }
-    
+
     void CalculateImagesIfNeeded()
     {
         if (!imagesCalculated)
@@ -78,7 +75,7 @@ public class GameImpostor : MonoBehaviourPunCallbacks
             imagesCalculated = true;
         }
     }
-    
+
     void CalculateImages()
     {
         // Imágenes
@@ -89,7 +86,7 @@ public class GameImpostor : MonoBehaviourPunCallbacks
         {
             wrongIndexImage = Random.Range(0, images.Count);
         }
-        
+
         // Posiciones
         positionOk = Random.Range(0, spawnPositions.Length);
 
@@ -97,47 +94,48 @@ public class GameImpostor : MonoBehaviourPunCallbacks
         {
             positionKO1 = 1;
             positionKO2 = 2;
-        } 
+        }
         else if (positionOk == 1)
         {
             positionKO1 = 0;
             positionKO2 = 2;
-        } 
+        }
         else if (positionOk == 2)
         {
             positionKO1 = 0;
             positionKO2 = 1;
         }
-        
-        photonView.RPC("SyncImagesAndPosition", RpcTarget.Others, correctIndexImage, wrongIndexImage, positionOk, positionKO1, positionKO2);
+
+        photonView.RPC(nameof(SyncImagesAndPosition), RpcTarget.Others, correctIndexImage, wrongIndexImage, positionOk, positionKO1, positionKO2);
     }
-    
+
     public void OnClickPosition(int position)
     {
+
         if (!canClick) return;
         if (stopGame) return;
-        if (!localPlayerCanPlay) return; 
-        
+        if (!localPlayerCanPlay) return;
+
+        localPlayerCanPlay = false;
+
         Vector2 position_Instantiate = new Vector2(spawnPositions[position].position.x,
             spawnPositions[position].position.y - 1);
-        
+
         if (position == positionOk)
         {
+            photonView.RPC(nameof(SyncTurn), RpcTarget.All);
             var goodFB = Instantiate(GoodFeedback, position_Instantiate, Quaternion.identity);
             Destroy(goodFB, .5f);
             ShowCorrectFeedback();
-            localPlayerCanPlay = false; 
-            photonView.RPC("SyncTurn", RpcTarget.All);
         }
         else
         {
-            localPlayerCanPlay = false;
-            photonView.RPC("SyncRemotePlayerCanPlay", RpcTarget.Others);
+            // pongo remotePlayerCanPlay a false para resetear cuando seleccione el ultimo jugador
+            photonView.RPC(nameof(SyncRemotePlayerCanPlay), RpcTarget.Others);
             var worngFB = Instantiate(WrongFeedback, position_Instantiate, Quaternion.identity);
             Destroy(worngFB, .5f);
-
             ShowWrongFeedback();
-            
+
             if (!localPlayerCanPlay && !remotePlayerCanPlay) DoStart();
         }
     }
@@ -148,7 +146,7 @@ public class GameImpostor : MonoBehaviourPunCallbacks
         {
             _myGameManager = FindObjectOfType<MyGameManager>();
         }
-        
+
         _myGameManager.IncreaseLocalScore(1);
     }
 
@@ -158,10 +156,10 @@ public class GameImpostor : MonoBehaviourPunCallbacks
         {
             _myGameManager = FindObjectOfType<MyGameManager>();
         }
-        
+
         _myGameManager.DecreaseLocalScore(1);
     }
-    
+
     private IEnumerator DestroyImagesAndWait()
     {
         if (Image1 != null)
@@ -181,17 +179,17 @@ public class GameImpostor : MonoBehaviourPunCallbacks
         }
     }
 
-    
+
     [PunRPC]
     private void SyncImagesAndPosition(int correctIndexImage, int wrongIndexImage, int positionOk, int positionKO1, int positionKO2)
     {
         this.positionOk = positionOk;
         this.positionKO1 = positionKO1;
         this.positionKO2 = positionKO2;
-        photonView.RPC("SyncImages", RpcTarget.Others, correctIndexImage, wrongIndexImage, positionOk, positionKO1, positionKO2);
+        photonView.RPC(nameof(SyncImages), RpcTarget.Others, correctIndexImage, wrongIndexImage, positionOk, positionKO1, positionKO2);
     }
-    
-    
+
+
     [PunRPC]
     private void SyncImages(int correctIndexImage, int wrongIndexImage, int positionOk, int positionKO1, int positionKO2)
     {
@@ -200,7 +198,7 @@ public class GameImpostor : MonoBehaviourPunCallbacks
         Image3 = PhotonNetwork.Instantiate(images[wrongIndexImage].name, spawnPositions[positionKO2].position, Quaternion.identity);
     }
 
-    
+
     [PunRPC]
     private void DestroyImages()
     {
@@ -211,14 +209,15 @@ public class GameImpostor : MonoBehaviourPunCallbacks
     private void SyncTurn()
     {
         if (stopGame) return;
-        
+
+        canClick = false;
         localPlayerCanPlay = true;
         remotePlayerCanPlay = true;
         imagesCalculated = false;
         StopAllCoroutines();
         StartCoroutine(NextTurn());
     }
-    
+
     [PunRPC]
     private void GameOver()
     {
@@ -226,10 +225,17 @@ public class GameImpostor : MonoBehaviourPunCallbacks
         stopGame = true;
         Telon.Down();
     }
-    
+
     [PunRPC]
     private void SyncRemotePlayerCanPlay()
     {
         remotePlayerCanPlay = false;
+    }
+
+    [PunRPC]
+    private void SyncTelonUp()
+    {
+        Telon.Up();
+        localPlayerCanPlay = true;
     }
 }

@@ -94,7 +94,7 @@ public class MyGameManager : MonoBehaviourPunCallbacks
         }
 
         // Mostrar la puntuación
-        winnerText.text = "Tu puntuación: " + score;
+        //winnerText.text = "Tu puntuación: " + score;
 
         // Actualizar los puntos en el SO
         playerDataSO.points += score;
