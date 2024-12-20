@@ -1,3 +1,4 @@
+using Service;
 using System;
 using TMPro;
 using UnityEngine;
@@ -78,12 +79,17 @@ public class CountdownTimer : MonoBehaviour
        
         Invoke("TimeOut", totalTime);
     }
-    
+
     void LoadScene()
     {
-        SceneManager.LoadScene(SceneNames.Title.ToString());
+        ServiceLocator.GetService<GoogleAdsService>().ShowIntersitial(() =>
+        {
+            // Cargar la pantalla del título después de cerrar el anuncio
+            SceneManager.LoadScene(SceneNames.Title.ToString());
+        });
     }
-    
+
+
     void TimeOut()
     {
         OnTimeOut?.Invoke();
