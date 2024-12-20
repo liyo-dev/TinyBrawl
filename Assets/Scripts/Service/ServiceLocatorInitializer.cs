@@ -34,6 +34,9 @@ namespace Service
 
             var characterDataSO = FindFirstObjectByType<CharacterDataService>();
             ServiceLocator.AddService(characterDataSO);
+
+            var googleMobileAds = FindFirstObjectByType<GoogleMobileAdsDemoScript>();
+            ServiceLocator.AddService(googleMobileAds);
         }
     }
 }
