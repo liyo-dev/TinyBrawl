@@ -19,15 +19,12 @@ public class LabyrinthGenerator : MonoBehaviourPun
     private Vector3 centerPosition;     // Posición del centro del laberinto
     private List<Vector3> spawnPositions = new List<Vector3>();
 
-    private void Start()
+    public void DoStart()
     {
-        if (PhotonNetwork.IsMasterClient)
-        {
-            GenerateMaze();
-            CalculateSpawnPositions();
-            photonView.RPC(nameof(SyncMaze), RpcTarget.Others);
-            photonView.RPC(nameof(SpawnPlayers), RpcTarget.All);
-        }
+        GenerateMaze();
+        CalculateSpawnPositions();
+        photonView.RPC(nameof(SyncMaze), RpcTarget.Others);
+        photonView.RPC(nameof(SpawnPlayers), RpcTarget.All);
     }
 
     #region Maze Generation
