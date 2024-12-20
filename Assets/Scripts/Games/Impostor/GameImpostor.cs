@@ -23,10 +23,10 @@ public class GameImpostor : MonoBehaviourPunCallbacks
     private GameObject Image3;
     private MyGameManager _myGameManager;
     private float turnDuration = 4f; // Duración de cada turno
-    private bool localPlayerCanPlay;
-    private bool remotePlayerCanPlay;
+    private bool localPlayerCanPlay = false;
+    private bool remotePlayerCanPlay = false;
     private bool imagesCalculated = false;
-    private bool stopGame;
+    private bool stopGame = false;
     private bool canClick = false;
 
     private void Start()
@@ -53,7 +53,8 @@ public class GameImpostor : MonoBehaviourPunCallbacks
 
         yield return new WaitForSeconds(Telon.animationDuration + 0.1f);
 
-        photonView.RPC(nameof(DestroyImages), RpcTarget.Others);
+        //photonView.RPC(nameof(DestroyImages), RpcTarget.Others);
+        DestroyImages();
 
         // Esperar a que las imágenes sean destruidas antes de calcular e instanciar nuevas imágenes
         yield return new WaitUntil(() => Image1 == null && Image2 == null && Image3 == null);
@@ -61,7 +62,6 @@ public class GameImpostor : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsMasterClient)
         {
             CalculateImagesIfNeeded();
-            photonView.RPC(nameof(SyncTelonUp), RpcTarget.All);
         }
 
         canClick = true;
@@ -107,6 +107,8 @@ public class GameImpostor : MonoBehaviourPunCallbacks
         }
 
         photonView.RPC(nameof(SyncImagesAndPosition), RpcTarget.Others, correctIndexImage, wrongIndexImage, positionOk, positionKO1, positionKO2);
+        photonView.RPC(nameof(SyncImages), RpcTarget.All, correctIndexImage, wrongIndexImage, positionOk, positionKO1, positionKO2);
+        photonView.RPC(nameof(SyncTelonUp), RpcTarget.All);
     }
 
     public void OnClickPosition(int position)
@@ -164,19 +166,24 @@ public class GameImpostor : MonoBehaviourPunCallbacks
     {
         if (Image1 != null)
         {
-            PhotonNetwork.Destroy(Image1);
+            Destroy(Image1);
             yield return new WaitUntil(() => Image1 == null);
         }
         if (Image2 != null)
         {
-            PhotonNetwork.Destroy(Image2);
+            Destroy(Image2);
             yield return new WaitUntil(() => Image2 == null);
         }
         if (Image3 != null)
         {
-            PhotonNetwork.Destroy(Image3);
+            Destroy(Image3);
             yield return new WaitUntil(() => Image3 == null);
         }
+    }
+
+    private void DestroyImages()
+    {
+        StartCoroutine(DestroyImagesAndWait());
     }
 
 
@@ -186,23 +193,15 @@ public class GameImpostor : MonoBehaviourPunCallbacks
         this.positionOk = positionOk;
         this.positionKO1 = positionKO1;
         this.positionKO2 = positionKO2;
-        photonView.RPC(nameof(SyncImages), RpcTarget.Others, correctIndexImage, wrongIndexImage, positionOk, positionKO1, positionKO2);
     }
 
 
     [PunRPC]
     private void SyncImages(int correctIndexImage, int wrongIndexImage, int positionOk, int positionKO1, int positionKO2)
     {
-        Image1 = PhotonNetwork.Instantiate(images[correctIndexImage].name, spawnPositions[positionOk].position, Quaternion.identity);
-        Image2 = PhotonNetwork.Instantiate(images[wrongIndexImage].name, spawnPositions[positionKO1].position, Quaternion.identity);
-        Image3 = PhotonNetwork.Instantiate(images[wrongIndexImage].name, spawnPositions[positionKO2].position, Quaternion.identity);
-    }
-
-
-    [PunRPC]
-    private void DestroyImages()
-    {
-        StartCoroutine(DestroyImagesAndWait());
+        Image1 = Instantiate(images[correctIndexImage], spawnPositions[positionOk].position, Quaternion.identity);
+        Image2 = Instantiate(images[wrongIndexImage], spawnPositions[positionKO1].position, Quaternion.identity);
+        Image3 = Instantiate(images[wrongIndexImage], spawnPositions[positionKO2].position, Quaternion.identity);
     }
 
     [PunRPC]

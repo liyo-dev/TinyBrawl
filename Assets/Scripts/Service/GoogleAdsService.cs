@@ -1,3 +1,4 @@
+using GoogleMobileAds.Api;
 using Service;
 using System;
 using UnityEngine;
@@ -60,6 +61,13 @@ public class GoogleAdsService : MonoBehaviour
             Debug.LogWarning("Interstitial ad not ready. Executing callback.");
             onAdClosedCallback?.Invoke();
         }
+#endif
+    }
+
+    public void RemoveBannerIfPresent()
+    {
+#if UNITY_ANDROID || UNITY_IOS || UNITY_EDITOR
+        googleAds.RemoveBannerIfPresent();
 #endif
     }
 

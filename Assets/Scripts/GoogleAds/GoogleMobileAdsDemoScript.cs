@@ -56,7 +56,7 @@ public class GoogleMobileAdsDemoScript : MonoBehaviour
         }
 
         // Create a 320x50 banner at top of the screen
-        _bannerView = new BannerView(_adUnitId, AdSize.IABBanner, AdPosition.Top);
+        _bannerView = new BannerView(_adUnitId, AdSize.Banner, AdPosition.Top);
     }
 
     /// <summary>
@@ -126,6 +126,18 @@ public class GoogleMobileAdsDemoScript : MonoBehaviour
                 _interstitialAd = ad;
             });
     }
+
+    /// <summary>
+    /// Verifica si el banner está activo y lo destruye si es necesario.
+    /// </summary>
+    public void RemoveBannerIfPresent()
+    {
+        if (_bannerView != null)
+        {
+            DestroyAd();
+        }
+    }
+
 
     /// <summary>
     /// listen to events the banner view may raise.

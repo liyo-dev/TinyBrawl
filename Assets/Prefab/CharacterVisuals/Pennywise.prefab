@@ -2926,7 +2926,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2006901265603329025}
   m_Layer: 0
-  m_Name: Pennywise_visuals
+  m_Name: Pennywise
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2940,7 +2940,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3716708163989729666}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2955,7 +2955,7 @@ Transform:
   - {fileID: 319119177247290543}
   - {fileID: 6045072980247807191}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3965517959843582253
 GameObject:
   m_ObjectHideFlags: 0
