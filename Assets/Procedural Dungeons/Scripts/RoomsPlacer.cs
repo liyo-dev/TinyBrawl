@@ -1,8 +1,10 @@
 ﻿using Photon.Pun;
+using Service;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 
 public class RoomsPlacer : MonoBehaviourPun
 {
@@ -47,6 +49,7 @@ public class RoomsPlacer : MonoBehaviourPun
         if (PhotonNetwork.IsMasterClient)
         {
             GenerateLabyrinth();
+            photonView.RPC(nameof(SpawnPlayer), RpcTarget.All);
         }
         else
         {
@@ -55,11 +58,6 @@ public class RoomsPlacer : MonoBehaviourPun
             {
                 yield return null; // Esperar un frame
             }
-        }
-
-        if (photonView.IsMine)
-        {
-            SpawnPlayer();
         }
     }
 
@@ -201,18 +199,40 @@ public class RoomsPlacer : MonoBehaviourPun
         return true;
     }
 
+    [PunRPC]
     public void SpawnPlayer()
     {
         int playerIndex = PhotonNetwork.LocalPlayer.ActorNumber - 1;
 
+        Debug.Log($"Spawning player {playerIndex}.");
+
+        Debug.Log($"Room positions: {string.Join(", ", roomPositions.Select(x => x.ToString()).ToArray())}");
+
         if (playerIndex >= 0 && playerIndex < roomPositions.Count)
         {
             Vector3 spawnPosition = roomPositions[playerIndex];
-            GameObject.FindWithTag("Player").transform.position = spawnPosition + new Vector3(0, 1, 0);
+
+            GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+
+            GameObject[] characterPrefabs = ServiceLocator.GetService<CharacterDataService>().GetData().characters.ToArray();
+            int characterId = ServiceLocator.GetService<PlayerDataService>().GetData().selectedCharacterId;
+            string prefabName = characterPrefabs[characterId].name;
+
+            foreach (GameObject player in players)
+            {
+                if (player.name.StartsWith(prefabName))
+                {
+                    player.transform.position = spawnPosition + new Vector3(0, 1, 0);
+                    return; 
+                }
+            }
+
+            Debug.LogError($"Player prefab {prefabName} not found in the scene.");
         }
         else
         {
             Debug.LogError("Spawn position not found for player.");
         }
     }
+
 }
