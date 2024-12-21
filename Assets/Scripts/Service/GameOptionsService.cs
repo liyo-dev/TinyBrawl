@@ -64,6 +64,16 @@ public class GameOptionsService : MonoBehaviourPunCallbacks
         photonView.RPC(nameof(SyncLoadGame), RpcTarget.All);
     }
 
+    public void SetNoLogin()
+    {
+        localOnlineOption.NoLogin = true;
+    }
+
+    public void ResetNoLogin()
+    {
+        localOnlineOption.NoLogin = false;
+    }
+
     [PunRPC]
     public void SyncImpostor()
     {

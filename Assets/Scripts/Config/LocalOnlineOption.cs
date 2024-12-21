@@ -6,6 +6,8 @@ public class LocalOnlineOption : MonoBehaviour
 
     private Minigame SelectedMiniGame;
 
+    public bool NoLogin = false;
+
     public static LocalOnlineOption instance;
 
     private void Awake()

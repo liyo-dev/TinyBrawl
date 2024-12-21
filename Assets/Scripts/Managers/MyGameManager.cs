@@ -100,13 +100,13 @@ public class MyGameManager : MonoBehaviourPunCallbacks
         playerDataSO.points += score;
 
         // Guardar los puntos en PlayFab
-        UpdatePointsInPlayFab(playerDataSO.points);
+        if (!ServiceLocator.GetService<LocalOnlineOption>().NoLogin)
+        {
+            UpdatePointsInPlayFab(playerDataSO.points);
+        }
 
         // Enviar la puntuación del jugador local al otro cliente
         photonView.RPC(nameof(ReceiveOpponentScore), RpcTarget.Others, score);
-
-        // Mostrar anuncio intersticial
-        ServiceLocator.GetService<GoogleMobileAdsDemoScript>().LoadInterstitialAd();
     }
 
     private void UpdatePointsInPlayFab(int totalPoints)
