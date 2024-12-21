@@ -19,11 +19,11 @@ public class CountdownTimer : MonoBehaviour
     private bool countdownStarted = false;
 
     void Start()
-    {        
+    {
         timeLeft = totalTime;
         // Iniciar el conteo regresivo mostrando el número 3
         TresGameObject.SetActive(true);
-        
+
         Invoke("CountdownTwo", 1f);
     }
 
@@ -48,7 +48,7 @@ public class CountdownTimer : MonoBehaviour
         int seconds = Mathf.FloorToInt(timeLeft % 60f);
 
         countdownText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
-        
+
         // Actualizar el tamaño de la barra de tiempo
         float fillAmount = timeLeft / totalTime;
         TimeBarImage.fillAmount = fillAmount;
@@ -73,19 +73,16 @@ public class CountdownTimer : MonoBehaviour
     void StartCountdown()
     {
         // Ocultar el número 1 y comenzar el conteo regresivo real
-        UnoGameObject.SetActive(false); 
-        
+        UnoGameObject.SetActive(false);
+
         countdownStarted = true;
-       
+
         Invoke("TimeOut", totalTime);
     }
 
     void LoadScene()
     {
-        ServiceLocator.GetService<GoogleAdsService>().ShowIntersitial(() =>
-        {
-            SceneManager.LoadScene(SceneNames.Title.ToString());
-        });
+        SceneManager.LoadScene(SceneNames.Title.ToString());
     }
 
 

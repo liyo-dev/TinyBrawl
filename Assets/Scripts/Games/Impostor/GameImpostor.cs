@@ -6,7 +6,7 @@ using Random = UnityEngine.Random;
 
 public class GameImpostor : MonoBehaviourPunCallbacks
 {
-    public List<GameObject> images; 
+    public List<GameObject> images;
     public Transform[] spawnPositions;
     public DotUpDown Telon;
     public GameObject GoodFeedback;
@@ -21,12 +21,12 @@ public class GameImpostor : MonoBehaviourPunCallbacks
     private GameObject Image2;
     private GameObject Image3;
     private MyGameManager _myGameManager;
-    private float turnDuration = 4f; // Duración de cada turno
     private bool localPlayerCanPlay = false;
     private bool remotePlayerCanPlay = false;
     private bool imagesCalculated = false;
     private bool stopGame = false;
     private bool canClick = false;
+    private int imagesDestroyedCount = 0;
 
     private void Start()
     {
@@ -52,17 +52,10 @@ public class GameImpostor : MonoBehaviourPunCallbacks
 
         yield return new WaitForSeconds(Telon.animationDuration + 0.1f);
 
-        photonView.RPC(nameof(DestroyImages), RpcTarget.Others);
-
-        // Esperar a que las imágenes sean destruidas antes de calcular e instanciar nuevas imágenes
-        yield return new WaitUntil(() => Image1 == null && Image2 == null && Image3 == null);
-
         if (PhotonNetwork.IsMasterClient)
         {
-            CalculateImagesIfNeeded();
+            photonView.RPC(nameof(DestroyImages), RpcTarget.All);
         }
-
-        canClick = true;
     }
 
     void CalculateImagesIfNeeded()
@@ -111,7 +104,6 @@ public class GameImpostor : MonoBehaviourPunCallbacks
 
     public void OnClickPosition(int position)
     {
-
         if (!canClick) return;
         if (stopGame) return;
         if (!localPlayerCanPlay) return;
@@ -160,6 +152,12 @@ public class GameImpostor : MonoBehaviourPunCallbacks
         _myGameManager.DecreaseLocalScore(1);
     }
 
+    private IEnumerator DestroyImagesAndNotify()
+    {
+        yield return StartCoroutine(DestroyImagesAndWait());
+        photonView.RPC(nameof(NotifyImagesDestroyed), RpcTarget.MasterClient);
+    }
+
     private IEnumerator DestroyImagesAndWait()
     {
         if (Image1 != null)
@@ -179,7 +177,6 @@ public class GameImpostor : MonoBehaviourPunCallbacks
         }
     }
 
-
     [PunRPC]
     private void SyncImagesAndPosition(int correctIndexImage, int wrongIndexImage, int positionOk, int positionKO1, int positionKO2)
     {
@@ -187,7 +184,6 @@ public class GameImpostor : MonoBehaviourPunCallbacks
         this.positionKO1 = positionKO1;
         this.positionKO2 = positionKO2;
     }
-
 
     [PunRPC]
     private void SyncImages(int correctIndexImage, int wrongIndexImage, int positionOk, int positionKO1, int positionKO2)
@@ -197,11 +193,37 @@ public class GameImpostor : MonoBehaviourPunCallbacks
         Image3 = Instantiate(images[wrongIndexImage], spawnPositions[positionKO2].position, Quaternion.identity);
     }
 
-
     [PunRPC]
     private void DestroyImages()
     {
-        StartCoroutine(DestroyImagesAndWait());
+        StartCoroutine(DestroyImagesAndNotify());
+    }
+
+    [PunRPC]
+    private void NotifyImagesDestroyed()
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            imagesDestroyedCount++;
+            if (imagesDestroyedCount >= PhotonNetwork.CurrentRoom.PlayerCount)
+            {
+                photonView.RPC(nameof(CheckAllImagesDestroyed), RpcTarget.All);
+                imagesDestroyedCount = 0;
+            }
+        }
+    }
+
+    [PunRPC]
+    private void CheckAllImagesDestroyed()
+    {
+        if (Image1 == null && Image2 == null && Image3 == null)
+        {
+            // Aquí puedes proceder con la siguiente acción, por ejemplo, calcular nuevas imágenes
+            if (PhotonNetwork.IsMasterClient)
+            {
+                CalculateImagesIfNeeded();
+            }
+        }
     }
 
     [PunRPC]
@@ -236,5 +258,6 @@ public class GameImpostor : MonoBehaviourPunCallbacks
     {
         Telon.Up();
         localPlayerCanPlay = true;
+        canClick = true;
     }
 }

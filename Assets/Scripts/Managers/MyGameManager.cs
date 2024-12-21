@@ -48,7 +48,7 @@ public class MyGameManager : MonoBehaviourPunCallbacks
 
         UpdateLocalScoreUI();
 
-        photonView.RPC("SyncScore", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber, score);
+        photonView.RPC(nameof(SyncScore), RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber, score);
     }
 
     public void DecreaseLocalScore(int _score)
@@ -59,7 +59,7 @@ public class MyGameManager : MonoBehaviourPunCallbacks
 
         UpdateLocalScoreUI();
 
-        photonView.RPC("SyncScore", RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber, score);
+        photonView.RPC(nameof(SyncScore), RpcTarget.Others, PhotonNetwork.LocalPlayer.ActorNumber, score);
     }
 
     private void UpdateLocalScoreUI()
@@ -84,7 +84,7 @@ public class MyGameManager : MonoBehaviourPunCallbacks
             var script = FindObjectOfType(System.Type.GetType(scriptName));
             if (script != null)
             {
-                var method = script.GetType().GetMethod("DoStop");
+                var method = script.GetType().GetMethod(nameof(DoStop));
                 if (method != null)
                 {
                     method.Invoke(script, null);
@@ -103,7 +103,10 @@ public class MyGameManager : MonoBehaviourPunCallbacks
         UpdatePointsInPlayFab(playerDataSO.points);
 
         // Enviar la puntuación del jugador local al otro cliente
-        photonView.RPC("ReceiveOpponentScore", RpcTarget.Others, score);
+        photonView.RPC(nameof(ReceiveOpponentScore), RpcTarget.Others, score);
+
+        // Mostrar anuncio intersticial
+        ServiceLocator.GetService<GoogleMobileAdsDemoScript>().LoadInterstitialAd();
     }
 
     private void UpdatePointsInPlayFab(int totalPoints)
