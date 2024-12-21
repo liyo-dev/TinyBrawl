@@ -1,0 +1,27 @@
+name: Label Milestone Issues
+
+on:
+  issues:
+    types: [opened, edited]
+
+jobs:
+  add-label:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check for milestone and add label
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const core = require('@actions/core');
+          const github = require('@actions/github');
+          
+          const issue = github.context.payload.issue;
+          
+          if (issue.milestone && issue.milestone.title.toLowerCase() === 'bug') {
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              labels: ['bug']
+            });
+          }
