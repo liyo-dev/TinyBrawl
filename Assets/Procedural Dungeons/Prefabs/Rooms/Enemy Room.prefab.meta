@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 3c55225795d607f4e9f5dc4ab2b19310
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 179281
+  packageName: Procedural Dungeons
+  packageVersion: 1.0
+  assetPath: Assets/Procedural Dungeons/Prefabs/Rooms/Enemy Room.prefab
+  uploadId: 391936

@@ -646,7 +646,7 @@ GameObject:
   - component: {fileID: -8364644387936600549}
   - component: {fileID: -5670648444195204687}
   m_Layer: 0
-  m_Name: Doctor
+  m_Name: Doctor Jekil
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

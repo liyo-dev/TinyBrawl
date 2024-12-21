@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: d0b47a575fa08c44b85de633ad1d891d
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 179281
+  packageName: Procedural Dungeons
+  packageVersion: 1.0
+  assetPath: Assets/Procedural Dungeons/Prefabs/Environment/Crate Strong.prefab
+  uploadId: 391936

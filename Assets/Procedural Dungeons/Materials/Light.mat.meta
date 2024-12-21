@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 735168124f33ad3429194c5a2f9d961c
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 179281
+  packageName: Procedural Dungeons
+  packageVersion: 1.0
+  assetPath: Assets/Procedural Dungeons/Materials/Light.mat
+  uploadId: 391936

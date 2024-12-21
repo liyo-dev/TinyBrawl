@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 619213ab593cc91459fd74e43195dfeb
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 179281
+  packageName: Procedural Dungeons
+  packageVersion: 1.0
+  assetPath: Assets/Procedural Dungeons/Prefabs/Environment/Light.prefab
+  uploadId: 391936

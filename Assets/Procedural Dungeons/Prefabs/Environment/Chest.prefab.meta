@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 166c75a238a4ee64eb9a98a7770c9ed9
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 179281
+  packageName: Procedural Dungeons
+  packageVersion: 1.0
+  assetPath: Assets/Procedural Dungeons/Prefabs/Environment/Chest.prefab
+  uploadId: 391936

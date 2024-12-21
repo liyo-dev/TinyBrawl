@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 9b718680eec3f434580d1bb6ed3b5866
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 179281
+  packageName: Procedural Dungeons
+  packageVersion: 1.0
+  assetPath: Assets/Procedural Dungeons/Prefabs/Enemies/Skeleton.prefab
+  uploadId: 391936

@@ -103,7 +103,6 @@ public class PlayerSpawner : MonoBehaviourPunCallbacks
         }
     }
 
-
     public override void OnConnectedToMaster()
     {
         JoinRoom();
@@ -206,7 +205,6 @@ public class PlayerSpawner : MonoBehaviourPunCallbacks
         }
     }
 
-
     private void InstantiateWeapon(GameObject weaponPrefab, Transform handZone)
     {
         if (handZone.childCount > 0)
@@ -218,7 +216,6 @@ public class PlayerSpawner : MonoBehaviourPunCallbacks
         weapon.transform.localPosition = Vector3.zero;
         weapon.transform.localRotation = Quaternion.identity;
     }
-
 
     private void FindAndFollowPlayer()
     {

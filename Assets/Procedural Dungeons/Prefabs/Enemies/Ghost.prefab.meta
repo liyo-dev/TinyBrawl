@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 58a322be98474144bb5af219a820e041
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 179281
+  packageName: Procedural Dungeons
+  packageVersion: 1.0
+  assetPath: Assets/Procedural Dungeons/Prefabs/Enemies/Ghost.prefab
+  uploadId: 391936

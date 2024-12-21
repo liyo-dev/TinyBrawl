@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 405e37c04ede86c48afbcf106b3987ba
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 179281
+  packageName: Procedural Dungeons
+  packageVersion: 1.0
+  assetPath: Assets/Procedural Dungeons/Misc/Post-processing Profile.asset
+  uploadId: 391936

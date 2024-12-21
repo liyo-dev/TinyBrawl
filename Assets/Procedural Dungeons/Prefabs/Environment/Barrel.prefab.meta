@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 413cf6f6a1c73f640b11efa5822f10b6
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 179281
+  packageName: Procedural Dungeons
+  packageVersion: 1.0
+  assetPath: Assets/Procedural Dungeons/Prefabs/Environment/Barrel.prefab
+  uploadId: 391936

@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 93b9c57e52843d44b8f7491257186dab
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 179281
+  packageName: Procedural Dungeons
+  packageVersion: 1.0
+  assetPath: Assets/Procedural Dungeons/Prefabs/Environment/Crate.prefab
+  uploadId: 391936

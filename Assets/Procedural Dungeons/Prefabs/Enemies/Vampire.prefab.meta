@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 1101752f7d2bfea4896ce5f3274294e5
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 179281
+  packageName: Procedural Dungeons
+  packageVersion: 1.0
+  assetPath: Assets/Procedural Dungeons/Prefabs/Enemies/Vampire.prefab
+  uploadId: 391936

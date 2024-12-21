@@ -1,7 +1,7 @@
 using Photon.Pun;
 using UnityEngine;
 
-public class CheckWinner : MonoBehaviourPun
+public class CheckWinner : MonoBehaviourPunCallbacks
 {
     private GameObject winnerPopUp;
     private GameObject looserPopUp;
@@ -20,26 +20,7 @@ public class CheckWinner : MonoBehaviourPun
             if (winnerPopUp)
             {
                 winnerPopUp.GetComponent<ShowPopUpService>().Show();
-                KillAllOtherPlayers(other.gameObject);
-            }
-        }
-    }
-
-    private void KillAllOtherPlayers(GameObject winner)
-    {
-        // Buscar todos los jugadores con el tag "Player"
-        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-
-        foreach (GameObject player in players)
-        {
-            // Saltar al jugador ganador
-            if (player == winner) continue;
-
-            // Obtener el componente PlayerHealth y "matar" al jugador
-            PhotonView playerView = player.GetComponent<PhotonView>();
-            if (playerView != null)
-            {
-                photonView.RPC(nameof(SyncPlayerLoose), playerView.Owner, playerView.ViewID);
+                photonView.RPC(nameof(SyncPlayerLoose), RpcTarget.Others);
             }
         }
     }

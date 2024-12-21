@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: cfaef2883a1a72745a21b94442108681
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 179281
+  packageName: Procedural Dungeons
+  packageVersion: 1.0
+  assetPath: Assets/Procedural Dungeons/Prefabs/Dungeon Manager.prefab
+  uploadId: 391936

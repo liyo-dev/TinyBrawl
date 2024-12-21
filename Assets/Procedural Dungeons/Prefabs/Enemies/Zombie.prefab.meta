@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 36865fb232baa154ebbe6d0ff2b0bce0
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 179281
+  packageName: Procedural Dungeons
+  packageVersion: 1.0
+  assetPath: Assets/Procedural Dungeons/Prefabs/Enemies/Zombie.prefab
+  uploadId: 391936

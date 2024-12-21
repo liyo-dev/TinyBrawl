@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 7affb433109240e419f6faa8bae0ef48
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 179281
+  packageName: Procedural Dungeons
+  packageVersion: 1.0
+  assetPath: Assets/Procedural Dungeons/Prefabs/Rooms/Loot Room.prefab
+  uploadId: 391936
