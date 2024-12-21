@@ -107,6 +107,9 @@ public class MyGameManager : MonoBehaviourPunCallbacks
 
         // Enviar la puntuación del jugador local al otro cliente
         photonView.RPC(nameof(ReceiveOpponentScore), RpcTarget.Others, score);
+
+        // Llamar a ReceiveOpponentScore localmente
+        ReceiveOpponentScore(score);
     }
 
     private void UpdatePointsInPlayFab(int totalPoints)
