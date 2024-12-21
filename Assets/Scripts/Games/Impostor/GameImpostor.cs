@@ -6,12 +6,11 @@ using Random = UnityEngine.Random;
 
 public class GameImpostor : MonoBehaviourPunCallbacks
 {
-    public List<GameObject> images; // Lista de imágenes para el minijuego
-    public Transform[] spawnPositions; // Posiciones donde instanciar las imágenes
+    public List<GameObject> images; 
+    public Transform[] spawnPositions;
     public DotUpDown Telon;
     public GameObject GoodFeedback;
     public GameObject WrongFeedback;
-
 
     private int correctIndexImage;
     private int wrongIndexImage;
@@ -53,8 +52,7 @@ public class GameImpostor : MonoBehaviourPunCallbacks
 
         yield return new WaitForSeconds(Telon.animationDuration + 0.1f);
 
-        //photonView.RPC(nameof(DestroyImages), RpcTarget.Others);
-        DestroyImages();
+        photonView.RPC(nameof(DestroyImages), RpcTarget.Others);
 
         // Esperar a que las imágenes sean destruidas antes de calcular e instanciar nuevas imágenes
         yield return new WaitUntil(() => Image1 == null && Image2 == null && Image3 == null);
@@ -181,11 +179,6 @@ public class GameImpostor : MonoBehaviourPunCallbacks
         }
     }
 
-    private void DestroyImages()
-    {
-        StartCoroutine(DestroyImagesAndWait());
-    }
-
 
     [PunRPC]
     private void SyncImagesAndPosition(int correctIndexImage, int wrongIndexImage, int positionOk, int positionKO1, int positionKO2)
@@ -202,6 +195,13 @@ public class GameImpostor : MonoBehaviourPunCallbacks
         Image1 = Instantiate(images[correctIndexImage], spawnPositions[positionOk].position, Quaternion.identity);
         Image2 = Instantiate(images[wrongIndexImage], spawnPositions[positionKO1].position, Quaternion.identity);
         Image3 = Instantiate(images[wrongIndexImage], spawnPositions[positionKO2].position, Quaternion.identity);
+    }
+
+
+    [PunRPC]
+    private void DestroyImages()
+    {
+        StartCoroutine(DestroyImagesAndWait());
     }
 
     [PunRPC]
