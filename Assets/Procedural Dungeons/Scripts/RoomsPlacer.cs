@@ -88,7 +88,6 @@ public class RoomsPlacer : MonoBehaviourPunCallbacks
         yield return new WaitForSeconds(1);
         photonView.RPC(nameof(SyncRoomPositions), RpcTarget.All, roomPositions.Select(pos => new float[] { pos.x, pos.y, pos.z }).ToArray());
         photonView.RPC(nameof(SpawnPlayer), RpcTarget.All);
-        OnPlayerMoved.Invoke();
     }
 
     private void GenerateLabyrinth()
@@ -241,6 +240,7 @@ public class RoomsPlacer : MonoBehaviourPunCallbacks
     {
         Debug.Log("Spawning player.");
         StartCoroutine(SpawnPlayerWithRetries());
+        OnPlayerMoved.Invoke();
     }
 
     [PunRPC]
