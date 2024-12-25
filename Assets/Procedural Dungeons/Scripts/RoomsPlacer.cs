@@ -4,11 +4,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.TextCore.Text;
-
-public class RoomsPlacer : MonoBehaviourPun
+using UnityEngine.Events;
+public class RoomsPlacer : MonoBehaviourPunCallbacks
 {
     public static RoomsPlacer Instance;
+
+    public UnityEvent OnPlayerMoved;
 
     [Header("Prefabs")]
     public List<GameObject> RoomPrefabs;
@@ -37,28 +38,57 @@ public class RoomsPlacer : MonoBehaviourPun
     private List<Vector3> roomPositions = new List<Vector3>();
     private List<int> roomTypes = new List<int>();
 
+    private bool firstPlayerNotified = false;
+
     private void Start()
     {
         Instance = this;
 
-        StartCoroutine(nameof(InitializeLabyrinth));
+        if (firstPlayerNotified)
+        {
+            Debug.Log("Llamo al RPC HolaTest...");
+            photonView.RPC(nameof(HolaTest), RpcTarget.Others);
+        }
+        else
+        {
+            Debug.Log("No llamo al RPC.");
+        }
     }
 
     private IEnumerator InitializeLabyrinth()
     {
-        if (PhotonNetwork.IsMasterClient)
+        if (firstPlayerNotified)
         {
             GenerateLabyrinth();
-            photonView.RPC(nameof(SpawnPlayer), RpcTarget.All);
+
+            if (!photonView.IsMine)
+            {
+                photonView.TransferOwnership(PhotonNetwork.LocalPlayer);
+                Debug.Log("Transferencia de propiedad realizada.");
+            }
+
+            if (photonView.IsMine)
+            {
+                StartCoroutine(WaitBeforeRpc());
+            }
         }
         else
         {
+            Debug.Log("No soy el maestro.");
             // Esperar hasta que el laberinto haya sido generado por el maestro
             while (roomPositions.Count == 0)
             {
                 yield return null; // Esperar un frame
             }
         }
+    }
+
+    IEnumerator WaitBeforeRpc()
+    {
+        yield return new WaitForSeconds(1);
+        photonView.RPC(nameof(SyncRoomPositions), RpcTarget.All, roomPositions.Select(pos => new float[] { pos.x, pos.y, pos.z }).ToArray());
+        photonView.RPC(nameof(SpawnPlayer), RpcTarget.All);
+        OnPlayerMoved.Invoke();
     }
 
     private void GenerateLabyrinth()
@@ -200,38 +230,81 @@ public class RoomsPlacer : MonoBehaviourPun
     }
 
     [PunRPC]
+    private void SyncRoomPositions(float[][] positions)
+    {
+        Debug.Log("Syncing room positions.");
+        roomPositions = positions.Select(pos => new Vector3(pos[0], pos[1], pos[2])).ToList();
+    }
+
+    [PunRPC]
     public void SpawnPlayer()
     {
-        int playerIndex = PhotonNetwork.LocalPlayer.ActorNumber - 1;
+        Debug.Log("Spawning player.");
+        StartCoroutine(SpawnPlayerWithRetries());
+    }
+
+    [PunRPC]
+    public void HolaTest()
+    {
+        Debug.Log($"HolaTest llamado por: {PhotonNetwork.LocalPlayer.NickName}");
+        Debug.Log($"PhotonView ID: {photonView.ViewID}");
+    }
+
+
+
+    private IEnumerator SpawnPlayerWithRetries(int maxRetries = 5, float retryDelay = 1.0f)
+    {
+        int playerIndex = PhotonNetwork.LocalPlayer.ActorNumber;
 
         Debug.Log($"Spawning player {playerIndex}.");
 
         Debug.Log($"Room positions: {string.Join(", ", roomPositions.Select(x => x.ToString()).ToArray())}");
 
-        if (playerIndex >= 0 && playerIndex < roomPositions.Count)
+        for (int attempt = 0; attempt < maxRetries; attempt++)
         {
-            Vector3 spawnPosition = roomPositions[playerIndex];
-
-            GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-
-            GameObject[] characterPrefabs = ServiceLocator.GetService<CharacterDataService>().GetData().characters.ToArray();
-            int characterId = ServiceLocator.GetService<PlayerDataService>().GetData().selectedCharacterId;
-            string prefabName = characterPrefabs[characterId].name;
-
-            foreach (GameObject player in players)
+            if (playerIndex >= 1 && playerIndex < roomPositions.Count)
             {
-                if (player.name.StartsWith(prefabName))
+                Vector3 spawnPosition = roomPositions[playerIndex - 1];
+
+                GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+
+                GameObject[] characterPrefabs = ServiceLocator.GetService<CharacterDataService>().GetData().characters.ToArray();
+                int characterId = ServiceLocator.GetService<PlayerDataService>().GetData().selectedCharacterId;
+                string prefabName = characterPrefabs[characterId].name;
+
+                foreach (GameObject player in players)
                 {
-                    player.transform.position = spawnPosition + new Vector3(0, 1, 0);
-                    return; 
+                    if (player.name.StartsWith(prefabName))
+                    {
+                        player.transform.position = spawnPosition + new Vector3(0, 1, 0);
+                        yield break;
+                    }
                 }
+
+                Debug.Log($"Player prefab {prefabName} not found in the scene. Attempt {attempt + 1} of {maxRetries}.");
+            }
+            else
+            {
+                Debug.LogError("Spawn position not found for player.");
+                yield break;
             }
 
-            Debug.LogError($"Player prefab {prefabName} not found in the scene.");
+            yield return new WaitForSeconds(retryDelay);
         }
-        else
+
+        Debug.LogError("Failed to spawn player after multiple attempts.");
+    }
+
+    /// <summary>
+    /// Este método también se ejecuta al unirse a la sala, en caso de que este jugador sea el primero.
+    /// </summary>
+    public override void OnJoinedRoom()
+    {
+        // Verificar si este jugador es el primero al unirse
+        if (!firstPlayerNotified && PhotonNetwork.CurrentRoom.PlayerCount == 1)
         {
-            Debug.LogError("Spawn position not found for player.");
+            firstPlayerNotified = true;
+            StartCoroutine(nameof(InitializeLabyrinth));
         }
     }
 

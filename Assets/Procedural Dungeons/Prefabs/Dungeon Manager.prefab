@@ -53,9 +53,9 @@ MonoBehaviour:
   - {fileID: 3837638123247658815, guid: 7f259509be389f644bb967578bb53f04, type: 3}
   - {fileID: 8275037830214055373, guid: 3309ec8bffdef824d9774744a12a8e26, type: 3}
   - {fileID: 8275037830214055373, guid: 6ca74193cfe882042b116b203344acb5, type: 3}
-  roomsAmount: 20
+  roomsAmount: 15
   roomSize: 12
-  overrideMaterials: 1
+  overrideMaterials: 0
   Materials:
   - {fileID: 2100000, guid: e9407d1e3115fa74783619620b9ed6a4, type: 2}
   overrideLoot: 0
@@ -78,7 +78,7 @@ MonoBehaviour:
   Group: 0
   prefixField: -1
   Synchronization: 3
-  OwnershipTransfer: 0
+  OwnershipTransfer: 1
   observableSearch: 2
   ObservedComponents: []
   sceneViewId: 0
