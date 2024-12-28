@@ -46,7 +46,7 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
         Debug.Log("Jugador ha muerto.");
         // Agregar lógica de muerte, como deshabilitar controles, mostrar UI, etc.
         GetComponent<PlayerMovement>().enabled = false;
-        transform.DOLocalMoveX(transform.localPosition.x + 1, .2f)
+        transform.DOLocalMoveX(transform.localPosition.x + 1, .1f)
             .SetLoops(3, LoopType.Yoyo) // Repite en modo Yoyo para moverse de ida y vuelta
             .SetEase(Ease.InOutSine).Play().OnComplete(() =>
             {

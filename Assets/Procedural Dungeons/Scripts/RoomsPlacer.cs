@@ -1,10 +1,13 @@
-﻿using Photon.Pun;
+﻿using ExitGames.Client.Photon;
+using Photon.Pun;
 using Service;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
+
 public class RoomsPlacer : MonoBehaviourPunCallbacks
 {
     public static RoomsPlacer Instance;
@@ -43,38 +46,20 @@ public class RoomsPlacer : MonoBehaviourPunCallbacks
     private void Start()
     {
         Instance = this;
-
-        if (firstPlayerNotified)
-        {
-            Debug.Log("Llamo al RPC HolaTest...");
-            photonView.RPC(nameof(HolaTest), RpcTarget.Others);
-        }
-        else
-        {
-            Debug.Log("No llamo al RPC.");
-        }
     }
 
     private IEnumerator InitializeLabyrinth()
     {
+        yield return new WaitForSeconds(2f);
+
         if (firstPlayerNotified)
         {
             GenerateLabyrinth();
 
-            if (!photonView.IsMine)
-            {
-                photonView.TransferOwnership(PhotonNetwork.LocalPlayer);
-                Debug.Log("Transferencia de propiedad realizada.");
-            }
-
-            if (photonView.IsMine)
-            {
-                StartCoroutine(WaitBeforeRpc());
-            }
+            StartCoroutine(WaitBeforeRpc());
         }
         else
         {
-            Debug.Log("No soy el maestro.");
             // Esperar hasta que el laberinto haya sido generado por el maestro
             while (roomPositions.Count == 0)
             {
@@ -98,6 +83,7 @@ public class RoomsPlacer : MonoBehaviourPunCallbacks
         if (initialRoom != null)
         {
             var roomInstance = PhotonNetwork.Instantiate(initialRoom.name, Vector3.zero, Quaternion.identity).GetComponent<Room>();
+            roomInstance.gameObject.tag = "Room"; // Asegúrate de que la sala tenga el tag "Room"
             spawnedRooms[0, 0] = roomInstance;
             roomPositions.Add(roomInstance.transform.position);
             roomTypes.Add(RoomPrefabs.IndexOf(initialRoom));
@@ -148,20 +134,25 @@ public class RoomsPlacer : MonoBehaviourPunCallbacks
         }
         else
         {
-            newRoom = PhotonNetwork.Instantiate(RoomPrefabs[Random.Range(0, RoomPrefabs.Count)].name, Vector3.zero, Quaternion.identity).GetComponent<Room>();
+            newRoom = PhotonNetwork.Instantiate(RoomPrefabs[UnityEngine.Random.Range(0, RoomPrefabs.Count)].name, Vector3.zero, Quaternion.identity).GetComponent<Room>();
         }
+
+        newRoom.gameObject.tag = "Room"; // Asegúrate de que la sala tenga el tag "Room"
 
         int limit = 500;
         while (limit-- > 0)
         {
-            Vector2Int position = vacantPlaces.ElementAt(Random.Range(0, vacantPlaces.Count));
+            Vector2Int position = vacantPlaces.ElementAt(UnityEngine.Random.Range(0, vacantPlaces.Count));
 
             if (ConnectToSomething(newRoom, position))
             {
                 newRoom.transform.position = new Vector3(position.x, 0, position.y) * roomSize;
                 spawnedRooms[position.x, position.y] = newRoom;
                 roomPositions.Add(newRoom.transform.position);
-                roomTypes.Add(RoomPrefabs.IndexOf(newRoom.gameObject));
+
+                string prefabName = newRoom.gameObject.name.Replace("(Clone)", "").Trim();
+                int prefabIndex = RoomPrefabs.FindIndex(p => p.name == prefabName);
+                roomTypes.Add(prefabIndex);
 
                 return;
             }
@@ -172,6 +163,8 @@ public class RoomsPlacer : MonoBehaviourPunCallbacks
 
     private bool ConnectToSomething(Room room, Vector2Int p)
     {
+        Debug.Log("Starting ConnectToSomething...");
+
         int maxX = spawnedRooms.GetLength(0) - 1;
         int maxY = spawnedRooms.GetLength(1) - 1;
 
@@ -187,70 +180,176 @@ public class RoomsPlacer : MonoBehaviourPunCallbacks
             neighbours.Add(Vector2Int.left);
 
         if (neighbours.Count == 0)
+        {
+            Debug.LogWarning("No valid neighbours found to connect the room.");
             return false;
+        }
 
-        Vector2Int selectedDirection = neighbours[Random.Range(0, neighbours.Count)];
+        Vector2Int selectedDirection = neighbours[UnityEngine.Random.Range(0, neighbours.Count)];
         Room selectedRoom = spawnedRooms[p.x + selectedDirection.x, p.y + selectedDirection.y];
+
+        if (selectedRoom == null)
+        {
+            Debug.LogError("Selected room is null.");
+            return false;
+        }
 
         if (selectedDirection == Vector2Int.up)
         {
-            room.DoorU.SetActive(false);
-            selectedRoom.DoorD.SetActive(false);
+            if (room.DoorU != null && selectedRoom.DoorD != null)
+            {
+                room.DoorU.SetActive(false);
+                selectedRoom.DoorD.SetActive(false);
+            }
         }
         else if (selectedDirection == Vector2Int.down)
         {
-            room.DoorD.SetActive(false);
-            selectedRoom.DoorU.SetActive(false);
+            if (room.DoorD != null && selectedRoom.DoorU != null)
+            {
+                room.DoorD.SetActive(false);
+                selectedRoom.DoorU.SetActive(false);
+            }
         }
         else if (selectedDirection == Vector2Int.right)
         {
-            room.DoorR.SetActive(false);
-            selectedRoom.DoorL.SetActive(false);
+            if (room.DoorR != null && selectedRoom.DoorL != null)
+            {
+                room.DoorR.SetActive(false);
+                selectedRoom.DoorL.SetActive(false);
+            }
         }
         else if (selectedDirection == Vector2Int.left)
         {
-            room.DoorL.SetActive(false);
-            selectedRoom.DoorR.SetActive(false);
+            if (room.DoorL != null && selectedRoom.DoorR != null)
+            {
+                room.DoorL.SetActive(false);
+                selectedRoom.DoorR.SetActive(false);
+            }
         }
 
-        if (room.DoorU != null && selectedDirection != Vector2Int.up)
-            room.DoorU.SetActive(true);
+        StartCoroutine(DeactivateDoorsWithDelay(room, selectedRoom, selectedDirection));
 
-        if (room.DoorD != null && selectedDirection != Vector2Int.down)
-            room.DoorD.SetActive(true);
-
-        if (room.DoorR != null && selectedDirection != Vector2Int.right)
-            room.DoorR.SetActive(true);
-
-        if (room.DoorL != null && selectedDirection != Vector2Int.left)
-            room.DoorL.SetActive(true);
-
+        Debug.Log("Finished ConnectToSomething");
         return true;
+    }
+
+    private IEnumerator DeactivateDoorsWithDelay(Room room, Room selectedRoom, Vector2Int selectedDirection)
+    {
+        yield return new WaitForSeconds(0.5f);
+
+        if (selectedDirection == Vector2Int.up)
+        {
+            if (room.DoorU != null && selectedRoom.DoorD != null)
+            {
+                room.DoorU.SetActive(false);
+                selectedRoom.DoorD.SetActive(false);
+            }
+        }
+        else if (selectedDirection == Vector2Int.down)
+        {
+            if (room.DoorD != null && selectedRoom.DoorU != null)
+            {
+                room.DoorD.SetActive(false);
+                selectedRoom.DoorU.SetActive(false);
+            }
+        }
+        else if (selectedDirection == Vector2Int.right)
+        {
+            if (room.DoorR != null && selectedRoom.DoorL != null)
+            {
+                room.DoorR.SetActive(false);
+                selectedRoom.DoorL.SetActive(false);
+            }
+        }
+        else if (selectedDirection == Vector2Int.left)
+        {
+            if (room.DoorL != null && selectedRoom.DoorR != null)
+            {
+                room.DoorL.SetActive(false);
+                selectedRoom.DoorR.SetActive(false);
+            }
+        }
+
+        photonView.RPC(nameof(DeactivateDoorsRPC), RpcTarget.Others, room.transform.position, selectedRoom.transform.position, new int[] { selectedDirection.x, selectedDirection.y });
+    }
+
+    [PunRPC]
+    private void DeactivateDoorsRPC(Vector3 roomPosition, Vector3 selectedRoomPosition, int[] selectedDirectionArray)
+    {
+        Vector2Int selectedDirection = new Vector2Int(selectedDirectionArray[0], selectedDirectionArray[1]);
+        Room room = FindRoomByPosition(roomPosition);
+        Room selectedRoom = FindRoomByPosition(selectedRoomPosition);
+
+        if (room == null || selectedRoom == null)
+        {
+            Debug.LogError("Room or selected room not found.");
+            return;
+        }
+
+        if (selectedDirection == Vector2Int.up)
+        {
+            if (room.DoorU != null && selectedRoom.DoorD != null)
+            {
+                room.DoorU.SetActive(false);
+                selectedRoom.DoorD.SetActive(false);
+            }
+        }
+        else if (selectedDirection == Vector2Int.down)
+        {
+            if (room.DoorD != null && selectedRoom.DoorU != null)
+            {
+                room.DoorD.SetActive(false);
+                selectedRoom.DoorU.SetActive(false);
+            }
+        }
+        else if (selectedDirection == Vector2Int.right)
+        {
+            if (room.DoorR != null && selectedRoom.DoorL != null)
+            {
+                room.DoorR.SetActive(false);
+                selectedRoom.DoorL.SetActive(false);
+            }
+        }
+        else if (selectedDirection == Vector2Int.left)
+        {
+            if (room.DoorL != null && selectedRoom.DoorR != null)
+            {
+                room.DoorL.SetActive(false);
+                selectedRoom.DoorR.SetActive(false);
+            }
+        }
+    }
+
+    private Room FindRoomByPosition(Vector3 position)
+    {
+        foreach (Room room in FindObjectsOfType<Room>())
+        {
+            if (ArePositionsClose(room.transform.position, position))
+            {
+                return room;
+            }
+        }
+        return null;
     }
 
     [PunRPC]
     private void SyncRoomPositions(float[][] positions)
     {
-        Debug.Log("Syncing room positions.");
         roomPositions = positions.Select(pos => new Vector3(pos[0], pos[1], pos[2])).ToList();
+        Debug.Log($"Synced Room Positions: {string.Join(", ", roomPositions)}");
     }
 
     [PunRPC]
     public void SpawnPlayer()
     {
-        Debug.Log("Spawning player.");
         StartCoroutine(SpawnPlayerWithRetries());
         OnPlayerMoved.Invoke();
     }
 
-    [PunRPC]
-    public void HolaTest()
+    private bool ArePositionsClose(Vector3 pos1, Vector3 pos2, float tolerance = 0.1f)
     {
-        Debug.Log($"HolaTest llamado por: {PhotonNetwork.LocalPlayer.NickName}");
-        Debug.Log($"PhotonView ID: {photonView.ViewID}");
+        return Vector3.Distance(pos1, pos2) < tolerance;
     }
-
-
 
     private IEnumerator SpawnPlayerWithRetries(int maxRetries = 5, float retryDelay = 1.0f)
     {
@@ -258,16 +357,14 @@ public class RoomsPlacer : MonoBehaviourPunCallbacks
 
         Debug.Log($"Spawning player {playerIndex}.");
 
-        Debug.Log($"Room positions: {string.Join(", ", roomPositions.Select(x => x.ToString()).ToArray())}");
-
         for (int attempt = 0; attempt < maxRetries; attempt++)
         {
             if (playerIndex >= 1 && playerIndex < roomPositions.Count)
             {
                 Vector3 spawnPosition = roomPositions[playerIndex - 1];
+                Debug.Log($"Spawn position found: {spawnPosition}");
 
                 GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-
                 GameObject[] characterPrefabs = ServiceLocator.GetService<CharacterDataService>().GetData().characters.ToArray();
                 int characterId = ServiceLocator.GetService<PlayerDataService>().GetData().selectedCharacterId;
                 string prefabName = characterPrefabs[characterId].name;
@@ -295,17 +392,12 @@ public class RoomsPlacer : MonoBehaviourPunCallbacks
         Debug.LogError("Failed to spawn player after multiple attempts.");
     }
 
-    /// <summary>
-    /// Este método también se ejecuta al unirse a la sala, en caso de que este jugador sea el primero.
-    /// </summary>
     public override void OnJoinedRoom()
     {
-        // Verificar si este jugador es el primero al unirse
         if (!firstPlayerNotified && PhotonNetwork.CurrentRoom.PlayerCount == 1)
         {
             firstPlayerNotified = true;
             StartCoroutine(nameof(InitializeLabyrinth));
         }
     }
-
 }

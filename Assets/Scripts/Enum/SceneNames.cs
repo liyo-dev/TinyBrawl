@@ -15,5 +15,5 @@ public enum SceneNames
     Inventory,
     World,
     WaitingRoom,
-    Maze
+    Dungeon
 }

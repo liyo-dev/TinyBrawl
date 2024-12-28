@@ -221,6 +221,8 @@ public class PlayerAttack : MonoBehaviourPunCallbacks
 
             if (hit.CompareTag("Player") && hit.gameObject != gameObject)
             {
+                Debug.Log($"Golpeando a: {hit.gameObject.name} con {weapon.weaponData.attackDamage} de daño.");
+
                 PhotonView targetPhotonView = hit.GetComponent<PhotonView>();
                 PlayerHealth targetHealth = hit.GetComponent<PlayerHealth>();
                 //No hago daño si hay un escudo
