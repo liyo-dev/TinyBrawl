@@ -5111,6 +5111,7 @@ MonoBehaviour:
   virtualCamera: {fileID: 1046842128}
   cameraRotation: 40
   RoomName: Maze
+  WaitBeforeSpawn: 1
 --- !u!4 &1714488445
 Transform:
   m_ObjectHideFlags: 0
@@ -6651,6 +6652,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  PlayerSpawner: {fileID: 1714488444}
   RoomPrefabs:
   - {fileID: 3837638123247658815, guid: 52e285ee5ca379f4fadb735aa6815ebd, type: 3}
   - {fileID: 3837638123247658815, guid: 18ac494d7493ff4449d5bca8226c9720, type: 3}

@@ -14,6 +14,8 @@ public class RoomsPlacer : MonoBehaviourPunCallbacks
 
     public UnityEvent OnPlayerMoved;
 
+    public PlayerSpawner PlayerSpawner;
+
     [Header("Prefabs")]
     public List<GameObject> RoomPrefabs;
 
@@ -163,8 +165,6 @@ public class RoomsPlacer : MonoBehaviourPunCallbacks
 
     private bool ConnectToSomething(Room room, Vector2Int p)
     {
-        Debug.Log("Starting ConnectToSomething...");
-
         int maxX = spawnedRooms.GetLength(0) - 1;
         int maxY = spawnedRooms.GetLength(1) - 1;
 
@@ -229,7 +229,6 @@ public class RoomsPlacer : MonoBehaviourPunCallbacks
 
         StartCoroutine(DeactivateDoorsWithDelay(room, selectedRoom, selectedDirection));
 
-        Debug.Log("Finished ConnectToSomething");
         return true;
     }
 
@@ -336,60 +335,32 @@ public class RoomsPlacer : MonoBehaviourPunCallbacks
     private void SyncRoomPositions(float[][] positions)
     {
         roomPositions = positions.Select(pos => new Vector3(pos[0], pos[1], pos[2])).ToList();
-        Debug.Log($"Synced Room Positions: {string.Join(", ", roomPositions)}");
     }
 
     [PunRPC]
     public void SpawnPlayer()
     {
-        StartCoroutine(SpawnPlayerWithRetries());
+        int playerIndex = PhotonNetwork.LocalPlayer.ActorNumber;
+
+        if (playerIndex >= 1 && playerIndex < roomPositions.Count)
+        {
+            Vector3 spawnPosition = roomPositions[playerIndex - 1];
+            Debug.Log($"Spawn position found: {spawnPosition}");
+
+            PlayerSpawner.SpawnPoint.position = spawnPosition + new Vector3(0, 1, 0);
+            PlayerSpawner.SpawnPlayer();
+        }
+        else
+        {
+            Debug.LogError("Spawn position not found for player.");
+        }
+
         OnPlayerMoved.Invoke();
     }
 
     private bool ArePositionsClose(Vector3 pos1, Vector3 pos2, float tolerance = 0.1f)
     {
         return Vector3.Distance(pos1, pos2) < tolerance;
-    }
-
-    private IEnumerator SpawnPlayerWithRetries(int maxRetries = 5, float retryDelay = 1.0f)
-    {
-        int playerIndex = PhotonNetwork.LocalPlayer.ActorNumber;
-
-        Debug.Log($"Spawning player {playerIndex}.");
-
-        for (int attempt = 0; attempt < maxRetries; attempt++)
-        {
-            if (playerIndex >= 1 && playerIndex < roomPositions.Count)
-            {
-                Vector3 spawnPosition = roomPositions[playerIndex - 1];
-                Debug.Log($"Spawn position found: {spawnPosition}");
-
-                GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-                GameObject[] characterPrefabs = ServiceLocator.GetService<CharacterDataService>().GetData().characters.ToArray();
-                int characterId = ServiceLocator.GetService<PlayerDataService>().GetData().selectedCharacterId;
-                string prefabName = characterPrefabs[characterId].name;
-
-                foreach (GameObject player in players)
-                {
-                    if (player.name.StartsWith(prefabName))
-                    {
-                        player.transform.position = spawnPosition + new Vector3(0, 1, 0);
-                        yield break;
-                    }
-                }
-
-                Debug.Log($"Player prefab {prefabName} not found in the scene. Attempt {attempt + 1} of {maxRetries}.");
-            }
-            else
-            {
-                Debug.LogError("Spawn position not found for player.");
-                yield break;
-            }
-
-            yield return new WaitForSeconds(retryDelay);
-        }
-
-        Debug.LogError("Failed to spawn player after multiple attempts.");
     }
 
     public override void OnJoinedRoom()

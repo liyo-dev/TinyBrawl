@@ -18,7 +18,7 @@ public class PlayerAttack : MonoBehaviourPunCallbacks
     private Weapon leftHandWeapon;
     private Weapon rightHandWeapon;
 
-    private Collider[] meleeHitResults = new Collider[30];
+    private Collider[] meleeHitResults = new Collider[50];
 
     private float gizmoAttackRange;
     private bool showAttackGizmo = false;
@@ -221,11 +221,15 @@ public class PlayerAttack : MonoBehaviourPunCallbacks
 
             if (hit.CompareTag("Player") && hit.gameObject != gameObject)
             {
-                Debug.Log($"Golpeando a: {hit.gameObject.name} con {weapon.weaponData.attackDamage} de daño.");
-
                 PhotonView targetPhotonView = hit.GetComponent<PhotonView>();
                 PlayerHealth targetHealth = hit.GetComponent<PlayerHealth>();
-                //No hago daño si hay un escudo
+
+                if (targetPhotonView == null || targetHealth == null)
+                {
+                    continue;
+                }
+
+                // No hago daño si hay un escudo
                 if (hit.CompareTag("Escudo") && hit.gameObject != gameObject)
                 {
                     Debug.Log($"Jugador {hit.gameObject.name} está protegido por un escudo. No se aplica daño.");
@@ -238,13 +242,11 @@ public class PlayerAttack : MonoBehaviourPunCallbacks
                     }
 
                     continue;
-
                 }
 
                 // Aplicar daño si no hay escudo
                 Debug.Log($"Golpeando a: {hit.gameObject.name} con {weapon.weaponData.attackDamage} de daño.");
                 targetPhotonView.RPC(nameof(PlayerHealth.TakeDamageRPC), RpcTarget.AllBuffered, weapon.weaponData.attackDamage);
-       
             }
         }
     }

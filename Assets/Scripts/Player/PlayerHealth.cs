@@ -10,6 +10,8 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
     public GameObject deadFeedback;
 
     private PlayerHealthBar healthBar;
+    private bool isOnCooldown = false;
+    private float damageCooldown = 1.0f; // Tiempo de cooldown en segundos
 
     private void Start()
     {
@@ -18,7 +20,7 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
 
     public void TakeDamage(float damage)
     {
-        if (photonView.IsMine)
+        if (photonView.IsMine && !isOnCooldown)
         {
             currentHealth -= damage;
 
@@ -32,6 +34,8 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
             {
                 Die();
             }
+
+            StartCoroutine(DamageCooldown());
         }
     }
 
@@ -43,23 +47,24 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
 
     private void Die()
     {
-        Debug.Log("Jugador ha muerto.");
-        // Agregar lógica de muerte, como deshabilitar controles, mostrar UI, etc.
         GetComponent<PlayerMovement>().enabled = false;
-        transform.DOLocalMoveX(transform.localPosition.x + 1, .1f)
+        transform.DOLocalMoveX(transform.localPosition.x + 1, .2f)
             .SetLoops(3, LoopType.Yoyo) // Repite en modo Yoyo para moverse de ida y vuelta
             .SetEase(Ease.InOutSine).Play().OnComplete(() =>
             {
                 GameObject explosion = PhotonNetwork.Instantiate(deadFeedback.name, transform.position, Quaternion.identity);
                 explosion.transform.localScale = new Vector3(5, 5, 5);
-                Invoke(nameof(DestroyObject), .2f);
-            }); ;
+                Invoke(nameof(DestroyObject), .5f);
+            });
     }
 
     private void DestroyObject()
     {
-        PhotonNetwork.Destroy(gameObject);
-        PopUp.Instance.Show("Has perdido", "¿Salir al Menú?", OnYes, OnNo);
+        if (photonView.IsMine)
+        {
+            PhotonNetwork.Destroy(gameObject);
+            PopUp.Instance.Show("Has perdido", "¿Salir al Menú?", OnYes, OnNo);
+        }
     }
 
     void OnYes()
@@ -70,5 +75,12 @@ public class PlayerHealth : MonoBehaviourPunCallbacks
     void OnNo()
     {
         SceneManager.LoadScene(SceneNames.World.ToString());
+    }
+
+    private System.Collections.IEnumerator DamageCooldown()
+    {
+        isOnCooldown = true;
+        yield return new WaitForSeconds(damageCooldown);
+        isOnCooldown = false;
     }
 }

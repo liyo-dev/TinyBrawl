@@ -39,6 +39,10 @@ public class PlayerSpawner : MonoBehaviourPunCallbacks
 
     public string RoomName = "";
 
+    public bool WaitBeforeSpawn = false;
+
+    private bool isNicknameConfigured = false;
+
     void Start()
     {
         playerDataSO = ServiceLocator.GetService<PlayerDataService>().GetData();
@@ -51,7 +55,11 @@ public class PlayerSpawner : MonoBehaviourPunCallbacks
         if (playerDataSO != null && !string.IsNullOrEmpty(playerDataSO.username))
         {
             PhotonNetwork.NickName = playerDataSO.username;
-            Debug.Log($"Nickname del jugador configurado como: {PhotonNetwork.NickName}");
+            if (!isNicknameConfigured)
+            {
+                Debug.Log($"Nickname del jugador configurado como: {PhotonNetwork.NickName}");
+                isNicknameConfigured = true;
+            }
 
             ConnectToPhoton();
         }
@@ -70,6 +78,11 @@ public class PlayerSpawner : MonoBehaviourPunCallbacks
             {
                 playerDataSO.username = result.AccountInfo.Username;
                 PhotonNetwork.NickName = playerDataSO.username;
+                if (!isNicknameConfigured)
+                {
+                    Debug.Log($"Nickname del jugador configurado como: {PhotonNetwork.NickName}");
+                    isNicknameConfigured = true;
+                }
                 ConnectToPhoton();
             }
             else
@@ -129,6 +142,14 @@ public class PlayerSpawner : MonoBehaviourPunCallbacks
     }
 
     public override void OnJoinedRoom()
+    {
+        if (!WaitBeforeSpawn)
+        {
+            SpawnPlayer();
+        }
+    }
+
+    public void SpawnPlayer()
     {
         SpawnCharacter();
         EquipWeapons();
@@ -258,24 +279,6 @@ public class PlayerSpawner : MonoBehaviourPunCallbacks
             {
                 Debug.LogWarning("No se encontró un componente CinemachineTransposer en la cámara virtual.");
             }
-        }
-    }
-
-    /// <summary>
-    /// Método para mover el personaje del jugador a una nueva posición.
-    /// </summary>
-    /// <param name="newPosition">Nueva posición a la que se debe mover el personaje.</param>
-    public void MovePlayerToPosition(Vector3 newPosition)
-    {
-        if (activeCharacter != null)
-        {
-            spawnPoint.position = newPosition;
-            activeCharacter.transform.position = newPosition;
-            Debug.Log($"El jugador ha sido movido a la posición: {newPosition}");
-        }
-        else
-        {
-            Debug.LogWarning("No hay un personaje activo para mover.");
         }
     }
 
